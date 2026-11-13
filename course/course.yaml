@@ -1,0 +1,44 @@
+# Course definition. The server and the tutor read this; authors edit it.
+id: cuphoton-learn
+title: Working with cuPhoton through an agent
+version: 0.2-draft
+
+cuphoton:
+  repo: https://github.com/NVIDIA/cuPhoton
+  # The lessons were written against this commit. Bump deliberately, after
+  # re-running every unit's runs.
+  commit: ff4d26018eb4a5fed391d196ebe424736c6498e5
+
+objectives:
+  - id: O1
+    text: Explain difference imaging as a chain of stages (read, align, match, subtract, detect, measure) and what each fixes.
+  - id: O2
+    text: Before any stage runs, state what it takes in and should give back (shape, units, location in memory).
+  - id: O3
+    text: Verify a run from its evidence (receipts, summary.json, fit status, plots) rather than from the absence of errors.
+  - id: O4
+    text: Direct an agent to move a CPU workflow to the GPU and confirm what actually ran there.
+  - id: O5
+    text: Adapt the workflow to new data, including an honest noise model.
+
+# Units, in order. Each unit directory holds unit.yaml and one directory per lesson.
+units:
+  - 00-what-changed
+  - 01-first-difference
+  - 02-trust-the-run
+
+# The stage chain drawn by :::chain. `does` is the box text; `definition`
+# opens beneath the box when the learner clicks it.
+chain:
+  - id: xRep
+    does: Align
+    definition: Puts the reference image on the target image's pixel grid, so the same star sits on the same pixel in both. It shifts, rotates and rescales. It doesn't touch the blur.
+  - id: xPois
+    does: Match blur, brightness, background; subtract; find
+    definition: Makes the reference look as if it was taken on the target's night (same blur, brightness scale and sky level), subtracts, and flags what's left worth measuring, the candidates.
+  - id: xFit
+    does: Measure what's left
+    definition: Fits a model to each candidate and reports how much light it gained or lost, with an error bar.
+  - id: xScan
+    does: Real or bogus?
+    definition: Scores each candidate, so you look at the likely real changes first. It sets the priority; it isn't a final verdict.

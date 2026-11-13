@@ -1,0 +1,222 @@
+// Parses course/ into pages. Learner-facing text comes from lesson.md only;
+// tutor.md is read here but only ever sent to the tutor, never to the browser.
+import fs from "node:fs";
+import path from "node:path";
+import YAML from "yaml";
+import { config } from "./config.ts";
+
+export type Part =
+  | { kind: "prose"; text: string }
+  | { kind: "video"; id: string; title: string; duration: string; chapters: [number, string][]; src: string }
+  | { kind: "figure"; title: string; caption: string; src: string; alt: string }
+  | { kind: "slot"; id: string; title: string; caption: string }
+  | { kind: "chain"; hi?: string; caption: string }
+  | { kind: "turn"; id: string; title: string; prompt?: string; lead?: string; image?: string; imageCaption?: string }
+  | { kind: "ref"; text: string; label: string; video?: string; videoTitle?: string };
+
+export interface Lesson {
+  id: string;
+  unit: string;
+  slug: string;
+  dir: string;
+  title: string;
+  question: string;
+  terms: string[];
+  parts: Part[];
+  closure: { found: string; raises: string } | null;
+  turnIds: string[];
+  slotIds: string[];
+  source: string; // lesson.md, for the tutor
+  tutorNotes: string; // tutor.md, for the tutor only
+}
+
+export interface Unit {
+  id: string;
+  dir: string;
+  title: string;
+  question: string;
+  misconceptions: string[];
+  lessons: Lesson[];
+}
+
+export interface GlossaryEntry {
+  key: string; // normalized look-up key
+  label: string;
+  definition: string;
+  holdUntil?: string; // lesson id whose turns must settle before "ask more" opens
+  concept?: boolean;
+}
+
+export interface Course {
+  title: string;
+  commit: string;
+  units: Unit[];
+  lessons: Map<string, Lesson>;
+  order: string[]; // lesson ids in reading order
+  glossary: Map<string, GlossaryEntry>;
+  chain: { id: string; does: string; definition: string }[];
+  videos: Record<string, { title: string; duration: string; chapters: [number, string][] }>;
+}
+
+export const normKey = (s: string) =>
+  s.trim().toLowerCase().replace(/\s*\(.*?\)\s*/g, " ").replace(/\s+/g, " ").trim();
+
+function frontmatter(src: string): { meta: Record<string, any>; body: string } {
+  const m = src.match(/^---\n([\s\S]*?)\n---\n?/);
+  if (!m) return { meta: {}, body: src };
+  return { meta: YAML.parse(m[1]) ?? {}, body: src.slice(m[0].length) };
+}
+
+// Directive options: "key: value" lines, split on the first colon, so authors
+// never need YAML quoting. Indented lines continue the previous value.
+function keyValues(lines: string[]): Record<string, string> {
+  const out: Record<string, string> = {};
+  let last: string | null = null;
+  for (const l of lines) {
+    const m = l.match(/^([a-z][\w-]*):\s*(.*)$/i);
+    if (m) { last = m[1]; out[last] = m[2].trim(); }
+    else if (last && l.trim()) out[last] += " " + l.trim();
+  }
+  return out;
+}
+
+// :::name arg\nkey: value\n...\n:::
+function parseBody(body: string, lessonDir: string, videos: Course["videos"], lessonId: string): {
+  parts: Part[];
+  closure: Lesson["closure"];
+} {
+  const parts: Part[] = [];
+  let closure: Lesson["closure"] = null;
+  const lines = body.split("\n");
+  let para: string[] = [];
+  const flush = () => {
+    const t = para.join(" ").replace(/\s+/g, " ").trim();
+    if (t) parts.push({ kind: "prose", text: t });
+    para = [];
+  };
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const d = line.match(/^:::([a-z-]+)\s*(.*)$/);
+    if (!d) {
+      if (line.trim() === "") flush();
+      else para.push(line);
+      continue;
+    }
+    flush();
+    const [, name, argStr] = d;
+    const block: string[] = [];
+    while (++i < lines.length && lines[i].trim() !== ":::") block.push(lines[i]);
+    const opts = keyValues(block);
+    const arg = argStr.trim();
+    const kv = Object.fromEntries(
+      arg.split(/\s+/).filter((a) => a.includes("=")).map((a) => a.split("=", 2) as [string, string]),
+    );
+    const rel = (p: string) => `/course-files/${path.relative(config.courseDir, path.join(lessonDir, p))}`;
+    switch (name) {
+      case "video": {
+        const v = videos[arg];
+        if (!v || !fs.existsSync(path.join(config.mediaDir, "videos", `${arg}.mp4`))) {
+          console.warn(`[content] ${lessonId}: video ${arg} not found, skipped`);
+          break;
+        }
+        parts.push({ kind: "video", id: arg, title: opts.title ?? v.title, duration: v.duration, chapters: v.chapters ?? [], src: `/media/videos/${arg}.mp4` });
+        break;
+      }
+      case "figure":
+        parts.push({ kind: "figure", title: opts.title ?? "", caption: opts.caption ?? "", alt: opts.alt ?? opts.title ?? "", src: rel(arg) });
+        break;
+      case "slot":
+        parts.push({ kind: "slot", id: arg, title: opts.title ?? "", caption: opts.caption ?? "" });
+        break;
+      case "chain":
+        parts.push({ kind: "chain", hi: kv.hi, caption: opts.caption ?? "" });
+        break;
+      case "your-turn":
+        parts.push({
+          kind: "turn", id: arg, title: opts.title ?? "", prompt: opts.prompt, lead: opts.lead,
+          image: opts.image ? rel(opts.image) : undefined, imageCaption: opts["image-caption"],
+        });
+        break;
+      case "ref":
+        parts.push({ kind: "ref", text: opts.text ?? "", label: opts.label ?? "", video: opts.video ? `/media/videos/${opts.video}.mp4` : undefined, videoTitle: opts.video ? videos[opts.video]?.title : undefined });
+        break;
+      case "closure":
+        closure = { found: opts.found ?? "", raises: opts.raises ?? "" };
+        break;
+      default:
+        console.warn(`[content] ${lessonId}: unknown directive :::${name}`);
+    }
+  }
+  flush();
+  return { parts, closure };
+}
+
+export function loadCourse(): Course {
+  const cy = YAML.parse(fs.readFileSync(path.join(config.courseDir, "course.yaml"), "utf8"));
+  const videosFile = path.join(config.mediaDir, "videos.yaml");
+  const videos = fs.existsSync(videosFile) ? YAML.parse(fs.readFileSync(videosFile, "utf8")) ?? {} : {};
+  const units: Unit[] = [];
+  const lessons = new Map<string, Lesson>();
+  const order: string[] = [];
+  for (const udir of cy.units as string[]) {
+    const ud = path.join(config.courseDir, "units", udir);
+    if (!fs.existsSync(path.join(ud, "unit.yaml"))) continue; // listed but not written yet
+    const uy = YAML.parse(fs.readFileSync(path.join(ud, "unit.yaml"), "utf8"));
+    const unit: Unit = { id: String(uy.id), dir: udir, title: uy.title, question: uy.question ?? "", misconceptions: uy.misconceptions ?? [], lessons: [] };
+    const ldirs = fs.readdirSync(ud).filter((d) => fs.existsSync(path.join(ud, d, "lesson.md"))).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    for (const ld of ldirs) {
+      const dir = path.join(ud, ld);
+      const source = fs.readFileSync(path.join(dir, "lesson.md"), "utf8");
+      const { meta, body } = frontmatter(source);
+      const id = String(meta.id ?? ld.split("-")[0]);
+      const { parts, closure } = parseBody(body, dir, videos, id);
+      const notesFile = path.join(dir, "tutor.md");
+      const lesson: Lesson = {
+        id, unit: unit.id, slug: ld, dir, title: meta.title ?? ld, question: meta.question ?? "",
+        terms: (meta.terms ?? []).map(String), parts, closure,
+        turnIds: parts.flatMap((p) => (p.kind === "turn" ? [p.id] : [])),
+        slotIds: parts.flatMap((p) => (p.kind === "slot" ? [p.id] : [])),
+        source, tutorNotes: fs.existsSync(notesFile) ? fs.readFileSync(notesFile, "utf8") : "",
+      };
+      unit.lessons.push(lesson);
+      lessons.set(id, lesson);
+      order.push(id);
+    }
+    units.push(unit);
+  }
+  return { title: cy.title, commit: cy.cuphoton?.commit ?? "", units, lessons, order, glossary: loadGlossary(), chain: cy.chain ?? [], videos };
+}
+
+function loadGlossary(): Map<string, GlossaryEntry> {
+  const g = new Map<string, GlossaryEntry>();
+  const voc = YAML.parse(fs.readFileSync(path.join(config.courseDir, "vocabulary.yaml"), "utf8"));
+  for (const t of voc.terms ?? []) {
+    const hold = typeof t.hold_back === "string" ? t.hold_back.match(/checkpoint (\d+\.\d+)/i)?.[1] ?? t.hold_back.match(/(\d+\.\d+)/)?.[1] : undefined;
+    const names = String(t.term).split(/,(?![^(]*\))/).map((s) => s.trim());
+    const label = String(t.term).replace(/\s*\(.*?\)\s*$/, "");
+    for (const n of names) {
+      const e: GlossaryEntry = { key: normKey(n), label: names.length > 1 ? n : label, definition: t.definition, holdUntil: hold };
+      g.set(e.key, e);
+      // "PSF (point-spread function)" is also reachable as "point-spread function"
+      const paren = String(n).match(/\((.*?)\)/)?.[1];
+      if (paren && !/^(counts|in the sky|matching kernel|sample)$/i.test(paren)) g.set(normKey(paren), { ...e, key: normKey(paren) });
+    }
+  }
+  const con = YAML.parse(fs.readFileSync(path.join(config.courseDir, "concepts.yaml"), "utf8"));
+  for (const c of con.concepts ?? []) {
+    const label = String(c.id).replace(/-/g, " ").replace(/^./, (s: string) => s.toUpperCase());
+    // Only the L0 picture is ever shown; deeper layers are for the tutor.
+    g.set("@" + c.id, { key: "@" + c.id, label, definition: String(c.layers?.L0 ?? "").trim(), concept: true });
+  }
+  return g;
+}
+
+// What the browser gets: no tutor notes, no lesson source.
+export function publicLesson(l: Lesson) {
+  const { source, tutorNotes, dir, ...rest } = l;
+  return rest;
+}
+
+export function courseOutline(c: Course) {
+  return c.units.map((u) => ({ id: u.id, title: u.title, lessons: u.lessons.map((l) => ({ id: l.id, title: l.title, turns: l.turnIds.length })) }));
+}

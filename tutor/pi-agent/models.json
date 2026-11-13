@@ -1,0 +1,22 @@
+{
+  "$schema": "https://pi.dev/schemas/models.schema.json",
+  "providers": {
+    "nvidia": {
+      "name": "NVIDIA inference",
+      "baseUrl": "https://inference-api.nvidia.com/v1",
+      "api": "openai-completions",
+      "apiKey": "$INFERENCE_API_KEY",
+      "compat": { "supportsDeveloperRole": false, "supportsStore": false, "maxTokensField": "max_tokens", "requiresNonNullAssistantContent": true },
+      "models": [
+        { "id": "aws/anthropic/bedrock-claude-sonnet-5-5", "name": "sonnet-5.5", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 16000,
+          "cost": { "input": 3, "output": 15, "cacheRead": 0.3, "cacheWrite": 3.75 } },
+        { "id": "gcp/google/gemini-4-argon", "name": "gemini-4-argon", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 16000,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 } },
+        { "id": "openai/openai/gpt-6.1-sol", "name": "gpt-6.1-sol", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 16000,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 } },
+        { "id": "nvidia/nvidia/nemotron-3.5-super-vl", "name": "nemotron-3.5-super-vl", "reasoning": true, "input": ["text", "image"], "contextWindow": 128000, "maxTokens": 16000,
+          "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 } }
+      ]
+    }
+  }
+}

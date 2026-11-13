@@ -1,0 +1,91 @@
+1
+00:00:00,000 --> 00:00:04,309
+Every night, survey telescopes photograph the same patches of sky.
+
+2
+00:00:04,309 --> 00:00:07,247
+Almost nothing in those pictures has changed.
+
+3
+00:00:07,247 --> 00:00:13,450
+The interesting part is the little that has: a star that flared, a supernova, something moving.
+
+4
+00:00:14,050 --> 00:00:17,429
+So why not subtract last night's picture from tonight's?
+
+5
+00:00:17,429 --> 00:00:19,058
+Here's what that gives you.
+
+6
+00:00:19,058 --> 00:00:21,955
+Every star leaves a bright half and a dark half.
+
+7
+00:00:21,955 --> 00:00:27,325
+The telescope pointed a few pixels differently, and turned a little, so nothing lines up.
+
+8
+00:00:27,925 --> 00:00:29,619
+First, fix the geometry.
+
+9
+00:00:29,619 --> 00:00:37,311
+The file headers say where every pixel points on the sky, so we can resample one image onto the other's grid.
+
+10
+00:00:37,311 --> 00:00:39,075
+In cuPhoton, that's xRep.
+
+11
+00:00:39,075 --> 00:00:40,416
+Now subtract again.
+
+12
+00:00:40,416 --> 00:00:43,450
+Better, but every star still leaves a ring.
+
+13
+00:00:44,050 --> 00:00:45,748
+The rings come from the air.
+
+14
+00:00:45,748 --> 00:00:49,205
+On one night it blurred starlight more than on the other.
+
+15
+00:00:49,205 --> 00:00:52,965
+Subtract a narrow bump from a wide one and you get this shape.
+
+16
+00:00:52,965 --> 00:00:56,846
+To cancel it, blur the sharper image until it matches the other.
+
+17
+00:00:56,846 --> 00:01:02,425
+xPois fits that blur, called a kernel, together with the brightness scale and the sky level.
+
+18
+00:01:03,025 --> 00:01:11,992
+Now the unchanged stars cancel into noise, and two things stand out: a star that got three times brighter, and a source that wasn't there at all.
+
+19
+00:01:11,992 --> 00:01:18,300
+The empty frame around the edge is where the blur can't be matched: there's no data beyond the border.
+
+20
+00:01:18,900 --> 00:01:21,202
+Align, match, subtract, find, measure.
+
+21
+00:01:21,202 --> 00:01:24,898
+That's the core of the pipeline you'll direct in this course.
+
+22
+00:01:24,898 --> 00:01:26,715
+Your agent will do the typing.
+
+23
+00:01:26,715 --> 00:01:31,925
+Your job is to know what each picture should look like, and to notice when it doesn't.

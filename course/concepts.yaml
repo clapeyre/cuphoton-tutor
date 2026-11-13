@@ -1,0 +1,277 @@
+# Layered concept graph. The tutor navigates this with the adapt-pace and
+# unstick skills; modules reference concept ids.
+#
+# Layers:  L0 picture (intuition, visual, no math/code)
+#          L1 use     (what to ask the agent, what to check) <- everyone reaches this
+#          L2 how     (mechanism: equations, algorithm, parameters)
+#          L3 edge    (limits, failure modes, source pointers)
+# Domains: imaging | gpu | workflow. Learner level is tracked per domain.
+# placement: one question whose answer places the learner on this concept.
+# Status: all layers L0-L3 drafted (overnight pass); every claim cites a doc path or is marked UNVERIFIED.
+
+concepts:
+
+  - id: pixels-as-counts
+    domain: imaging
+    prereqs: []
+    modules: ["00"]
+    placement: "If you doubled the exposure time, what would happen to the numbers in an image of a star?"
+    layers:
+      L0: "An image is a grid of numbers; each counts the light that landed on one detector pixel. Sources (stars) are bumps; the background is the light in every pixel that no source accounts for; noise makes every number wobble."
+      L1: "Ask the agent for an image's shape, dtype and a few pixel values before anything else; check the header for units (often DN) and gain."
+      L2: "Counts in electrons follow Poisson statistics; DN = electrons / gain. Variance per pixel ≈ (source + sky)/gain + (read noise/gain)²."
+      L3: "Real detectors add read noise, saturation and artifacts that the simple model leaves out; the guide's teaching sample deliberately has none (docs/guide/_sample-pair.qmd header comment). Use your reduction pipeline's calibrated variance plane when you have one (docs/guide/first-difference.qmd, 'Give each image a variance plane'). Saturation, nonlinearity and flat-field residuals as specific failure modes: UNVERIFIED (no cuPhoton doc page names them)."
+    misconceptions: [M-VARIANCE-COSMETIC]
+    assets: [video:v1-why-not-subtract]
+
+  - id: imaging-difference
+    domain: imaging
+    prereqs: [pixels-as-counts]
+    modules: ["00", "01"]
+    placement: "Two photos of the same sky from different nights: what goes wrong if you just subtract one from the other?"
+    layers:
+      L0: >
+        Two nights differ in four ways besides real change: the telescope pointed slightly
+        differently (geometry), the air blurred the stars differently (seeing), the sky was
+        brighter or darker (background), and the overall brightness scale differs. Remove
+        those, and what's left is what really changed.
+      L1: >
+        Direct the agent through: put the reference on the target's grid (xRep), match blur,
+        scale and background and subtract (xPois), then find and measure what's left (xPois
+        hotspots, xFit). Check at each stage: shapes agree after alignment; the difference
+        image is flat noise except at real changes; the NaN edge band is there; fits converged.
+      L2: >
+        xPois fits a convolution kernel K (a sum of Gaussian basis functions, optionally
+        spatially varying) and a smooth background B minimizing the variance-weighted residual
+        of target − (K ⊛ reference + B). The kernel sum estimates the flux-scale ratio.
+      L3: >
+        Kernel basis choice depends on the blur ratio (docs/guide/subtract.qmd); convolution
+        correlates noise, so the diagonal variance underestimates flux errors (glossary:
+        correlation factor). If the target is sharper than the reference, swap the
+        subtraction roles or pick a sharper reference (docs/guide/subtract.qmd).
+    misconceptions: [M-SUBTRACT, M-ALIGN-BLUR, M-NEWSIGNAL, M-CHI2-VALIDATES]
+    assets: [video:v1-why-not-subtract, guide:docs/guide/first-difference.qmd]
+
+  - id: axis-order
+    domain: workflow
+    prereqs: [pixels-as-counts]
+    modules: ["01"]
+    placement: "A function gives you a peak at (167, 80). What do you need to know before using it?"
+    layers:
+      L0: "A position is two numbers, and different tools list them in a different order: row then column, or x then y. Mixing them silently points at the wrong place."
+      L1: >
+        When the agent passes a position between calls, ask it which order each side uses and
+        to show a cutout around the result. A cutout whose star isn't centered is the symptom.
+      L2: "NumPy indexes image[y, x]; Astropy WCS and xFit/window_stamps use (x, y); identify_residual_hotspots returns peak_yx. Table: docs/guide/concepts.qmd."
+      L3: "Astropy's pixel_to_world_values / world_to_pixel_values count pixels from 0, like NumPy (docs/guide/concepts.qmd, 'Pixel and sky coordinates'). FITS headers themselves count from 1 (CRPIX) - UNVERIFIED in the cuPhoton docs (general FITS knowledge). Off-by-one and transpose bugs can coexist."
+    misconceptions: [M-AXIS]
+    assets: [exercise:01/swapped_axes, video:v2-it-ran]
+
+  - id: variance-and-masks
+    domain: imaging
+    prereqs: [pixels-as-counts]
+    modules: ["01", "04"]
+    placement: "What does a fit do with the per-pixel variance you give it?"
+    layers:
+      L0: "Each pixel comes with how much to trust it (variance) and whether to use it at all (mask)."
+      L1: "Tell the agent your noise model explicitly; check which mask convention each call wants."
+      L2: >
+        In weighted least squares each pixel's squared residual is weighted by 1/variance, and
+        the reported errors scale with that variance (docs/guide/concepts.qmd, 'Variance and
+        masks'). Without a variance, xPois's kernel solver uses unit weights and fit_dipoles
+        scales its covariance by reduced chi-square. For CCD data in DN the variance is about
+        (S + B)/g + (r/g)^2 (docs/guide/first-difference.qmd). xRep carries variance through
+        resampling with squared interpolation weights, a diagonal approximation.
+      L3: >
+        Mask kinds are opposite: instrument masks are integer bit flags (nonzero = flagged;
+        xRep ORs the flags of the input pixels that fed each output pixel, and uses flag 1
+        outside the input); fit masks are boolean, True = use. xPois and xFit auto-exclude
+        non-finite or nonpositive variance, but fit_dipoles raises instead (docs/guide/concepts.qmd).
+        Resampling correlates neighbours, which the diagonal variance ignores
+        (docs/uncertainty-quantification.md, 'Correlation'; glossary: correlation factor).
+        CLI mask policy and bad_mask_bits: docs/data-artifacts.md.
+    misconceptions: [M-VARIANCE-COSMETIC, M-MASK-POLARITY]
+
+  - id: detection-significance
+    domain: imaging
+    prereqs: [imaging-difference, variance-and-masks]
+    modules: ["01"]
+    placement: "What does a threshold of 5 on the standardized difference image promise you?"
+    layers:
+      L0: "After subtraction, most pixels are just noise. A detection is a spot that stands out from that noise by more than you'd expect by chance. How far out is measured in units of the noise."
+      L1: >
+        Ask the agent to divide the difference by its predicted noise (standardize_constant_kernel_residual),
+        then list hotspots above a threshold (identify_residual_hotspots). Check three things: the
+        spread of the standardized image away from sources is near 1 (the guide prints it), the
+        number of hotspots matches what you expect, and look at each hotspot's cutout. Do not quote
+        the threshold as a false-alarm rate: z is a noise diagnostic in approximate units
+        (docs/guide/first-difference.qmd, 'Find the candidates').
+      L2: >
+        z = difference / sqrt(target variance + reference variance convolved with kernel^2).
+        identify_residual_hotspots divides by robust_sigma, keeps pixels with |value| >= threshold_sigma,
+        groups 4-connected pixels, and sorts by peak then size (docs/guide/subtract.qmd, 'Predict the
+        noise of the difference' and 'Find the candidates'). With robust_sigma=1.0 on z the threshold
+        applies to z directly. On a plain difference, pass a noise estimate; a robust sigma is 1.4826 x MAD.
+      L3: >
+        The prediction assumes independent pixels and a fixed kernel; it omits resampling covariance and
+        kernel-fit uncertainty (the result records covariance_represented=False and
+        fit_parameter_uncertainty_represented=False), so tail probabilities are not calibrated
+        (docs/guide/subtract.qmd). Dipoles, moving sources and misalignment also exceed the
+        threshold (docs/glossary.md, Dipole). The error-budget terms are in docs/uncertainty-quantification.md.
+    misconceptions: [M-Z-SIGNIFICANCE]
+    assets: [guide:docs/guide/first-difference.qmd]
+
+  - id: source-measurement
+    domain: imaging
+    prereqs: [imaging-difference, axis-order]
+    modules: ["01"]
+    placement: "What would you check before trusting a fitted flux and its error bar?"
+    layers:
+      L0: "Once you've found a spot, you fit a model of a star to it and read off how much light it has, and how sure you are. The number is only as good as the cutout you fitted and the noise you told the fit about."
+      L1: >
+        Have the agent cut a stamp around each candidate (window_stamps, positions in (x, y)), fit it
+        (fit_single_sources), and report flux with its error. Check: the cutout is centred on a star
+        (look at it), fit.converged and fit.uncertainty_valid are true (necessary, not sufficient: the swapped-axes exercise returns converged=True, uncertainty_valid=True on blank sky, see modules/01-first-difference/exercises/ANSWERS.md), flux is a magnitude so the sign
+        comes from the fitted amplitude, and the fluxes are difference fluxes (target minus matched
+        reference), not total brightness (docs/guide/first-difference.qmd, 'Measure the candidates').
+      L2: >
+        xFit fits a batch of stamps with a Levenberg-Marquardt solver; the single-source model fixes the
+        lobe round with width psf_sigma and fits only its amplitude and position (without psf_sigma the widths and orientation are free). forced_psf_photometry
+        instead fixes the position and solves the flux linearly, with no iteration
+        (docs/guide/measure.qmd). Errors follow the variance you pass.
+      L3: >
+        A moved or misaligned star leaves a dipole; use fit_dipoles (Gaussian or StampDipoleModel) rather
+        than a single source (docs/guide/measure.qmd). Formal errors use the diagonal variance and a fixed
+        PSF width; the chain's error budget adds correlation, kernel-fit, kernel-mismatch and misalignment
+        terms in quadrature (docs/uncertainty-quantification.md, 'Sources of uncertainty').
+    misconceptions: [M-FLUX-SIGN, M-NEWSIGNAL]
+    assets: [exercise:01/swapped_axes]
+
+  - id: evidence-of-a-run
+    domain: workflow
+    prereqs: []
+    modules: ["01", "02"]
+    placement: "Your agent says the run finished without errors. What else would you want to see?"
+    layers:
+      L0: "A program can finish happily and still be wrong. Proof is in what it recorded and what the output looks like."
+      L1: "After every run, ask the agent for: the backend/device that actually ran (receipt or summary.json), fit status counts, and a plot."
+      L2: >
+        A receipt is the record a result carries of what ran (docs/guide/concepts.qmd, 'Receipts'). The
+        FITS reader returns one: requested_reader, reader, fallback_reason, and each HDU's shape, dtype
+        and compression. xRep results carry backend, interpolation and metadata; xPois results carry
+        backend; fit_dipoles results carry backend, device and dtype. CLI runs write summary.json
+        (workflow, requested_backend, backend, device, dtype, fits_reader, fits_reads). The quickstart
+        runner's root summary.json adds profile, hardware, seeds, shapes and artifact paths (docs/quickstarts.md).
+      L3: >
+        Receipts record requested choices even when they did not apply (docs/troubleshooting.md, 'An
+        explicit compression choice is unavailable'). An 'auto' decompression backend in a report does not
+        prove a hardware engine ran. Run directories are fresh by design, so a reused output name is
+        refused rather than overwritten (docs/troubleshooting.md, 'A run directory already exists').
+        Compare runs only after recording backend, device and dtype (docs/guide/concepts.qmd).
+    misconceptions: [M-AGENT-SUCCESS, M-AUTO-GPU, M-OUTDIR]
+
+  - id: backends-and-fallback
+    domain: gpu
+    prereqs: [evidence-of-a-run]
+    modules: ["02", "03"]
+    placement: "If you ask for the GPU and it isn't available, what should a library do?"
+    layers:
+      L0: "The same calculation can be done by different engines: plain CPU code, or code that uses the graphics card. 'Auto' means 'use the graphics card if you can, otherwise quietly use the CPU'. Naming an engine means 'this one or nothing'."
+      L1: >
+        Know three rules and ask the agent to follow them. (1) 'auto' falls back to CPU and still
+        succeeds, so read the receipt for the backend that ran. (2) An explicit backend (e.g. 'cupy')
+        raises an error if it can't run, rather than falling back. (3) The CPU backend is named 'cpu' in
+        xRep and xPois but 'numpy' in xFit and xBeam. When a GPU is required, say so
+        (--require-gpu on the quickstart runner) and check (docs/guide/concepts.qmd, 'Backends';
+        docs/troubleshooting.md, 'A GPU run used CPU').
+      L2: >
+        'auto' tries backends in a fixed order and takes the first installed one that can reach a GPU:
+        xRep cupy, torch (CUDA only), cpu; xPois cupy, cpu; xFit/fit_dipoles cupy, numpy; xScan and xImage
+        a CUDA device then CPU; xBeam has no auto (default numpy). 'auto' never selects cutile or native
+        (docs/guide/concepts.qmd tables; docs/architecture.md, 'Execution policy'). An explicit 'torch'
+        in xRep still runs on the CPU.
+      L3: >
+        cutile needs a compatible Python, cuda-tile runtime and TileIR compiler; native kernels are
+        compiled at build time (docs/troubleshooting.md; docs/guide/concepts.qmd). Troubleshooting
+        checklist for a CPU fallback: --extra gpu, nvidia-smi, torch.cuda.is_available(), CuPy allocate and
+        synchronize, CUDA_VISIBLE_DEVICES. Mixed CUDA 12/13 packages need a fresh locked environment
+        (docs/troubleshooting.md, 'CUDA package or driver mismatch').
+    misconceptions: [M-AUTO-GPU, M-EXPLICIT-FALLBACK, M-BACKEND-NAMES]
+    assets: [guide:docs/guide/concepts.qmd]
+
+  - id: host-and-device-memory
+    domain: gpu
+    prereqs: [backends-and-fallback]
+    modules: ["03"]
+    placement: "After a GPU computation, where does the result live?"
+    layers:
+      L0: "A computer has two memories: the main one (host) and the graphics card's own (device). Data has to be copied between them, and an answer can end up in either."
+      L1: >
+        After a GPU run ask the agent where the result lives (type and module of the array). Host-result
+        APIs (reproject_masked_array, fit_dipoles) return NumPy whichever backend ran; functions ending in
+        _device (reproject_array_device, solve_constant_kernel_device, fit_dipoles_device) keep CuPy
+        arrays on the GPU; fit_single_sources follows its input type (docs/guide/concepts.qmd, 'Dtype and
+        device'). The FITS reader is a separate choice from the compute backend: a GPU fit may read via
+        Astropy and transfer (docs/troubleshooting.md, 'FITS reading used Astropy').
+      L2: >
+        Pass GPU data to the NumPy/CuPy APIs as CuPy arrays; a CUDA tensor or a CPU tensor requiring
+        gradients cannot be converted. The xPois and xFit _device functions copy NumPy inputs to the active
+        GPU, while CuPy inputs must already be on it. read_fits_images(..., device=True) returns CuPy
+        arrays; to_host gives a NumPy copy. xRep and xPois compute in float64; fit_single_sources keeps
+        float32 input unless compute_dtype says otherwise (docs/guide/concepts.qmd).
+      L3: >
+        The xDR GPU FITS reader needs a native extension that source and editable installs do not compile
+        by default, even with the io or gpu extra; check cpp_helper_available() and follow the native build
+        instructions (docs/troubleshooting.md; docs/components/xdr.md, 'Native extension availability').
+        xDR requires CUDA 13 (docs/architecture.md). An explicit --fits-reader xdr rejects unsupported
+        input rather than falling back; once a read starts, errors propagate (docs/troubleshooting.md).
+    misconceptions: [M-HOST-DEVICE, M-READER-IS-BACKEND, M-XDR-INSTALLED]
+
+  - id: honest-timing
+    domain: gpu
+    prereqs: [host-and-device-memory]
+    modules: ["03"]
+    placement: "How would you time a GPU function so the number means something?"
+    layers:
+      L0: "A graphics card is told to start working and the program moves on immediately, so a stopwatch around the call can time the 'start', not the work. Honest timing waits until the work is done, and doesn't count the first, slow, warm-up run."
+      L1: >
+        When the agent reports a speedup, ask: warm-up run excluded? multiple repetitions, with the median? synchronized
+        before the timer stopped? same input, dtype and GPU? end-to-end compared with end-to-end, not with
+        a single kernel? (docs/adapting-workflows.md, 'For performance claims'). Also check the result is
+        the same: compare shapes, dtypes, finite values and masks across devices first (docs/troubleshooting.md,
+        'Results differ across devices').
+      L2: >
+        GPU asynchrony, mixed precision, TF32, reduction order, compilation warm-up and different mask
+        preprocessing can change numbers or timings (docs/troubleshooting.md). cuPhoton's own benchmark
+        summaries separate first-solve from warm timings, state each timing boundary and add CUDA-event
+        intervals for CuPy (docs/data-artifacts.md; docs/components/pipeline-stage-benchmark.md).
+      L3: >
+        Match timer boundaries: image loading vs full pipeline vs kernel are different quantities.
+        The published 14,900x figure being image loading against a CPU baseline comes from the NVIDIA tech
+        blog (course/misconceptions.md M-SPEEDUP) - UNVERIFIED in the pinned docs (grep for the number finds nothing).
+        Distributed warm-up and measured rounds: docs/distributed-execution.md.
+    misconceptions: [M-SPEEDUP]
+
+  - id: directing-the-agent
+    domain: workflow
+    prereqs: []
+    modules: ["01", "02", "03", "04"]
+    placement: "How would you ask an agent to process two FITS images so that you can trust the result?"
+    layers:
+      L0: "You decide what should happen and what the result should look like; the agent does the typing."
+      L1: "Good requests name the goal, the inputs, the conventions that matter (grid, axis order, noise model), and the evidence you want back."
+      L2: >
+        A reusable request has four parts: goal (what changed between these images), inputs and their
+        conventions (which grid, (y, x) vs (x, y), mask polarity, variance model), a stage plan the agent
+        must follow (read, align, match and subtract, detect, measure), and the evidence to return after
+        each stage (shapes, backend/device receipt, convergence flags, a plot). Before each stage ask the
+        agent what it takes in and gives back (course O2). Input problems the docs list as common causes of
+        rejected commands: transposed axes, unequal shapes, NaN, nonpositive variance, inverted mask polarity,
+        missing WCS, even kernel or stamp size (docs/troubleshooting.md, 'A command rejected the input').
+      L3: >
+        Agents can produce runs that are clean and wrong (swapped axes, wrong variance, silent fallback).
+        Ask for the pre-checks yourself: use the component's inspection or validation command before an
+        expensive step (docs/troubleshooting.md), and require numeric artifacts, not just HTML views
+        (docs/architecture.md, 'Configuration and artifacts'). Include exact command, commit, profile and
+        backend/device when reporting a problem (docs/troubleshooting.md, 'Reporting a reproducible problem').
+    misconceptions: [M-AGENT-SUCCESS]

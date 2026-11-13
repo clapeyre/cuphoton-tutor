@@ -1,0 +1,127 @@
+1
+00:00:00,300 --> 00:00:05,263
+Imagine you put a camera on a tripod in your garden and point it at one patch of sky.
+
+2
+00:00:05,263 --> 00:00:08,688
+Every clear night, you take a picture of that same patch.
+
+3
+00:00:08,688 --> 00:00:12,300
+After a week, you have a stack of pictures of the same stars.
+
+4
+00:00:13,225 --> 00:00:15,875
+Flip through them, and almost nothing changes.
+
+5
+00:00:15,875 --> 00:00:24,937
+But now and then, something in the sky really does change: a star gets brighter or fainter, a new point of light appears where there was nothing, or something moves.
+
+6
+00:00:24,937 --> 00:00:28,088
+A flare, an exploding star, an asteroid.
+
+7
+00:00:28,088 --> 00:00:31,813
+These real changes in the sky are what astronomers are looking for.
+
+8
+00:00:31,813 --> 00:00:36,575
+That's why survey telescopes photograph large parts of the sky every few nights.
+
+9
+00:00:37,450 --> 00:00:40,487
+To a computer, each picture is a grid of numbers.
+
+10
+00:00:40,487 --> 00:00:45,263
+Each pixel value counts the light that landed on that pixel during the exposure time.
+
+11
+00:00:45,263 --> 00:00:48,288
+A star is a source: a bump in those counts.
+
+12
+00:00:48,288 --> 00:00:53,538
+Around it, every pixel still collects some light from the sky itself: that's the background.
+
+13
+00:00:53,538 --> 00:01:00,387
+Even two pixels of plain sky don't read exactly the same number, because light arrives as random photons.
+
+14
+00:01:00,387 --> 00:01:01,675
+That's noise.
+
+15
+00:01:02,525 --> 00:01:06,913
+But your pictures also differ for a second reason: they weren't all taken the same way.
+
+16
+00:01:06,913 --> 00:01:14,925
+In this course, we call that the observing conditions: not just the sky and the air, but also where the camera points and how long it collects light.
+
+17
+00:01:14,925 --> 00:01:17,162
+The camera may point a little differently.
+
+18
+00:01:17,162 --> 00:01:20,350
+The moon or a thin haze can make the background brighter.
+
+19
+00:01:20,350 --> 00:01:22,475
+You might change the exposure time.
+
+20
+00:01:22,475 --> 00:01:28,700
+And starlight crosses kilometres of moving air, which spreads each star's light over more pixels.
+
+21
+00:01:28,700 --> 00:01:32,687
+Astronomers call this seeing, and it changes from night to night.
+
+22
+00:01:32,687 --> 00:01:47,000
+The shape that one point of light takes in the image, set by the telescope and the seeing, is called the point-spread function, or P S F. So two pictures can differ because the sky really changed, or because the observing conditions did.
+
+23
+00:01:47,850 --> 00:01:51,000
+The picture you compare against is the reference image.
+
+24
+00:01:51,000 --> 00:01:53,113
+It's usually the earlier one.
+
+25
+00:01:53,113 --> 00:01:57,075
+The new picture, where you look for changes, is the target image.
+
+26
+00:01:58,000 --> 00:02:00,537
+Now, here's what you'll do in this first module.
+
+27
+00:02:00,537 --> 00:02:06,113
+You'll work with two small, made-up pictures of the same sky, one reference and one target.
+
+28
+00:02:06,113 --> 00:02:08,763
+You'll start by looking at what a picture is made of.
+
+29
+00:02:08,763 --> 00:02:15,038
+Then you'll find every way the two pictures differ, and work out a plan to keep only the real changes in the sky.
+
+30
+00:02:15,038 --> 00:02:18,987
+You'll finish by meeting the cuPhoton stages that carry out your plan.
+
+31
+00:02:18,987 --> 00:02:23,200
+You won't write any code, and there's no real telescope data yet.
+
+32
+00:02:23,200 --> 00:02:27,700
+Your tutor is an AI agent: it does the typing, and you do the thinking.

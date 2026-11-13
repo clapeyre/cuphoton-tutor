@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cuPhoton Learn: full course</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/kui-foundations/styles.css">
+<script src="ds/kui-foundations/_ds_bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#111}
+a{color:#76b900}a:hover{color:#8fd400}
+.lx-term{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.lx-term:hover{color:var(--text-color-brand)}
+.lx-link{background:none;border:0;padding:0;font:inherit;font-size:13px;color:var(--text-color-brand);cursor:pointer}
+.lx-link:hover{text-decoration:underline}
+.lx-row{background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%}
+.lx-row:focus-visible,.lx-term:focus-visible,.lx-box:focus-visible,.lx-sq:focus-visible,.lx-link:focus-visible{outline:2px solid #76b900;outline-offset:2px}
+.lx-box{font:inherit;color:inherit;cursor:pointer;text-align:left}
+.lx-box:hover{border-color:var(--border-color-interaction-hover)}
+.lx-sq{padding:0;cursor:pointer}
+textarea.lx-input{font:inherit;color:inherit}
+.lx-prose p{margin:0}
+</style>
+</helmet>
+<x-import component-from-global-scope="KuiFoundationsReact.ThemeProvider" theme="dark" class-name="nv-dark">
+<div style="min-height: 100vh; background: var(--background-color-surface-base); color: var(--text-color-primary); font-family: var(--font-sans); font-size: 16px; line-height: 1.6;">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; padding: 12px 24px; border-bottom: 1px solid var(--border-color-base); background: var(--background-color-surface-navigation);">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <x-import component-from-global-scope="KuiFoundationsReact.LogoOnly" style="height: 24px;"></x-import>
+    <span style="font-weight: 600; font-size: 16px;">cuPhoton Learn</span>
+  </div>
+  <nav aria-label="Course progress" style="flex: 1 1 480px; min-width: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px;">
+    <sc-for list="{{course}}" as="g" hint-placeholder-count="5">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="{{g.labelStyle}}">{{g.id}}</span>
+        <div style="display: flex; gap: 4px;">
+          <sc-for list="{{g.boxes}}" as="b" hint-placeholder-count="4">
+            <button type="button" class="lx-sq" onClick="{{b.go}}" title="{{b.title}}" aria-label="{{b.title}}" style="{{b.style}}"></button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </nav>
+</header>
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-start;">
+
+<!-- Course map -->
+<nav aria-label="Course map" style="flex: 1 1 240px; max-width: 290px; box-sizing: border-box; padding: 24px 16px 24px 24px; display: flex; flex-direction: column; gap: 14px; font-size: 15px; line-height: 1.5;">
+  <sc-for list="{{mods}}" as="md" hint-placeholder-count="5">
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <button type="button" class="lx-row" onClick="{{md.toggle}}" aria-expanded="{{md.open}}" style="{{md.headStyle}}">{{md.id}} · {{md.title}}</button>
+      <sc-if value="{{md.open}}" hint-placeholder-val="{{true}}">
+        <sc-for list="{{md.steps}}" as="st" hint-placeholder-count="4">
+          <button type="button" class="lx-row" onClick="{{st.go}}" style="{{st.rowStyle}}">
+            <span style="{{st.boxStyle}}" aria-hidden="true"></span>
+            <span style="font-size: 14px;">{{st.label}}</span>
+          </button>
+        </sc-for>
+      </sc-if>
+    </div>
+  </sc-for>
+</nav>
+
+<!-- Lesson: reads like a textbook page; only "Your turn" is set apart -->
+<main id="lx-top" onMouseUp="{{onSelect}}" style="flex: 999 1 560px; min-width: 0; box-sizing: border-box; padding: 32px 40px 72px; display: flex; flex-direction: column; gap: 22px; max-width: 780px;">
+
+  <div style="display: flex; flex-direction: column; gap: 8px;">
+    <div style="font-size: 13px; color: var(--text-color-secondary);">{{crumb}}</div>
+    <h1 style="margin: 0; font-size: 34px; line-height: 1.2; font-weight: 600;">{{step.title}}</h1>
+    <p style="margin: 0; font-size: 19px; color: var(--text-color-secondary);">{{step.q}}</p>
+    <sc-if value="{{step.planned}}" hint-placeholder-val="{{false}}">
+      <span style="align-self: flex-start; font-size: 12px; padding: 2px 8px; border-radius: 4px; background: var(--background-color-accent-yellow-subtle);">Planned lesson: outline only in module.md</span>
+    </sc-if>
+    <sc-if value="{{hasTerms}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; font-size: 14px;">
+        <span style="color: var(--text-color-secondary);">Key terms</span>
+        <sc-for list="{{terms}}" as="tm" hint-placeholder-count="3">
+          <button type="button" id="{{tm.anchor}}" class="lx-term" onClick="{{tm.open}}" aria-expanded="{{tm.expanded}}">{{tm.label}}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{hasTermInline}}" hint-placeholder-val="{{false}}">
+      <div style="padding: 12px 14px; border-radius: 8px; background: var(--background-color-background-subtle); font-size: 15px; display: flex; flex-direction: column; gap: 6px;">
+        <span><strong>{{termInline.title}}.</strong> {{termInline.text}}</span>
+        <div style="display: flex; gap: 16px;">
+          <sc-if value="{{termInline.canAsk}}" hint-placeholder-val="{{true}}"><button type="button" class="lx-link" onClick="{{termInline.ask}}">Ask the tutor more</button></sc-if>
+          <button type="button" class="lx-link" onClick="{{termInline.close}}" style="color: var(--text-color-secondary);">Close</button>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-for list="{{parts}}" as="p" hint-placeholder-count="3">
+    <div id="{{p.anchor}}" style="display: flex; flex-direction: column; gap: 10px;">
+
+      <sc-if value="{{p.isRead}}" hint-placeholder-val="{{false}}">
+        <div class="lx-prose" style="display: flex; flex-direction: column; gap: 10px;">
+          <sc-for list="{{p.paras}}" as="bl" hint-placeholder-count="2"><p>{{bl.text}}</p></sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{p.hasVideo}}" hint-placeholder-val="{{false}}">
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
+          <video id="{{p.vid}}" controls="" preload="metadata" src="{{p.src}}" style="width: 100%; border-radius: 8px; background: #000; display: block;"></video>
+          <figcaption style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font-size: 13px; color: var(--text-color-secondary);">
+            <span><strong style="color: var(--text-color-primary);">{{p.title}}</strong> · {{p.meta}}</span>
+            <sc-for list="{{p.chapters}}" as="c" hint-placeholder-count="0">
+              <button type="button" class="lx-link" onClick="{{c.seek}}" style="color: var(--text-color-secondary);">{{c.at}} {{c.label}}</button>
+            </sc-for>
+            <button type="button" class="lx-link" onClick="{{p.askMoment}}">Pause and ask</button>
+          </figcaption>
+        </figure>
+      </sc-if>
+
+      <sc-if value="{{p.hasImg}}" hint-placeholder-val="{{false}}">
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
+          <img src="{{p.img}}" alt="{{p.alt}}" style="max-width: 100%; border-radius: 6px; background: #fff; align-self: flex-start;">
+          <figcaption style="font-size: 13px; color: var(--text-color-secondary); display: flex; flex-direction: column; gap: 2px;">
+            <span><strong style="color: var(--text-color-primary);">{{p.title}}.</strong> {{p.cap}}</span>
+            <span style="display: flex; flex-wrap: wrap; gap: 4px 14px;">
+              <sc-if value="{{p.hasRun}}" hint-placeholder-val="{{false}}">
+                <span>{{p.runLine}}</span>
+                <sc-if value="{{p.hasRunLines}}" hint-placeholder-val="{{false}}">
+                  <button type="button" class="lx-link" onClick="{{p.toggleRun}}" aria-expanded="{{p.runOpen}}">{{p.runLabel}}</button>
+                </sc-if>
+              </sc-if>
+              <button type="button" class="lx-link" onClick="{{p.askThis}}">Ask about this</button>
+            </span>
+          </figcaption>
+          <sc-if value="{{p.runOpen}}" hint-placeholder-val="{{false}}">
+            <div style="font-family: var(--font-mono); font-size: 12px; line-height: 1.5; padding: 10px 12px; border-radius: 6px; background: var(--background-color-surface-sunken); overflow-x: auto;">
+              <sc-for list="{{p.runLines}}" as="rr" hint-placeholder-count="2"><div style="white-space: pre;">{{rr.text}}</div></sc-for>
+            </div>
+          </sc-if>
+        </figure>
+      </sc-if>
+
+      <sc-if value="{{p.hasSlot}}" hint-placeholder-val="{{false}}">
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
+          <div style="padding: 32px 16px; border-radius: 6px; border: 2px dashed var(--border-color-interaction-strong); color: var(--text-color-secondary); text-align: center; font-size: 14px;">{{p.slot}}</div>
+          <figcaption style="font-size: 13px; color: var(--text-color-secondary);"><strong style="color: var(--text-color-primary);">{{p.title}}.</strong> {{p.cap}}</figcaption>
+        </figure>
+      </sc-if>
+
+      <sc-if value="{{p.hasChain}}" hint-placeholder-val="{{false}}">
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;">
+            <sc-for list="{{p.chain}}" as="s" hint-placeholder-count="4">
+              <div id="{{s.anchor}}" style="display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+                <button type="button" class="lx-box" onClick="{{s.open}}" style="{{s.boxStyle}}">
+                  <span style="font-size: 18px; font-weight: 700; color: var(--text-color-brand);">{{s.id}}</span>
+                  <span style="font-size: 13px; line-height: 1.4;">{{s.role}}</span>
+                </button>
+                <sc-if value="{{s.hasNote}}" hint-placeholder-val="{{false}}">
+                  <span style="font-size: 12px; line-height: 1.4; color: var(--text-color-secondary);">{{s.note}}</span>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{p.hasInline}}" hint-placeholder-val="{{false}}">
+            <div style="padding: 12px 14px; border-radius: 8px; background: var(--background-color-background-subtle); font-size: 15px; display: flex; flex-direction: column; gap: 6px;">
+              <span><strong>{{p.inl.title}}.</strong> {{p.inl.text}}</span>
+              <div style="display: flex; gap: 16px;">
+                <sc-if value="{{p.inl.canAsk}}" hint-placeholder-val="{{true}}"><button type="button" class="lx-link" onClick="{{p.inl.ask}}">Ask the tutor more</button></sc-if>
+                <button type="button" class="lx-link" onClick="{{p.inl.close}}" style="color: var(--text-color-secondary);">Close</button>
+              </div>
+            </div>
+          </sc-if>
+          <figcaption style="font-size: 13px; color: var(--text-color-secondary);"><strong style="color: var(--text-color-primary);">{{p.title}}.</strong> {{p.cap}}</figcaption>
+        </figure>
+      </sc-if>
+
+      <sc-if value="{{p.hasReceipt}}" hint-placeholder-val="{{false}}">
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-family: var(--font-mono); font-size: 13px; line-height: 1.5; padding: 12px 14px; border-radius: 6px; background: var(--background-color-surface-sunken); overflow-x: auto;">
+            <sc-for list="{{p.receipt}}" as="rl" hint-placeholder-count="3"><div style="white-space: pre;">{{rl.text}}</div></sc-for>
+          </div>
+          <figcaption style="font-size: 13px; color: var(--text-color-secondary); display: flex; flex-direction: column; gap: 2px;">
+            <span><strong style="color: var(--text-color-primary);">{{p.title}}.</strong> {{p.cap}}</span>
+            <span style="display: flex; flex-wrap: wrap; gap: 4px 14px;">
+              <sc-if value="{{p.hasRun}}" hint-placeholder-val="{{false}}">
+                <span>{{p.runLine}}</span>
+                <sc-if value="{{p.hasRunLines}}" hint-placeholder-val="{{false}}">
+                  <button type="button" class="lx-link" onClick="{{p.toggleRun}}" aria-expanded="{{p.runOpen}}">{{p.runLabel}}</button>
+                </sc-if>
+              </sc-if>
+              <button type="button" class="lx-link" onClick="{{p.askThis}}">Ask about this</button>
+            </span>
+          </figcaption>
+          <sc-if value="{{p.runOpen}}" hint-placeholder-val="{{false}}">
+            <div style="font-family: var(--font-mono); font-size: 12px; line-height: 1.5; padding: 10px 12px; border-radius: 6px; background: var(--background-color-surface-sunken); overflow-x: auto;">
+              <sc-for list="{{p.runLines}}" as="rr" hint-placeholder-count="2"><div style="white-space: pre;">{{rr.text}}</div></sc-for>
+            </div>
+          </sc-if>
+        </figure>
+      </sc-if>
+
+      <sc-if value="{{p.isRef}}" hint-placeholder-val="{{false}}">
+        <p style="margin: 0;">{{p.refText}} <button type="button" class="lx-link" onClick="{{p.refOpen}}" style="font-size: 16px;">{{p.refLabel}}</button></p>
+      </sc-if>
+
+      <sc-if value="{{p.isTurn}}" hint-placeholder-val="{{false}}">
+        <div style="{{p.turnStyle}}">
+          <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px;">
+            <div style="display: flex; align-items: baseline; gap: 10px;">
+              <span style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-color-brand); font-weight: 600;">Your turn</span>
+              <span style="font-weight: 600;">{{p.title}}</span>
+            </div>
+            <sc-if value="{{p.settled}}" hint-placeholder-val="{{false}}">
+              <button type="button" class="lx-link" onClick="{{p.toggle}}" aria-expanded="{{p.expanded}}">{{p.toggleLabel}}</button>
+            </sc-if>
+          </div>
+          <sc-if value="{{p.showBody}}" hint-placeholder-val="{{true}}">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+              <sc-if value="{{p.hasTurnImg}}" hint-placeholder-val="{{false}}">
+                <figure style="margin: 0; flex: 0 1 220px; display: flex; flex-direction: column; gap: 6px;">
+                  <img src="{{p.turnImg}}" alt="{{p.turnAlt}}" style="width: 100%; border-radius: 6px; background: #fff;">
+                  <figcaption style="font-size: 12px; color: var(--text-color-secondary);">{{p.turnCap}}</figcaption>
+                </figure>
+              </sc-if>
+              <div style="flex: 1 1 300px; min-width: 0; display: flex; flex-direction: column; gap: 12px;">
+                <sc-if value="{{p.hasLead}}" hint-placeholder-val="{{false}}">
+                  <p style="margin: 0;">{{p.leadA}}<button type="button" id="{{p.leadAnchor}}" class="lx-term" onClick="{{p.leadOpen}}">{{p.leadTerm}}</button>{{p.leadB}}</p>
+                </sc-if>
+                <sc-if value="{{p.hasLeadInline}}" hint-placeholder-val="{{false}}">
+                  <div style="padding: 12px 14px; border-radius: 8px; background: var(--background-color-background-subtle); display: flex; flex-direction: column; gap: 6px;">
+                    <span><strong>{{p.leadInl.title}}.</strong> {{p.leadInl.text}}</span>
+                    <div style="display: flex; gap: 16px;">
+                      <sc-if value="{{p.leadInl.canAsk}}" hint-placeholder-val="{{true}}"><button type="button" class="lx-link" onClick="{{p.leadInl.ask}}">Ask the tutor more</button></sc-if>
+                      <button type="button" class="lx-link" onClick="{{p.leadInl.close}}" style="color: var(--text-color-secondary);">Close</button>
+                    </div>
+                  </div>
+                </sc-if>
+                <sc-for list="{{p.log}}" as="e" hint-placeholder-count="0">
+                  <div style="{{e.style}}"><span style="font-size: 12px; color: var(--text-color-secondary); display: block;">{{e.who}}</span>{{e.text}}</div>
+                </sc-for>
+                <sc-if value="{{p.hasLogNote}}" hint-placeholder-val="{{false}}">
+                  <span style="font-size: 12px; color: var(--text-color-secondary);">{{p.logNote}}</span>
+                </sc-if>
+                <sc-if value="{{p.canAnswer}}" hint-placeholder-val="{{true}}">
+                  <label for="{{p.inputId}}" style="font-size: 13px; color: var(--text-color-secondary);">{{p.inputLabel}}</label>
+                  <textarea id="{{p.inputId}}" class="lx-input" rows="3" value="{{p.draft}}" onChange="{{p.onDraft}}" style="width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color-interaction-base); background: var(--background-color-surface-sunken); resize: vertical;"></textarea>
+                  <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+                    <x-import component-from-global-scope="KuiFoundationsReact.Button" kind="primary" size="medium" on-click="{{p.send}}">Send</x-import>
+                    <span style="font-size: 13px; color: var(--text-color-secondary);">{{p.note}}</span>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{p.settled}}" hint-placeholder-val="{{false}}">
+            <div style="display: flex; gap: 10px; align-items: baseline; font-size: 15px;">
+              <span style="flex: none; color: #76b900; font-weight: 700;" aria-hidden="true">✓</span>
+              <span>{{p.summary}}</span>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+  </sc-for>
+
+  <!-- Closure -->
+  <div style="display: flex; flex-direction: column; gap: 14px; padding-top: 14px; border-top: 1px solid var(--border-color-base);">
+    <sc-if value="{{showFind}}" hint-placeholder-val="{{false}}">
+      <p style="margin: 0;"><strong>We found:</strong> {{step.find}}</p>
+      <p style="margin: 0; color: var(--text-color-secondary);"><strong style="color: var(--text-color-primary);">Which raises:</strong> {{step.next}}</p>
+    </sc-if>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;">
+      <sc-if value="{{hasPrev}}" hint-placeholder-val="{{true}}">
+        <x-import component-from-global-scope="KuiFoundationsReact.Button" kind="tertiary" size="medium" on-click="{{goPrev}}">{{prevLabel}}</x-import>
+      </sc-if>
+      <span></span>
+      <sc-if value="{{hasNext}}" hint-placeholder-val="{{true}}">
+        <x-import component-from-global-scope="KuiFoundationsReact.Button" kind="secondary" size="medium" on-click="{{goNext}}">{{nextLabel}}</x-import>
+      </sc-if>
+    </div>
+  </div>
+</main>
+
+<!-- The margin: one place to ask about anything on the page -->
+<aside aria-label="Ask and side trips" style="flex: 1 1 340px; max-width: 420px; box-sizing: border-box; padding: 24px 24px 24px 8px; position: sticky; top: 0; align-self: flex-start; font-size: 14px; line-height: 1.5;">
+  <sc-if value="{{tOpen}}" hint-placeholder-val="{{false}}">
+    <div style="display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 12px; background: var(--background-color-surface-raised); border: 1px solid var(--border-color-base); box-shadow: var(--shadow-lg);">
+      <div style="font-size: 12px; color: var(--text-color-secondary);">Side trip from {{t.from}}</div>
+      <div style="font-size: 18px; font-weight: 600;">{{t.title}}</div>
+      <sc-if value="{{t.hasAbout}}" hint-placeholder-val="{{false}}">
+        <div style="font-size: 13px; padding: 6px 10px; border-radius: 6px; background: var(--background-color-background-subtle);"><span style="color: var(--text-color-secondary);">About: </span>{{t.about}}</div>
+      </sc-if>
+      <sc-if value="{{t.hasVideo}}" hint-placeholder-val="{{false}}">
+        <video controls="" preload="metadata" src="{{t.video}}" style="width: 100%; border-radius: 8px; background: #000; display: block;"></video>
+      </sc-if>
+      <sc-if value="{{t.hasLayers}}" hint-placeholder-val="{{false}}">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <sc-for list="{{t.shown}}" as="L" hint-placeholder-count="4">
+            <div style="{{L.wrapStyle}}">
+              <button type="button" class="lx-row" onClick="{{L.pick}}" aria-expanded="{{L.open}}" style="display: flex; justify-content: space-between; gap: 8px; padding: 0;">
+                <span style="font-weight: 600;">{{L.k}}</span>
+                <span style="font-size: 12px; color: var(--text-color-secondary);">{{L.tag}}</span>
+              </button>
+              <sc-if value="{{L.open}}" hint-placeholder-val="{{false}}">
+                <div style="margin-top: 6px;">{{L.text}}</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{t.canDeeper}}" hint-placeholder-val="{{true}}">
+          <button type="button" class="lx-link" onClick="{{deeper}}" style="align-self: flex-start;">Go one layer deeper</button>
+        </sc-if>
+      </sc-if>
+      <sc-if value="{{t.showFig}}" hint-placeholder-val="{{false}}">
+        <img src="/_blob/093b9b121feacf8ace0996c9c68de4a6" alt="Aligned difference image from step 0.3" style="width: 100%; border-radius: 6px; background: #fff;">
+      </sc-if>
+      <sc-if value="{{t.showReceipt}}" hint-placeholder-val="{{false}}">
+        <div style="font-family: var(--font-mono); font-size: 12px; padding: 10px; border-radius: 6px; background: var(--background-color-surface-sunken);">
+          <div>backend cpu · device cpu · dtype float64</div><div>shape 16×16 → 18×17 · status ok</div>
+          <div style="color: var(--text-color-secondary); font-family: var(--font-sans); margin-top: 4px;">Receipt from the quickstart run on dl-machine.</div>
+        </div>
+      </sc-if>
+      <sc-for list="{{t.thread}}" as="q" hint-placeholder-count="0">
+        <div style="{{q.style}}">{{q.text}}</div>
+      </sc-for>
+      <label for="lx-trip-input" style="font-size: 13px; color: var(--text-color-secondary);">{{t.inputLabel}}</label>
+      <textarea id="lx-trip-input" class="lx-input" rows="2" value="{{t.draft}}" onChange="{{t.onDraft}}" placeholder="Type a question" style="width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color-interaction-base); background: var(--background-color-surface-sunken); resize: vertical;"></textarea>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <x-import component-from-global-scope="KuiFoundationsReact.Button" kind="secondary" size="small" on-click="{{t.send}}">Ask</x-import>
+        <x-import component-from-global-scope="KuiFoundationsReact.Button" kind="primary" size="small" on-click="{{closeT}}">{{t.closeLabel}}</x-import>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{tClosed}}" hint-placeholder-val="{{true}}">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+      <div style="display: flex; flex-direction: column; gap: 10px; padding: 16px; border-radius: 12px; background: var(--background-color-surface-raised); border: 1px solid var(--border-color-base);">
+        <label for="lx-page-ask" style="font-weight: 600;">Ask about anything on this page</label>
+        <sc-if value="{{hasPointer}}" hint-placeholder-val="{{false}}">
+          <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; padding: 6px 10px; border-radius: 6px; background: var(--background-color-background-subtle);">
+            <span><span style="color: var(--text-color-secondary);">About: </span>{{pointerLabel}}</span>
+            <button type="button" class="lx-link" onClick="{{clearPointer}}" aria-label="Clear what this question is about">Clear</button>
+          </div>
+        </sc-if>
+        <textarea id="lx-page-ask" class="lx-input" rows="3" value="{{pageDraft}}" onChange="{{onPageDraft}}" placeholder="e.g. Why does the second night look blurrier?" style="width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color-interaction-base); background: var(--background-color-surface-sunken); resize: vertical;"></textarea>
+        <x-import component-from-global-scope="KuiFoundationsReact.Button" kind="secondary" size="small" on-click="{{askPage}}">Ask</x-import>
+      </div>
+      <sc-if value="{{hasTrips}}" hint-placeholder-val="{{false}}">
+        <div style="font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-color-secondary);">Your side trips</div>
+        <sc-for list="{{trips}}" as="r" hint-placeholder-count="1">
+          <button type="button" class="lx-box" onClick="{{r.open}}" style="display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color-base); background: var(--background-color-surface-raised);">
+            <span style="font-size: 12px; color: var(--text-color-secondary);">From {{r.where}}</span>
+            <span style="font-weight: 600;">{{r.label}}</span>
+          </button>
+        </sc-for>
+      </sc-if>
+    </div>
+  </sc-if>
+</aside>
+
+</div>
+</div>
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+var GREEN = "#76b900";
+var B = {
+  v0: "/_blob/bb9be7d20a04ce909b0fa15214d5877f", v1: "/_blob/8e81fccf08ef96869ede73331cdd3b72", v2: "/_blob/9fb63c4c8bcdcb2c499f14c4a7c1e114",
+  toy: "/_blob/fe349ab1d1daeaae243853fcf5f5d641", nights: "/_blob/32e39be4a78e24091c6cb33f89981a02", raw: "/_blob/3dc2f6e778111e32e325e5a0520dd1e7",
+  aligned: "/_blob/093b9b121feacf8ace0996c9c68de4a6", dipole: "/_blob/cc9a365415bb56ca8c06e0c6027e34f7", pair: "/_blob/21f04b4052c4e0644749b4f36ead7ef7"
+};
+var V1CUES = [[0.3, "Every few nights, survey telescopes photograph the same patches of sky."], [14.9, "So why not subtract last night's picture from tonight's?"], [19.7, "Every star leaves a bright half and a dark half."], [22.7, "The telescope pointed a few pixels differently, and turned a little, so nothing lines up."], [28.8, "First, fix the geometry."], [37.3, "In cuPhoton, that's xRep."], [41.1, "Better, but every star still leaves a ring."], [44.9, "The rings come from the air."], [49.5, "Subtract a narrow bump from a wide one and you get this shape."], [53.1, "To cancel it, blur the sharper image until it matches the other."], [57.2, "xPois fits that blur, called a kernel, together with the brightness scale and the sky level."], [63.9, "Now the unchanged stars cancel into noise, and two things stand out."], [73.1, "The empty frame around the edge is where the blur can't be matched."], [79.8, "Align. Match and subtract. Find. Measure. Decide."], [84.3, "That's the core of the pipeline you'll direct in this course."]];
+var V1CH = [[0, "goal"], [15, "subtraction"], [28.8, "xRep"], [41.1, "rings"], [53.1, "xPois"], [79.8, "chain"]];
+var STAGES = [["xRep", "Align"], ["xPois", "Match blur, brightness, background; subtract; find"], ["xFit", "Measure what's left"], ["xScan", "Real or bogus?"]];
+var GENERIC = "[The tutor answers here. It already sees the whole lesson, its figures and videos, and your answers so far; “About” only tells it what “this” refers to.]";
+
+var TRIPS = {
+  xRep: { title: "xRep · alignment", receipt: true,
+    layers: [["Picture", "Puts the reference image on the target image's pixel grid, so the same star sits on the same pixel in both. It shifts, rotates and rescales. It doesn't touch the blur."],
+      ["Use", "Ask the agent to align the reference onto the target. Check that the two shapes now agree, and that a band at the edge is empty: there's no data there."],
+      ["How", "The file headers (the WCS) say where every pixel points on the sky. xRep resamples one image onto the other's grid with interpolation weights, and carries the variance through with the squared weights."],
+      ["Edge", "Resampling correlates neighbouring pixels; the per-pixel variance ignores that, so later error bars come out a little small."]],
+    qa: ["Does xRep fix the blur too?", "No. It only moves pixels. Two images can line up perfectly and still differ in blur; that's why your aligned difference in 0.3 still had residuals."] },
+  xPois: { title: "xPois · match, subtract, find", fig: true,
+    layers: [["Picture", "Makes the reference look as if it was taken on the target's night: same blur, same brightness scale, same sky level. Then it subtracts, and flags what's left worth measuring: the candidates."],
+      ["Use", "Ask for the difference image and look at it: flat noise everywhere except real changes, with an empty band at the edge. Ask how many candidates it flagged."],
+      ["How", "It fits a blur kernel (a sum of Gaussians) and a smooth background so that target minus (blurred reference + background) is as small as the noise allows. The kernel's total is the brightness ratio."],
+      ["Edge", "A kernel can only blur, never sharpen. If the target is sharper than the reference, swap their roles or pick a sharper reference."]],
+    qa: ["Why does one stage do three things?", "Because it's one fit. Blur, brightness scale and sky level all change the same pixels, so they're solved together. Solved one at a time, each would soak up part of the others' error."] },
+  xFit: { title: "xFit · measure what's left", lock: 3, until: "0.4",
+    layers: [["Picture", "Once you've found a spot, you fit a model of a star to it and read off how much light it gained or lost, and how sure you are."],
+      ["Use", "Have the agent cut a stamp around each candidate, fit it, and report the flux with its error. Look at the cutout: is a star in the middle? A fit can say 'converged' on blank sky."],
+      ["How", "A batch of small least-squares fits, one per stamp, run on the GPU when one is there: the amplitude and position of a star-shaped bump of known width."],
+      ["Edge", "A moved or misaligned star leaves a dipole: fit it with a dipole model, not a single source."]] },
+  xScan: { title: "xScan · real or bogus?",
+    layers: [["Picture", "Most leftovers are not real changes: imperfect matching, cosmic rays, bad pixels. xScan gives each candidate a score, so you look at the likely ones first."],
+      ["Use", "Ask for the scores and look at the candidates near your threshold, not only the top ones."],
+      ["How", "[No layer written yet in concepts.yaml]"]],
+    qa: ["Who decides real or bogus?", "xScan gives the score; you choose the threshold and look at what's close to it."] },
+  "pixels-as-counts": { title: "Pixels as counts",
+    layers: [["Picture", "An image is a grid of numbers; each counts the light that landed on one detector pixel. Sources are bumps; the background is the light no source accounts for; noise makes every number wobble."],
+      ["Use", "Ask the agent for an image's shape, dtype and a few pixel values before anything else; check the header for units and gain."],
+      ["How", "Counts in electrons follow Poisson statistics; DN = electrons / gain. Variance per pixel ≈ (source + sky)/gain + (read noise/gain)²."],
+      ["Edge", "Real detectors add read noise, saturation and artifacts the simple model leaves out. Use your pipeline's calibrated variance plane when you have one."]] },
+  "imaging-difference": { title: "Difference imaging",
+    layers: [["Picture", "Two nights differ in four ways besides real change: pointing, seeing, background and brightness scale. Remove those, and what's left is what really changed."],
+      ["Use", "Direct the agent through align (xRep), match and subtract (xPois), then find and measure (xPois, xFit). Check at each stage: shapes agree; the difference is flat noise except at real changes; the edge band is there; fits converged."],
+      ["How", "xPois fits a convolution kernel K and a smooth background B minimizing the variance-weighted residual of target − (K ⊛ reference + B)."],
+      ["Edge", "Convolution correlates noise, so the diagonal variance underestimates flux errors. If the target is sharper than the reference, swap roles."]] },
+  "variance-and-masks": { title: "Variance and masks", lock: 2, until: "1.2",
+    layers: [["Picture", "Each pixel comes with how much to trust it (variance) and whether to use it at all (mask)."],
+      ["Use", "Tell the agent your noise model explicitly; check which mask convention each call wants."],
+      ["How", "In weighted least squares each pixel's squared residual is weighted by 1/variance, and the reported errors scale with that variance."],
+      ["Edge", "Mask kinds are opposite: instrument masks are bit flags (nonzero = flagged); fit masks are boolean, True = use."]] },
+  "detection-significance": { title: "Detection significance",
+    layers: [["Picture", "After subtraction, most pixels are just noise. A detection is a spot that stands out from that noise by more than you'd expect by chance, measured in units of the noise."],
+      ["Use", "Check that the standardized image's spread away from sources is near 1, that the number of hotspots matches what you expect, and look at each one's cutout. Don't quote the threshold as a false-alarm rate."],
+      ["How", "z = difference / sqrt(target variance + reference variance convolved with kernel²). Pixels with |z| above the threshold group into connected regions."],
+      ["Edge", "The prediction assumes independent pixels and a fixed kernel, so tail probabilities aren't calibrated. Dipoles and moving sources also exceed the threshold."]] },
+  "source-measurement": { title: "Measuring a source",
+    layers: [["Picture", "Once you've found a spot, you fit a model of a star to it and read off how much light it has, and how sure you are. The number is only as good as the cutout and the noise you told the fit about."],
+      ["Use", "Check the cutout is centred on a star; fit flags are necessary, not sufficient. The fluxes are difference fluxes, not total brightness."],
+      ["How", "A Levenberg-Marquardt solver fits a batch of stamps; the single-source model fixes the width and fits amplitude and position."],
+      ["Edge", "Formal errors use the diagonal variance and a fixed PSF width; the full error budget adds correlation, kernel-fit and misalignment terms."]] },
+  "axis-order": { title: "Axis order", lock: 0, until: "1.7", layers: [["Picture", ""], ["Use", ""], ["How", ""], ["Edge", ""]] },
+  "evidence-of-a-run": { title: "Evidence of a run",
+    layers: [["Picture", "A program can finish happily and still be wrong. Proof is in what it recorded and what the output looks like."],
+      ["Use", "After every run, ask the agent for the backend and device that actually ran, the fit status counts, and a plot."],
+      ["How", "A receipt is the record a result carries of what ran. CLI runs write summary.json: workflow, requested_backend, backend, device, dtype, fits_reader."],
+      ["Edge", "Receipts record requested choices even when they didn't apply. Run directories are fresh by design, so a reused name is refused."]] },
+  "backends-and-fallback": { title: "Backends and fallback",
+    layers: [["Picture", "The same calculation can be done by different engines: plain CPU code, or code that uses the graphics card. 'Auto' means 'use the graphics card if you can, otherwise quietly use the CPU'. Naming an engine means 'this one or nothing'."],
+      ["Use", "'auto' falls back to CPU and still succeeds, so read the receipt. An explicit backend raises an error if it can't run. The CPU backend is 'cpu' in xRep and xPois but 'numpy' in xFit."],
+      ["How", "xRep: cupy, torch, cpu; xPois: cupy, cpu; xFit: cupy, numpy. 'auto' never selects cutile or native."],
+      ["Edge", "Checklist for a CPU fallback: the gpu extra, nvidia-smi, torch.cuda.is_available(), CuPy allocate and synchronize, CUDA_VISIBLE_DEVICES."]] },
+  "host-and-device-memory": { title: "Host and device memory",
+    layers: [["Picture", "A computer has two memories: the main one (host) and the graphics card's own (device). Data has to be copied between them, and an answer can end up in either."],
+      ["Use", "After a GPU run, ask where the result lives. Host-result APIs return NumPy whichever backend ran; functions ending in _device keep CuPy arrays on the GPU."],
+      ["How", "read_fits_images(..., device=True) returns CuPy arrays; to_host gives a NumPy copy. xRep and xPois compute in float64."],
+      ["Edge", "The xDR GPU FITS reader needs a native extension that isn't compiled by default; an explicit --fits-reader xdr rejects unsupported input."]] },
+  "honest-timing": { title: "Honest timing",
+    layers: [["Picture", "A graphics card is told to start working and the program moves on immediately, so a stopwatch around the call can time the 'start', not the work. Honest timing waits until the work is done, and skips the slow first run."],
+      ["Use", "When the agent reports a speedup, ask: warm-up excluded? several repetitions, median? synchronized? same input, dtype and GPU? end-to-end against end-to-end?"],
+      ["How", "cuPhoton's benchmark summaries separate first-solve from warm timings, state each timing boundary and add CUDA-event intervals for CuPy."],
+      ["Edge", "Image loading, the full pipeline and a single kernel are different quantities: match the timer boundaries before comparing."]] },
+  "directing-the-agent": { title: "Directing the agent",
+    layers: [["Picture", "You decide what should happen and what the result should look like; the agent does the typing."],
+      ["Use", "Good requests name the goal, the inputs, the conventions that matter (grid, axis order, noise model), and the evidence you want back."],
+      ["How", "A reusable request has four parts: goal, inputs and their conventions, a stage plan, and the evidence to return after each stage."],
+      ["Edge", "Agents can produce runs that are clean and wrong. Ask for the pre-checks yourself and require numeric artifacts, not just pictures."]] }
+};
+var VOCAB = {
+  "pixel value": "The number stored in one pixel: how much light that pixel collected during the exposure time. Raw images store counts, not brightness per second.",
+  "noise": "The random wobble of every pixel value around its expected level. For light it comes from counting photons, so it grows with the square root of the counts.",
+  "exposure time": "How long the detector collects light for one image. Doubling it roughly doubles the light collected in every pixel.",
+  "observing conditions": "Everything about how a picture was taken that can differ between two nights: pointing, background level, exposure time, and seeing (so the PSF).",
+  "real change": "A difference between two images caused by the sky itself: a source that brightened, faded, appeared or moved.",
+  "seeing": "The blurring of starlight by turbulent air above the telescope. It changes from night to night, so the same star can be sharper one night than another. Think of heat shimmer above a road.",
+  "PSF": "The shape a single point of light takes in the image: the star's blur profile. Its width is set by the optics and the seeing.",
+  "alignment": "Putting the two images on the same pixel grid, so the same source sits at the same pixel in both. cuPhoton's stage for this is xRep.",
+  "difference image": "The target minus the reference, after both have been aligned and the reference's blur and background matched to the target.",
+  "residual": "Whatever is left in a difference image that isn't noise. It may be a real change, or a leftover from imperfect matching.",
+  "dipole": "A positive lobe right beside a negative lobe in a difference image.",
+  "candidate": "A residual the pipeline has found and will measure: something that might be a real change.",
+  "real / bogus": "A score xScan gives a candidate: a real change in the sky, or a bogus residual. It sets the priority for follow-up; it is not a final verdict.",
+  "FITS file": "The astronomy file format: one or more units, each a header of metadata (telescope, gain, WCS...) plus data, here the image.",
+  "injected source": "A change written into the synthetic pair on purpose, so its true position and flux are known.",
+  "flux": "The total light from a source, in data numbers. Measured on a difference image, it's the change between the target and the matched reference.",
+  "gain": "Electrons per data number: how the detector converts collected light into the stored pixel value. Stored in the header.",
+  "variance plane": "One number per pixel: the expected noise variance of that pixel, built from a noise model. It sets each pixel's fit weight.",
+  "error bar": "One standard deviation of a measured quantity. It's computed from the variance plane, so it's only as right as that plane.",
+  "WCS": "World Coordinate System: header metadata that maps each pixel to a position on the sky.",
+  "reprojection": "Resampling an image onto another pixel grid, using the two WCS headers. cuPhoton's alignment stage, xRep. It does not match the blur.",
+  "mask": "A per-pixel flag array. Two kinds, opposite sense: xRep's mask marks pixels the reference doesn't cover; a fit mask is True where the pixel is used.",
+  "kernel": "The small array of weights xPois fits to blur the reference until its PSF matches the target's. Its sum estimates the brightness ratio.",
+  "kernel mismatch": "Reference flux the kernel failed to match, left in the difference image at a source that didn't change.",
+  "chi2/dof": "How far the residuals are from the noise the variance predicts. Near 1 means 'about as large as the noise'. On its own it does not prove the subtraction is good.",
+  "z": "The difference image divided by its predicted noise, pixel by pixel. A noise diagnostic in approximate noise units, not a calibrated significance.",
+  "threshold": "The z value above which pixels are grouped into regions worth measuring (5 in the guide). It does not set a false-detection probability.",
+  "hotspot": "A region of z above the threshold, with its peak position. Hotspots become the candidates xFit measures.",
+  "stamp": "A small cutout around a candidate. xFit fits batches of stamps.",
+  "amplitude": "The fitted bump's peak height. Its sign says brighter (+) or fainter (−).",
+  "fit status": "Flags saying the optimizer finished and the errors could be computed. Necessary, not sufficient."
+};
+var VHOLD = { "dipole": "0.4", "variance plane": "1.2", "kernel": "1.4", "hotspot": "1.7" };
+var VQA = { "dipole": ["So what causes it?", "That's the question in this step, so I'll hold it until you've answered. This side trip will still be here."] };
+
+/* Part builders. Read = plain paragraphs; Agent = a line saying what the agent runs; Fig/Slot/Receipt/Chain = figures with captions; Video; Ref = a pointer to earlier material, opened in the margin; Turn = the learner's input */
+function Rd(paras) { return { k: "Read", paras: paras }; }
+/* run = the record of what produced a figure: written by the harness at run time, never authored */
+function Vd(title, src, meta, ch) { return { k: "Video", title: title, video: src, meta: meta, chapters: ch }; }
+function Fg(title, img, cap, alt, run) { return { k: "Figure", title: title, img: img, cap: cap, alt: alt || title, run: run }; }
+function Sl(title, slot, cap) { return { k: "Slot", title: title, slot: slot, cap: cap || "Appears when the agent runs this." }; }
+function Rc(title, lines, cap, run) { return { k: "Receipt", title: title, receipt: lines, cap: cap, run: run }; }
+function Ch(hi, cap) { return { k: "Chain", chain: hi, title: hi === true ? "The whole chain" : "Where we are in the chain", cap: cap }; }
+function Rf(text, label, video, vtitle) { return { k: "Ref", text: text, label: label, video: video, vtitle: vtitle }; }
+function Tn(title, prompt, extra) { var p = { k: "Turn", title: title, prompt: prompt }; for (var x in extra || {}) p[x] = extra[x]; return p; }
+
+var RECON = "Reconstructed from the progress notes of the 10 Nov session.";
+var COURSE = [
+ { id: "00", title: "What changed in the sky?", steps: [
+  { id: "0.1", title: "An image is an array of counts", q: "What is a picture of the sky, as data?", terms: ["pixel value", "noise", "exposure time", "@pixels-as-counts"],
+    parts: [Vd("What changed in the sky?", B.v0, "2:28, opens the module"),
+      Rd(["The images in this course are raw counts: the number of photons each pixel collected during the exposure time, not a rate per second.", "Light arrives one photon at a time, so the counts wobble. The size of that wobble, the noise, grows as the square root of the counts.", "Here is a toy sky: a flat background with a few sources on it, and that noise added."]),
+      Fg("A toy sky", B.toy, "One source is circled; its pixel values are shown beside it.", "Toy sky image with a few sources", { by: "NumPy", meta: "10 Nov", lines: ["made with NumPy and Matplotlib (no cuPhoton yet)", "saved learner/work/0.1_toy_sky.png"] }),
+      Tn("Twice as long", "If the exposure time were twice as long, what would happen to the source's pixel values, and to the background's?",
+        { summary: "Everything doubles; the noise grows only by about √2, more slowly than the signal.",
+          log: [["Tutor", "If the exposure time were twice as long, what would happen to the source's pixel values, and to the background's? And to the noise?"], ["You", "You haven't told me how the noise behaves. I can't answer the last part without that."], ["Tutor", "Fair. It's Poisson: its size grows as the square root of the counts."], ["You", "Then source and background both double, and the noise grows by about √2, so more slowly than the signal."], ["Tutor", "Exactly."]] })],
+    find: "Pixel values count light. A longer exposure gives more counts everywhere, and the noise grows more slowly than the signal.", next: "We'll compare two images of the same sky. What can differ between them?" },
+  { id: "0.2", title: "Two nights, same sky", q: "Our two images show the same sky on two nights. What is different between them, and how can you tell?", terms: ["observing conditions", "real change", "seeing", "PSF"],
+    parts: [Rd(["Two pictures of the same sky can differ for two kinds of reason. Something in the sky really changed; or the observing conditions changed: where the telescope pointed, how bright the background was, the exposure time, and the seeing, which sets how blurred each star looks.", "For this pair the exposure time is the same on both nights. We call night 1 the reference image and night 2 the target image."]),
+      Fg("The two nights", B.nights, "Same colour scale. You can ask for zooms, crops, profiles or pixel values.", "Reference and target images side by side", { by: "NumPy", meta: "10 Nov", lines: ["made with NumPy and Matplotlib", "saved learner/work/night1.npy, night2.npy", "saved learner/work/0.2_two_nights.png"] }),
+      Tn("What changed?", "For each possible difference (pointing, background, blur, a source that changed): did it happen here, and what's your evidence?",
+        { summary: "Pointing shifted by about (+3, −1), stars are more spread out on night 2, the background is higher, and a new object appeared.",
+          log: [["You", "The background is brighter on night 2, the contrast is different, and it looks noisier."], ["Tutor", "Those are about the sky level. What about the stars themselves? Try following the brightest one."], ["You", "Cropped around it: it's more spread out on night 2, and it's moved by about (+3, −1)."], ["Tutor", "Pointing and blur, each with evidence. Has anything changed in the sky itself?"], ["You", "There's an extra object on night 2. Could be an artifact?"], ["Tutor", "It's a new source: a real change. What you called 'more spread out' is a wider PSF; here it comes from seeing."]] })],
+    find: "Some differences are real changes; the rest come from observing conditions, and those must be removed before comparing.", next: "Can we simply subtract the reference from the target and see only the real changes?" },
+  { id: "0.3", title: "Why not just subtract?", q: "If we subtract the reference from the target, pixel by pixel, do only the real changes remain?", terms: ["difference image", "alignment", "residual", "@imaging-difference"],
+    parts: [Rd(["“Subtract” means target minus reference at each pixel. Positive means brighter in the target. Here is the plain subtraction, with nothing fixed."]),
+      Fg("Plain subtraction", B.raw, "Target minus reference, nothing fixed.", "Raw difference image dominated by misalignment", { by: "NumPy", meta: "10 Nov", lines: ["night2 − night1, pixel by pixel", "saved learner/work/0.3_raw_difference.png"] }),
+      Rd(["Now we fix only the pointing. Alignment puts both images on the same pixel grid, so the same star sits on the same pixel."]),
+      Fg("Aligned, then subtracted", B.aligned, "Four spots are lettered.", "Aligned difference with four spots labelled A to D", { by: "NumPy", meta: "10 Nov", lines: ["aligned night2 onto night1's grid", "saved learner/work/night2_aligned.npy", "saved learner/work/0.3_aligned_labeled.png"] }),
+      Tn("Your plan", "Our goal is a difference image where only the real changes remain. Which steps would you apply before subtracting, in what order, and what does each remove?",
+        { summary: "Align (shift and rotate), remove the background difference, match the blur, subtract; then look at what's left.",
+          log: [["You", "I'm not sure what we're aiming for here."], ["Tutor", "Fair: the goal is a difference image where only real changes remain. What would you do to the two images before subtracting?"], ["You", "Shift and rotate to align; subtract the background difference; equalize the blur somehow without destroying signal; then subtract. Whatever is left is a real brightness change."], ["Tutor", "That's the chain. Keep that last sentence in mind: we'll test it."]] })],
+    find: "Each observing-condition difference needs its own fix before subtracting. What survives is either a real change or a mistake in the matching.", next: "cuPhoton has a stage for each step of this plan. Which is which?" },
+  { id: "0.4", title: "Meet the names", q: "Which cuPhoton stage does each step of your plan?", terms: ["candidate", "real / bogus"],
+    parts: [Rd(["Your plan from 0.3 already is the cuPhoton pipeline. This short video replays it on the real sample pair and gives each step its name."]),
+      Vd("Why not just subtract?", B.v1, "1:34, rendered from the sample pair", true),
+      Rd(["Here is the whole chain at once. The next question can concern any of its stages."]),
+      Ch(true, "Each stage, with the observing-condition difference it removes."),
+      Tn("Two lobes, two stories", "", { img: B.dipole, alt: "A positive lobe beside a negative lobe", cap: "An example made for this question, not from our pair.", lead: ["Here is a ", "dipole", " in a difference image."], scripted: true })],
+    find: "The plan from 0.3 is the cuPhoton pipeline. Your job is to know what each stage should produce.", next: "Unit 01: run that plan for real, on a CPU." } ] },
+ { id: "01", title: "Your first difference, on a CPU", steps: [
+  { id: "1.1", title: "Make the sample pair", q: "What will we test the pipeline on?", terms: ["FITS file", "injected source", "flux"],
+    parts: [Rd(["We'll test on a synthetic pair. Its changes were injected on purpose, so their true positions and fluxes are known and every answer can be checked. Your own frames wait for Unit 04.", "The files are FITS files: a header of metadata, then the image."]),
+      Fg("The sample pair", B.pair, "Reference and target, with colour bars.", "Reference and target sample images", { by: "tools/make_sample.py", meta: "dl-machine", lines: ["ran tools/make_sample.py", "wrote learner/work/01/sample/reference.fits", "wrote learner/work/01/sample/target.fits", "saved learner/work/01/1.1_pair.png"] })],
+    find: "A reference, a target and an answer key for the end.", next: "How noisy is each pixel?" },
+  { id: "1.2", title: "Read the images and give them noise", q: "How noisy is each pixel, and how do we tell cuPhoton?", terms: ["gain", "variance plane", "error bar", "@variance-and-masks"],
+    parts: [Sl("The two files, read", "Both images and their shapes. They differ; lesson 1.3 says why."),
+      Tn("Before we go on", "How many numbers will the variance of this image be?"),
+      Rd(["cuPhoton takes the noise as a variance plane: one number per pixel. It comes from a noise model applied pixel by pixel, image level divided by gain; it is not the spread of the image's values.", "Picture the same exposure repeated many times. Each pixel would wobble, and the plane holds that wobble's variance for every pixel. Every flux we measure will come with an error bar."]),
+      Tn("A prediction to test later", "If we multiply the variance plane by 4, what happens to a measured flux, and to its error bar? We test your answer at 1.6.")],
+    find: "Every pixel now carries its own noise estimate.", next: "Alignment: the two images don't share a grid." },
+  { id: "1.3", title: "Align (xRep)", q: "How do we put both images on one grid, and which image moves?", terms: ["WCS", "reprojection", "mask"],
+    parts: [Ch("xRep", "This lesson is the first box."),
+      Rd(["Each header holds a WCS, the map from pixels to sky. xRep uses the two WCS headers to resample one image onto the other's grid; this is called reprojection. It carries the variance and a mask along. It doesn't match the blur."]),
+      Tn("Before running", "Onto whose grid? What shape comes out?"),
+      Sl("Aligned", "The aligned image beside the other.")],
+    find: "Both images on the target's grid; the mask flags what the reference didn't cover.", next: "Matching the PSF and the background." },
+  { id: "1.4", title: "Match and subtract (xPois)", q: "How do we make the reference look like the target, so that subtracting leaves only the real changes?", terms: ["kernel", "kernel mismatch", "chi2/dof"],
+    parts: [Ch("xPois", "This lesson is the second box."),
+      Rd(["xPois fits a kernel: a small array of weights that blurs the reference until its stars look like the target's. It fits a smooth background at the same time, then subtracts."]),
+      Tn("Before running", "What would this leave at an unchanged source if the kernel were perfect? And if it weren't?"),
+      Sl("The difference image and the kernel", "Difference image with a colour bar; the fitted kernel beside it."),
+      Tn("The empty frame", "Why is there an empty (NaN) frame around the difference image?"),
+      Rf("You've now done for real what the recap video showed on the sample pair.", "Rewatch it in the margin", B.v1, "Why not just subtract?")],
+    find: "The unchanged sources have mostly cancelled. chi2/dof says the residuals are roughly noise-sized: necessary, not proof.", next: "Which residuals stand out from the noise?" },
+  { id: "1.5", title: "Find the candidates", q: "Which spots stand out from the noise?", terms: ["z", "threshold", "hotspot", "@detection-significance"],
+    parts: [Rd(["Divide the difference image by its predicted noise and you get the standardized residual, z, in rough units of noise. Pixels above a threshold (5 in the guide) group into hotspots."]),
+      Tn("Before running", "How many do you expect, and where?"),
+      Sl("Hotspots", "The z image with lettered hotspots."),
+      Tn("What 5 means", "What does a threshold of 5 promise you, and what doesn't it?")],
+    find: "Two hotspots, at the two injected changes.", next: "How much did each change, and how sure are we?" },
+  { id: "1.6", title: "Measure (xFit)", q: "How much did each candidate change, and with what error bar?", terms: ["stamp", "amplitude", "fit status", "@source-measurement"],
+    parts: [Ch("xFit", "This lesson is the third box."),
+      Rd(["xFit fits a star-shaped bump to a stamp, a small cutout around each candidate, with its width fixed to the target's PSF. It returns an amplitude, whose sign says brighter or fainter, a position, and from them a flux and its error bar."]),
+      Tn("Before running", "How should we cut the stamps around the hotspots?"),
+      Sl("Fluxes", "The stamps, a table of fitted against injected fluxes, and the same fit with the variance × 4: your 1.2 prediction, tested."),
+      Tn("Which image?", "Which image were these stamps cut from?")],
+    find: "Fluxes close to the injected ones (about 1 and 2 error bars off), and an error bar that doubles with variance × 4.", next: "This worked because you watched each stage. What if another agent ran it and only showed you the result?" },
+  { id: "1.7", title: "It ran, so it's right?", q: "A script ran cleanly. How do you tell, from evidence alone, whether its result is right?", terms: ["fit status", "@axis-order", "@evidence-of-a-run"],
+    parts: [Rd(["A colleague's agent wrote a script for the same pair. It runs cleanly. You'll see only what it printed; ask for any evidence you want."]),
+      Sl("What the script printed", "The script's printed output, and nothing else until you ask."),
+      Tn("Is it right?", "What's the symptom, where's the cause, and how would you have caught it before running?")],
+    find: "A run can finish with healthy fit status and still be wrong. A picture, or a comparison with what you expected, catches it.", next: "Unit 02: what a run records about itself." } ] },
+ { id: "02", title: "Trust, but read the receipt", steps: [
+  { id: "2.1", title: "Run the quickstarts on the CPU", q: "What does a run record about itself?", terms: ["@evidence-of-a-run"],
+    parts: [Rd(["Ask the agent to run every quickstart on the CPU, into a fresh directory."]),
+      Tn("Before you look", "What do you think the run recorded about itself?"),
+      Rc("The receipt", ["component  requested  backend  device  dtype", "xfit       numpy      numpy    cpu     float64", "xpois      cpu        cpu      cpu     float64", "xrep       –          cpu      cpu     float64", "xray       –          cpu      cpu     float64", "xscan      –          torch    cpu     float32"], "From the root summary.json. Tick your list off against it.", { by: "run_quickstarts.py --profile cpu", meta: "5.7 s · exit 0" }),
+      Tn("Where did it run?", "Where did xFit run, and how do you know?")],
+    find: "Each result records what actually ran: backend, device and dtype per component, plus hardware and seeds.", next: "What happens if you run the identical command again?" },
+  { id: "2.2", title: "Run it again into the same directory", q: "What happens if you rerun the identical command?", terms: ["@evidence-of-a-run"],
+    parts: [Tn("Predict", "What will happen?"),
+      Rc("The rerun", ["exit 1", "quickstart failed: FileExistsError: output directory already exists; remove it first: <path>"], "The same command, into the same directory.", { by: "run_quickstarts.py --profile cpu", meta: "exit 1" }),
+      Tn("Your instruction", "Your agent reports 'run failed: directory exists'. What do you tell it?")],
+    find: "The refusal is by design: results are kept. Choose a new directory; don't delete without checking.", next: "What does 'auto' do on a machine with no GPU?" },
+  { id: "2.3", title: "Auto versus explicit", q: "On a host with no GPU, what does each backend request do?", terms: ["@backends-and-fallback"],
+    parts: [Tn("Predict", "For one xRep call, what will auto, cpu, torch and cupy each do here?"),
+      Rc("All four, tried", ["backend='auto':  ran cpu", "backend='cpu':   ran cpu", "backend='torch': ran torch", "backend='cupy':  Requested backend is unavailable: cupy."], "One xRep call per backend, on a host with no GPU.", { by: "xRep", meta: "CPU · about 2 s" }),
+      Vd("It ran. Is it right?", B.v2, "1:21"),
+      Tn("On a laptop", "On a laptop with no GPU, you ask the agent for cupy and for auto. What does each do?")],
+    find: "An explicit request fails loudly; 'auto' succeeds quietly on the CPU and says so only in the receipt.", next: "Reading a receipt from the command line." },
+  { id: "2.4", title: "Read a CLI receipt", q: "What does a command-line run say it read, and with what?", terms: ["@backends-and-fallback", "@host-and-device-memory"],
+    parts: [Rd(["This time, ask for xRep from the command line, on the sample target."]),
+      Rc("The run's receipt", ["requested_backend  auto", "backend            cpu", "device             cpu", "fits_reader        auto", "fits_reads[0]      reader astropy, requested astropy, location host"], "From the run's summary.json.", { by: "cuphoton xrep reproject-image", meta: "CPU · exit 0" }),
+      Tn("Read it", "We asked for --fits-reader auto. What does the receipt say was requested, and what ran?"),
+      Rc("Asking for cupy", ["exit 1", "ERROR: No module named 'cupy'"], "Same machine, explicit request.", { by: "cuphoton xrep reproject-image --backend cupy", meta: "exit 1" })],
+    find: "The FITS reader and the compute backend are separate choices, each with its own receipt.", next: "Three runs, one silent fallback." },
+  { id: "2.5", title: "Which run didn't run where we meant?", q: "Three runs, no errors. Which one quietly didn't use the GPU?", terms: ["@evidence-of-a-run", "@backends-and-fallback"],
+    parts: [Rd(["Here are three runs of the same quickstart. One is a deliberate CPU baseline; two were meant for the GPU. One of those didn't use it, and nobody got an error."]),
+      Sl("Three receipts", "run-1, run-2 and run-3 summary files.", "The tutor hands these over."),
+      Tn("Which one?", "Which run? Which fields show it? What request would have turned the silent fallback into an error?")],
+    find: "A silent fallback shows only in the receipt; asking for --require-gpu makes it loud.", next: "Your own after-every-run checklist." },
+  { id: "2.6", title: "Write your standing instruction", q: "After every run, what should any agent show you?", terms: ["@directing-the-agent"],
+    parts: [Tn("Your list", "In your own words: after every run, check…"),
+      Rd(["We then compare your list with the troubleshooting guide's: “A GPU run used CPU”, “Results differ across devices”, “A command rejected the input”. Anything missing is discussed, not dictated."])],
+    find: "Your list becomes the standing instruction for units 03 and 04.", next: "Unit 03: onto the GPU." } ] },
+ { id: "03", title: "Onto the GPU", steps: [
+  { id: "3.1", title: "Move the chain to the GPU", q: "Which calls change, and where does each result live afterwards?", planned: true, terms: ["@host-and-device-memory"],
+    parts: [Tn("Before running", "You instruct the agent to move the Unit 01 chain to the GPU. Which calls change, and where does each result live afterwards?"),
+      Sl("Where your data lives", "Video v4 (2:00) is scripted but not rendered yet.", "Planned video.")], find: "", next: "Prove it ran on the GPU." },
+  { id: "3.2", title: "Prove it ran on the GPU", q: "From evidence only, did it run on the GPU?", planned: true, terms: ["@backends-and-fallback", "@evidence-of-a-run"],
+    parts: [Sl("The GPU run", "The run and its receipt."), Tn("Prove it", "Which evidence shows it ran on the GPU?")], find: "", next: "Read FITS straight to the GPU." },
+  { id: "3.3", title: "Read FITS straight to the GPU", q: "Can the files go straight to the GPU, and how would you know?", planned: true, terms: ["@host-and-device-memory"],
+    parts: [Rd(["The GPU reader needs a native extension that isn't built by default. You build it with the agent, then read the pair with it."]), Sl("The read receipt", "Which reader actually ran.")], find: "", next: "Time it honestly." },
+  { id: "3.4", title: "Time it honestly", q: "How fast is it, really?", planned: true, terms: ["@honest-timing"],
+    parts: [Sl("Timings", "Synchronized timings, loading separated from compute, on small and larger inputs."), Tn("Published speedups", "What do published speedups measure, and what don't they?")], find: "", next: "Unit 04: your own data." } ] },
+ { id: "04", title: "Your own data", steps: [
+  { id: "4.1", title: "Your instrument's noise", q: "What is the noise of your own data?", planned: true, terms: ["@variance-and-masks"],
+    parts: [Tn("Your instrument", "Describe your instrument: gain, read noise, masks."), Sl("Your variance plane", "Built from your description, not from the sample recipe.")], find: "", next: "Run the chain on your pair." },
+  { id: "4.2", title: "Run the chain on your pair", q: "Does the chain work on your data?", planned: true, terms: ["@directing-the-agent"],
+    parts: [Sl("Your result", "Your difference image and candidates, from the chain as you direct it.")], find: "", next: "How do you know it worked?" },
+  { id: "4.3", title: "How do you know it worked?", q: "Without injected truth, how do you know it worked?", planned: true, terms: ["@evidence-of-a-run"],
+    parts: [Tn("Plan it", "Without an answer key, how would you know? Plan injection tests.")], find: "", next: "" } ] }
+];
+var DONE = { "0.1": 1, "0.2": 1, "0.3": 1 }; var NOW = "0.4";
+var FLAT = []; COURSE.forEach(function (m) { m.steps.forEach(function (s) { s.mod = m; FLAT.push(s); }); });
+function find(id) { for (var i = 0; i < FLAT.length; i++) if (FLAT[i].id === id) return i; return 0; }
+function status(id) { return DONE[id] ? "done" : (id === NOW ? "now" : "todo"); }
+function passed(id) { return !!DONE[id] || find(id) < find(NOW); }
+function sq(state, size, ring) {
+  var base = "display: inline-block; flex: none; box-sizing: border-box; width: " + size + "px; height: " + size + "px; border-radius: 3px; " + (ring ? "box-shadow: 0 0 0 2px var(--background-color-surface-navigation), 0 0 0 4px var(--text-color-primary); " : "");
+  if (state === "done") return base + "background: " + GREEN + "; border: 2px solid " + GREEN + ";";
+  if (state === "now") return base + "border: 2px solid " + GREEN + "; background: linear-gradient(to top, " + GREEN + " 50%, transparent 50%);";
+  return base + "border: 2px solid var(--border-color-interaction-strong); background: transparent;";
+}
+function fmt(t) { t = Math.max(0, Math.floor(t)); var m = Math.floor(t / 60), s = t % 60; return m + ":" + (s < 10 ? "0" : "") + s; }
+function cueAt(t) { var c = ""; for (var i = 0; i < V1CUES.length; i++) { if (V1CUES[i][0] <= t + 0.05) c = V1CUES[i][1]; } return c; }
+function jump(id) { setTimeout(function () { var el = document.getElementById(id); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "center" }); }, 40); }
+function slug(s) { return s.replace(/[^a-z0-9]+/gi, "-"); }
+/* Looking something up: the short definition, shown inline where it was clicked. Deeper layers stay with the tutor. */
+function lookup(id) {
+  if (id.charAt(0) === "~") { var term = id.slice(1); return { title: term, text: VOCAB[term] || "", qa: VQA[term], held: false }; }
+  var c = TRIPS[id], held = !!(c.until && c.lock === 0 && !passed(c.until));
+  return { title: c.title, text: held ? "We come back to this in lesson " + c.until + "." : c.layers[0][1], qa: c.qa, held: held };
+}
+function bubble(who) { return "padding: 8px 12px; border-radius: 10px; " + (who === "You" ? "align-self: flex-end; max-width: 90%; background: var(--background-color-accent-blue-subtle);" : "max-width: 95%; background: var(--background-color-background-subtle);"); }
+
+class Component extends DCLogic {
+  s() {
+    var d = { cur: NOW, inline: null, runOpen: {}, openMods: {}, open: null, from: null, anchor: null, depth: 0, notes: {}, order: [], trips: {}, threads: {}, drafts: {}, logs: {}, expanded: {}, cp: 0, pointer: null, n: 0 };
+    var st = this.state || {}; for (var k in st) d[k] = st[k]; return d;
+  }
+  set(p) { this.setState(Object.assign({}, this.s(), p)); }
+  go(id) { var om = Object.assign({}, this.s().openMods); om[FLAT[find(id)].mod.id] = true; this.set({ cur: id, open: null, inline: null, pointer: null, openMods: om }); setTimeout(function () { var el = document.getElementById("lx-top"); if (el && el.scrollIntoView) el.scrollIntoView({ block: "start" }); }, 40); }
+  /* every side trip is a thread with an optional "about"; extra content (layers, a video) depends on what it's about */
+  openTrip(id, def, anchor, extra) {
+    var S = this.s(); var trips = Object.assign({}, S.trips);
+    if (def) trips[id] = def;
+    if (!trips[id]) trips[id] = this.defFor(id);
+    this.set(Object.assign({ open: id, from: trips[id].from || S.cur, anchor: anchor || trips[id].anchor || null, depth: 0, trips: trips, inline: null }, extra || {}));
+  }
+  card(id, anchor) {
+    var self = this, L = lookup(id);
+    return { title: L.title, text: L.text, canAsk: !L.held,
+      ask: function () { var S = self.s(); self.openTrip("ask:" + id, { kind: "ask", title: L.title, about: L.title, qa: L.qa, from: S.cur, anchor: anchor }, anchor); },
+      close: function () { self.set({ inline: null }); } };
+  }
+  toggleInline(where, id, anchor) {
+    var cur = this.s().inline;
+    this.set({ inline: cur && cur.where === where && cur.id === id ? null : { where: where, id: id, anchor: anchor } });
+  }
+  defFor(id) {
+    var S = this.s();
+    if (id.charAt(0) === "~") { var term = id.slice(1); return { kind: "term", term: term, title: term, from: S.cur }; }
+    return { kind: "concept", key: id, title: TRIPS[id].title, from: S.cur };
+  }
+  closeTrip() {
+    var S = this.s(); var id = S.open; if (!id) return;
+    var notes = Object.assign({}, S.notes); notes[id] = S.from;
+    var order = S.order.filter(function (x) { return x !== id; }); order.unshift(id);
+    var def = S.trips[id];
+    this.set({ open: null, notes: notes, order: order, pointer: null });
+    if (S.anchor) jump(S.anchor);
+    if (def && def.kind === "moment") { var v = document.getElementById(def.vid); if (v) { v.currentTime = def.t; v.play && v.play(); } }
+  }
+  content(def) {
+    if (!def) return { layers: null };
+    if (def.kind === "concept") return { qa: TRIPS[def.key].qa };
+    if (def.kind === "term") return { qa: VQA[def.term] };
+    if (def.kind === "ask") return { qa: def.qa };
+    if (def.kind === "moment") { var ring = def.isV1 && def.t >= 40 && def.t < 54; return { qa: ring ? ["Why a ring here, and not a bright half and a dark half?", "After alignment the star sits on the same pixel both nights, so there's no shift to make two lobes. What differs is the width: the target's star is wider. Wide minus narrow, centred on the same pixel, gives a dark core with a bright ring. That's the shape the next stage cancels."] : null }; }
+    if (def.kind === "video") return { video: def.video };
+    return {};
+  }
+  renderVals() {
+    var self = this, S = this.s();
+    var idx = find(S.cur), step = FLAT[idx], st = status(step.id);
+    var open = S.open, def = open ? S.trips[open] : null, C = this.content(def);
+
+    var t = { from: "", title: "", hasAbout: false, about: "", hasVideo: false, video: "", hasLayers: false, shown: [], canDeeper: false, showFig: false, showReceipt: false, thread: [], draft: "", inputLabel: "", closeLabel: "Done" };
+    if (def) {
+      t.from = S.from; t.title = def.title; t.hasAbout = !!def.about; t.about = def.about || "";
+      t.hasVideo = !!C.video; t.video = C.video || "";
+      if (C.layers) {
+        var held = C.until && !passed(C.until), lockAt = held ? C.lock : 99;
+        var top = Math.min(C.layers.length - 1, lockAt), maxOpen = Math.min(S.depth, top);
+        t.hasLayers = true; t.canDeeper = maxOpen < top;
+        t.shown = C.layers.map(function (Ly, i) {
+          var isLocked = i >= lockAt, isOpen = i <= maxOpen;
+          return { k: Ly[0], open: isOpen, text: isLocked ? "Held back until you've answered the question in lesson " + C.until + ": this would answer it." : Ly[1],
+            tag: isLocked ? "held back" : (C.layers.length > 1 ? "layer " + i : ""),
+            wrapStyle: "padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-color-base); background: " + (isOpen ? "var(--background-color-background-subtle)" : "transparent") + "; opacity: " + (isLocked && !isOpen ? "0.7" : "1") + ";",
+            pick: function () { self.set({ depth: Math.min(i, lockAt) }); } };
+        });
+        t.showFig = !!C.fig; t.showReceipt = !!C.receipt && maxOpen >= 1;
+      }
+      var th = S.threads[open] || [];
+      t.thread = th.map(function (e) { return { text: e[1], style: bubble(e[0]) }; });
+      var dk = "trip:" + open;
+      t.draft = S.drafts[dk] !== undefined ? S.drafts[dk] : (th.length === 0 && C.qa ? C.qa[0] : "");
+      t.inputLabel = th.length ? "Follow up" : "Ask about this";
+      t.onDraft = function (e) { var d = Object.assign({}, self.s().drafts); d[dk] = e.target.value; self.set({ drafts: d }); };
+      t.send = function () {
+        var S2 = self.s(), q = (S2.drafts[dk] !== undefined ? S2.drafts[dk] : t.draft) || ""; if (!q.trim()) return;
+        var th2 = (S2.threads[open] || []).slice(); var a = (C.qa && q === C.qa[0]) ? C.qa[1] : GENERIC;
+        th2.push(["You", q]); th2.push(["Tutor", a]);
+        var thr = Object.assign({}, S2.threads); thr[open] = th2; var d = Object.assign({}, S2.drafts); d[dk] = "";
+        self.set({ threads: thr, drafts: d });
+      };
+      t.closeLabel = def.kind === "moment" ? "Done, resume at " + fmt(def.t) : "Done, back to " + S.from;
+    }
+
+    var course = COURSE.map(function (m) {
+      var cur = m.id === step.mod.id;
+      return { id: m.id, labelStyle: "font-size: 11px; color: " + (cur ? "var(--text-color-primary)" : "var(--text-color-secondary)") + "; font-weight: " + (cur ? "600" : "400") + ";",
+        boxes: m.steps.map(function (s2) { return { title: s2.id + " " + s2.title, style: sq(status(s2.id), 14, s2.id === step.id), go: function () { self.go(s2.id); } }; }) };
+    });
+    var mods = COURSE.map(function (m) {
+      var isOpen = S.openMods[m.id] !== undefined ? S.openMods[m.id] : m.id === step.mod.id;
+      return { id: m.id, title: m.title, open: isOpen,
+        headStyle: "padding: 4px 0; font-weight: " + (m.id === step.mod.id ? "600" : "400") + "; color: " + (m.id === step.mod.id ? "var(--text-color-primary)" : "var(--text-color-secondary)") + ";",
+        toggle: function () { var om = Object.assign({}, self.s().openMods); om[m.id] = !isOpen; self.set({ openMods: om }); },
+        steps: m.steps.map(function (s2) {
+          var viewed = s2.id === step.id;
+          return { label: s2.id + " " + s2.title, boxStyle: sq(status(s2.id), 14, false), go: function () { self.go(s2.id); },
+            rowStyle: "display: flex; gap: 10px; align-items: center; padding: 6px 10px; border-radius: 8px; background: " + (viewed ? "var(--background-color-interaction-selected)" : "transparent") + ";" };
+        }) };
+    });
+
+    var terms = (step.terms || []).map(function (x) {
+      var isC = x.charAt(0) === "@", id = isC ? x.slice(1) : "~" + x, label = isC ? TRIPS[id].title : x, anchor = "term-" + slug(id);
+      var exp = !!(S.inline && S.inline.where === "terms" && S.inline.id === id);
+      return { label: label, anchor: anchor, expanded: exp, open: function () { self.toggleInline("terms", id, anchor); } };
+    });
+    var termInline = S.inline && S.inline.where === "terms" ? this.card(S.inline.id, S.inline.anchor) : { title: "", text: "", canAsk: false };
+
+    var parts = step.parts.map(function (p, i) {
+      var anchor = "part-" + slug(step.id) + "-" + i, key = step.id + "-" + i, vid = "vid-" + slug(key);
+      var o = { anchor: anchor, title: p.title || "", cap: p.cap || "", meta: p.meta || "",
+        isRead: p.k === "Read", paras: (p.paras || []).map(function (x) { return { text: x }; }),
+        hasRun: !!p.run, runLine: p.run ? "Made by " + p.run.by + (p.run.meta ? " · " + p.run.meta : "") : "",
+        runLines: (p.run && p.run.lines ? p.run.lines : []).map(function (x) { return { text: x }; }), hasRunLines: !!(p.run && p.run.lines),
+        runOpen: !!S.runOpen[key], runLabel: S.runOpen[key] ? "Hide run record" : "Run record",
+        toggleRun: function () { var ro = Object.assign({}, self.s().runOpen); ro[key] = !ro[key]; self.set({ runOpen: ro }); },
+        hasVideo: p.k === "Video", src: p.video || "", vid: vid,
+        chapters: p.chapters ? V1CH.map(function (c) { return { at: fmt(c[0]), label: c[1], seek: function () { var v = document.getElementById(vid); if (v) { v.currentTime = c[0]; v.play && v.play(); } } }; }) : [],
+        askMoment: function () { var v = document.getElementById(vid); var tt = v ? v.currentTime : 0; if (v && v.pause) v.pause(); var S2 = self.s(); var id = "m" + (S2.n + 1); var isV1 = p.video === B.v1; var cue = isV1 ? cueAt(tt) : "";
+          self.openTrip(id, { kind: "moment", title: "At " + fmt(tt) + " in “" + p.title + "”", about: cue ? "“" + cue + "”" : "the video at " + fmt(tt), vid: vid, t: tt, isV1: isV1, from: step.id, anchor: anchor }, anchor, { n: S2.n + 1 }); },
+        hasImg: p.k === "Figure", img: p.img || "", alt: p.alt || "",
+        askThis: function () { self.set({ pointer: { label: "the figure “" + (p.title || "") + "”", anchor: anchor } }); var el = document.getElementById("lx-page-ask"); if (el && el.focus) setTimeout(function () { el.focus(); }, 40); },
+        hasSlot: p.k === "Slot", slot: p.slot || "",
+        hasReceipt: p.k === "Receipt", receipt: (p.receipt || []).map(function (r) { return { text: r }; }),
+        isRef: p.k === "Ref", refText: p.text || "", refLabel: p.label || "",
+        refOpen: function () { self.openTrip("ref-" + slug(key), { kind: "video", title: p.vtitle, video: p.video, from: step.id, anchor: anchor }, anchor); },
+        hasChain: p.k === "Chain", chain: [], isTurn: p.k === "Turn", hasInline: false, inl: { title: "", text: "", canAsk: false } };
+      if (o.hasChain) {
+        var inlHere = S.inline && S.inline.where === key;
+        o.chain = STAGES.map(function (c) {
+          var hi = p.chain === c[0], active = (open === "ask:" + c[0]) || (inlHere && S.inline.id === c[0]), cid = "chain-" + c[0] + "-" + slug(key);
+          return { id: c[0], role: c[1], anchor: cid, hasNote: !!S.notes["ask:" + c[0]], note: "You discussed this in " + (S.notes["ask:" + c[0]] || ""),
+            boxStyle: "display: flex; flex-direction: column; gap: 4px; min-height: 96px; width: 100%; padding: 12px; border-radius: 8px; background: var(--background-color-surface-raised); opacity: " + (p.chain === true || hi || active ? "1" : "0.5") + "; border: " + (active || hi ? "2px solid " + GREEN : "1px solid var(--border-color-interaction-base)") + ";",
+            open: function () { self.toggleInline(key, c[0], cid); } };
+        });
+        if (inlHere) { o.hasInline = true; o.inl = self.card(S.inline.id, S.inline.anchor); }
+      }
+      if (o.isTurn) {
+        var settled = !!(DONE[step.id] && p.summary), expanded = !!S.expanded[key];
+        var log = settled ? (p.log || []) : (S.logs[key] || []);
+        o.settled = settled; o.expanded = expanded; o.summary = p.summary || "";
+        o.showBody = !settled || expanded;
+        o.toggleLabel = expanded ? "Hide the conversation" : "Show the conversation (" + log.length + " turns)";
+        o.toggle = function () { var ex = Object.assign({}, self.s().expanded); ex[key] = !expanded; self.set({ expanded: ex }); };
+        o.turnStyle = "display: flex; flex-direction: column; gap: 12px; padding: 16px 18px; border-radius: 10px; border-left: 3px solid " + GREEN + "; background: var(--background-color-surface-raised); font-size: 15px;";
+        o.hasTurnImg = !!p.img; o.turnImg = p.img || ""; o.turnAlt = p.alt || ""; o.turnCap = p.cap || "";
+        o.hasLead = !!p.lead; o.leadA = p.lead ? p.lead[0] : ""; o.leadTerm = p.lead ? p.lead[1] : ""; o.leadB = p.lead ? p.lead[2] : "";
+        o.leadAnchor = "lead-" + slug(key); o.leadOpen = function () { self.toggleInline("lead-" + key, "~" + p.lead[1], "lead-" + slug(key)); };
+        o.hasLeadInline = !!(S.inline && S.inline.where === "lead-" + key);
+        o.leadInl = o.hasLeadInline ? self.card(S.inline.id, S.inline.anchor) : { title: "", text: "", canAsk: false };
+        var showPrompt = !settled && !p.scripted;
+        var logRows = log.map(function (e) { return { who: e[0], text: e[1], style: bubble(e[0]) + " font-size: 15px;" }; });
+        if (showPrompt && log.length === 0) logRows = [{ who: "Tutor", text: p.prompt, style: bubble("Tutor") + " font-size: 15px;" }];
+        else if (showPrompt) logRows.unshift({ who: "Tutor", text: p.prompt, style: bubble("Tutor") + " font-size: 15px;" });
+        o.inputId = "ans-" + slug(key); o.inputLabel = "Your answer";
+        o.hasLogNote = settled; o.logNote = RECON;
+        if (p.scripted) {
+          var prompts = ["What could cause it?", "Anything else that would give the same shape?", "What would you need to measure about it to tell those causes apart?"];
+          logRows.unshift({ who: "Tutor", text: prompts[0], style: bubble("Tutor") + " font-size: 15px;" });
+          o.draft = S.drafts[key] !== undefined ? S.drafts[key] : (S.cp === 0 ? "Misalignment: the star sits at a different place on the two nights." : (S.cp === 1 ? "Or the star really moved between the two nights." : ""));
+          o.note = S.cp < 2 ? "Pre-filled from Corentin's 10 Nov session." : "";
+          o.canAnswer = S.cp < 2;
+          o.send = function () { var S2 = self.s(), L2 = (S2.logs[key] || []).slice(); L2.push(["You", o.draft]);
+            L2.push(["Tutor", S2.cp === 0 ? "Yes, misalignment is one cause. Is there a second one that would give the same two lobes?" : "Good: misalignment or real motion. Both give the same two-lobe shape, so the lobes alone can't decide. What would you need to measure about it to tell them apart?"]);
+            var lg = Object.assign({}, S2.logs); lg[key] = L2; var drs = Object.assign({}, S2.drafts); delete drs[key];
+            self.set({ logs: lg, cp: S2.cp + 1, drafts: drs }); };
+        } else {
+          o.draft = S.drafts[key] || ""; o.note = "Take as many turns as you need."; o.canAnswer = !settled;
+          o.send = function () { var S2 = self.s(), L2 = (S2.logs[key] || []).slice(); L2.push(["You", S2.drafts[key] || "…"]);
+            L2.push(["Tutor", "[The tutor replies here: probes, asks for evidence, or says you've got it, and the lesson's box fills.]"]);
+            var lg = Object.assign({}, S2.logs); lg[key] = L2; var drs = Object.assign({}, S2.drafts); drs[key] = ""; self.set({ logs: lg, drafts: drs }); };
+        }
+        o.log = logRows;
+        o.onDraft = function (e) { var drs = Object.assign({}, self.s().drafts); drs[key] = e.target.value; self.set({ drafts: drs }); };
+      } else {
+        o.settled = false; o.showBody = false; o.hasTurnImg = false; o.hasLead = false; o.hasLeadInline = false; o.canAnswer = false; o.log = []; o.hasLogNote = false;
+      }
+      return o;
+    });
+
+    var trips = S.order.filter(function (id) { return S.notes[id] && S.trips[id]; }).map(function (id) {
+      return { label: S.trips[id].title, where: S.notes[id], open: function () { self.openTrip(id, null, S.trips[id].anchor); } };
+    });
+    var prev = FLAT[idx - 1], next = FLAT[idx + 1];
+    return {
+      course: course, mods: mods, step: step, parts: parts,
+      crumb: "Unit " + step.mod.id + " · " + step.mod.title + " · Lesson " + step.id,
+      terms: terms, hasTerms: terms.length > 0, hasTermInline: !!(S.inline && S.inline.where === "terms"), termInline: termInline,
+      showFind: st === "done",
+      hasPrev: !!prev, prevLabel: prev ? "← " + prev.id + " " + prev.title : "", goPrev: function () { if (prev) self.go(prev.id); },
+      hasNext: !!next, nextLabel: next ? "Next: " + next.id + " " + next.title + " →" : "", goNext: function () { if (next) self.go(next.id); },
+      tOpen: !!def, tClosed: !def, t: t, trips: trips, hasTrips: trips.length > 0,
+      deeper: function () { self.set({ depth: self.s().depth + 1 }); },
+      closeT: function () { self.closeTrip(); },
+      hasPointer: !!S.pointer, pointerLabel: S.pointer ? S.pointer.label : "",
+      clearPointer: function () { self.set({ pointer: null }); },
+      onSelect: function () {
+        var sel = window.getSelection ? window.getSelection() : null; var txt = sel ? String(sel).trim() : "";
+        if (txt.length < 4 || txt.length > 400) return;
+        var node = sel.anchorNode, el = node && (node.nodeType === 1 ? node : node.parentElement), host = el && el.closest ? el.closest("[id^='part-']") : null;
+        self.set({ pointer: { label: "“" + (txt.length > 90 ? txt.slice(0, 90) + "…" : txt) + "”", anchor: host ? host.id : null } });
+      },
+      pageDraft: S.drafts.page || "",
+      onPageDraft: function (e) { var d = Object.assign({}, self.s().drafts); d.page = e.target.value; self.set({ drafts: d }); },
+      askPage: function () {
+        var S2 = self.s(), q = (S2.drafts.page || "").trim(); if (!q) return;
+        var id = "q" + (S2.n + 1), ptr = S2.pointer;
+        var thr = Object.assign({}, S2.threads); thr[id] = [["You", q], ["Tutor", GENERIC]];
+        var d = Object.assign({}, S2.drafts); d.page = "";
+        self.openTrip(id, { kind: "ask", title: q.length > 60 ? q.slice(0, 60) + "…" : q, about: ptr ? ptr.label : "", from: S2.cur, anchor: ptr ? ptr.anchor : null }, ptr ? ptr.anchor : null, { n: S2.n + 1, threads: thr, drafts: d });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

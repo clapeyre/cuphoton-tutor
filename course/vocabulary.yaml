@@ -1,0 +1,282 @@
+# Target vocabulary. These are the words the learner should leave with.
+#
+# The tutor guides the learner to each term rather than dropping it: the learner
+# describes the thing first, in their own words, and the tutor then names it
+# ("the word we'll use for what you called ___ is ___").
+#   definition:   the meaning we teach. Source: docs/glossary.md where it has one
+#                 (path relative to the cuPhoton checkout), otherwise "course".
+#   introduce_at: the module step where the term first appears. The tutor doesn't
+#                 use it before then, and questions use only terms already introduced.
+#   bridges:      analogies and everyday words that may be used to *reach* the
+#                 term, always marked as a bridge ("think of it like...").
+#   avoid:        words that drift or collide; never use them as if they were the term.
+# Collisions are listed at the end. cuPhoton gives a few everyday words a
+# specific meaning, and the tutor never uses them in their everyday sense.
+
+terms:
+
+  # --- Module 00 ---------------------------------------------------------------
+  - term: pixel value (counts)
+    definition: "The number stored in one pixel: how much light that pixel collected during the exposure time. Raw images store counts, not brightness per second."
+    source: course (docs/guide/first-difference.qmd uses DN, 'data numbers', for the unit)
+    introduce_at: "0.1"
+    bridges: ["a photo's pixel brightness", "a tally of light that landed on that square"]
+    avoid: ["intensity", "luminance"]
+
+  - term: source
+    definition: "Anything in the sky that gives off light we can see in the image: a star, a galaxy, a new object. In an image it's a bump of pixel values."
+    source: course
+    introduce_at: "0.1"
+    bridges: ["star", "object", "bump"]
+    avoid: ["blob", "spot"]
+
+  - term: background
+    definition: "Light in every pixel that doesn't come from a source: mostly the night sky's own glow (moon, city light, haze), plus a detector offset. Fairly flat across a small image, but its level changes from night to night."
+    source: course (docs/guide/first-difference.qmd fits 'a smooth background')
+    introduce_at: "0.1"
+    bridges: ["the grey between the stars", "in photography, how bright the scene is overall"]
+    avoid: ["floor", "sky floor", "baseline", "offset (as a noun)", "sky glow (as a term)"]
+
+  - term: noise
+    definition: "The random wobble of every pixel value around its expected level. For light it comes from counting photons, so it grows with the square root of the counts (Poisson noise). State this premise; don't make the learner guess it."
+    source: "course (docs/guide/first-difference.qmd, variance plane: 'source and sky shot noise')"
+    introduce_at: "0.1"
+    bridges: ["grain in a photo taken in low light"]
+    avoid: ["scatter (as a term)", "spread (means the PSF's width)"]
+
+  - term: exposure time
+    definition: "How long the detector collects light for one image. Doubling it roughly doubles the light collected in every pixel (any fixed detector offset stays the same)."
+    source: course
+    introduce_at: "0.1"
+    bridges: ["shutter time in photography"]
+    avoid: ["exposure (on its own: see collisions)"]
+
+  - term: real change (in the sky)
+    definition: "A difference between two images caused by the sky itself: a source that brightened, faded, appeared or moved. What the pipeline is built to find."
+    source: course
+    introduce_at: "v0, 0.2"
+    bridges: ["something that actually happened up there"]
+    avoid: ["transient (a narrower astronomers' word; fine later)", "event", "signal"]
+
+  - term: observing conditions
+    definition: "Everything about how a picture was taken that can differ between two nights: where the telescope pointed, the background level, the exposure time, and the seeing (so the PSF). Differences they cause must be removed before comparing."
+    source: course (astronomers usually mean seeing, transparency and sky brightness; the course stretches it to pointing and exposure time, and says so)
+    introduce_at: "v0, 0.2"
+    bridges: ["how each picture was taken", "camera settings and weather"]
+    avoid: ["nuisance (jargon)", "systematics (jargon)", "noise (that's the random part only)"]
+
+  - term: reference image
+    definition: "The image you compare against: usually earlier and sharper, often a stack of many nights. It gets matched to the target before subtraction. Also called the template."
+    source: docs/glossary.md, "Reference/template image"
+    introduce_at: "0.2"
+    bridges: ["night 1", "the 'before' picture"]
+    avoid: ["first image", "old image"]
+
+  - term: target image
+    definition: "The new image you're searching for changes. Also called the search image."
+    source: docs/glossary.md ("target/search image"); docs/guide/first-difference.qmd
+    introduce_at: "0.2"
+    bridges: ["night 2", "the 'after' picture"]
+    avoid: ["science image (not cuPhoton's word)", "second image"]
+
+  - term: seeing
+    definition: "The blurring of starlight by turbulent air above the telescope. It changes from night to night, so the same star can be sharper on one night than on another with identical hardware."
+    source: "course (the docs use the word without defining it: docs/guide/transient-chain.qmd, 'set them for your seeing')"
+    introduce_at: "0.2 (as a Given, after the learner has seen the blur)"
+    bridges: ["heat shimmer above a road"]
+    avoid: ["focus (it isn't a focus problem)"]
+
+  - term: PSF (point-spread function)
+    definition: "The shape a single point of light takes in the image: the star's blur profile. Its width is set by the optics and the seeing."
+    source: docs/glossary.md, "PSF"
+    introduce_at: "0.2"
+    bridges: ["how blurred a star looks", "the star's spread"]
+    avoid: ["spread (as a term)", "size of the star"]
+
+  - term: alignment
+    definition: "Putting the two images on the same pixel grid, so the same source sits at the same pixel in both. cuPhoton's stage for this is reprojection (xRep)."
+    source: course; docs/glossary.md, "Reprojection"
+    introduce_at: "0.3"
+    bridges: ["lining up two photos", "registration"]
+    avoid: ["shifting (alignment also rotates and rescales)"]
+
+  - term: difference image
+    definition: "The target image minus the reference image, after both have been aligned and the reference's blur and background have been matched to the target. Only real changes and noise should remain."
+    source: docs/glossary.md, "Difference image"
+    introduce_at: "0.3 (the raw subtraction is 'a plain subtraction', not yet a difference image)"
+    bridges: ["before minus after"]
+    avoid: ["the mess", "subtraction (for the result)"]
+
+  - term: residual
+    definition: "Whatever is left in a difference image that isn't noise. It may be a real change, or a leftover from imperfect matching."
+    source: course (used throughout docs/guide)
+    introduce_at: "0.3"
+    bridges: ["what's left over"]
+    avoid: ["leftovers", "blob", "hotspot (a hotspot is a pixel the code flags; not used before module 01)"]
+
+  - term: dipole
+    definition: "A positive lobe right beside a negative lobe in a difference image."
+    hold_back: "Its causes are checkpoint 0.4. Don't state them, or write them into learner/vocabulary.md, before it passes."
+    source: docs/glossary.md, "Dipole"
+    introduce_at: "0.3 (named when the learner first describes the +/- pair in the plain subtraction)"
+    bridges: ["a bright half and a dark half", "the +/- pair"]
+    avoid: ["spike"]
+
+  - term: candidate
+    definition: "A residual the pipeline has found and will measure: something that might be a real change."
+    source: docs/glossary.md, "Candidate"
+    introduce_at: "0.4"
+    bridges: ["a suspect"]
+    avoid: ["detection (implies a significance that hasn't been tested)"]
+
+  - term: real / bogus
+    definition: "A score or label xScan gives a candidate: a real change in the sky, or a bogus residual left by imperfect processing or the detector. It sets the priority for follow-up; it is not a final verdict."
+    source: docs/glossary.md, "Real/bogus" (used to prioritize candidates)
+    introduce_at: "0.4"
+    bridges: ["true positive / false alarm"]
+    avoid: ["artifact (see collisions)", "fake"]
+
+  # --- Module 01 ---------------------------------------------------------------
+  - term: FITS file, HDU, header
+    definition: "The astronomy file format. A FITS file holds one or more HDUs (header/data units); each has a header of metadata (telescope, gain, WCS, ...) and data, here the image."
+    source: docs/glossary.md, "FITS", "HDU"
+    introduce_at: "1.1"
+    bridges: ["an image file with a metadata sheet attached", "EXIF data in a photo"]
+    avoid: ["fits (lower case, for the format)"]
+
+  - term: injected (sample) source
+    definition: "A change written into the synthetic pair on purpose, so its true position and flux are known and every result can be checked against it."
+    source: course (docs/guide/first-difference.qmd, "Make a sample pair")
+    introduce_at: "1.1"
+    bridges: ["the answer key"]
+    avoid: ["fake", "simulated transient (fine later, not as the term)"]
+
+  - term: gain
+    definition: "Electrons per data number (DN): how the detector converts collected light into the stored pixel value. Stored in the header."
+    source: docs/guide/first-difference.qmd, "Give each image a variance plane"
+    introduce_at: "1.2"
+    bridges: ["an exchange rate between photons and stored numbers"]
+    avoid: ["amplification", "ISO"]
+
+  - term: variance plane
+    definition: "One number per pixel: the expected noise variance of that pixel, in squared data units, built from a noise model (here, image level / gain). It sets each pixel's fit weight."
+    source: docs/glossary.md, "Variance"; docs/guide/first-difference.qmd
+    introduce_at: "1.2"
+    bridges: ["how much each pixel would wobble if the same exposure were repeated many times"]
+    avoid: ["the image's variance (one number, like df.var())", "noise map (fine as a bridge only)"]
+    hold_back: "Checkpoint 1.2 asks what variance x 4 does to a flux and its error. Don't state it before."
+
+  - term: WCS
+    definition: "World Coordinate System: header metadata that maps each pixel to a position on the sky."
+    source: docs/glossary.md, "WCS"
+    introduce_at: "1.3"
+    bridges: ["GPS coordinates for every pixel"]
+    avoid: ["calibration (too broad)"]
+
+  - term: reprojection
+    definition: "Resampling an image onto another pixel grid, using the two WCS headers. cuPhoton's alignment stage, xRep. It does not match the blur."
+    source: docs/glossary.md, "Reprojection"
+    introduce_at: "1.3 (named in 0.4; used for real here)"
+    bridges: ["alignment (module 00's word)"]
+    avoid: ["warping (fine as a bridge)", "registration (other fields' word)"]
+
+  - term: mask
+    definition: "A per-pixel flag array. xRep's mask marks pixels the reference doesn't cover (nonzero = flagged); a fit mask is boolean with True = use the pixel. Two kinds, opposite sense."
+    source: docs/glossary.md, "Fit mask"; docs/guide/concepts.qmd, "Variance and masks"
+    introduce_at: "1.3"
+    bridges: ["a stencil over the image"]
+    avoid: ["bad-pixel map (only one of the two kinds)"]
+
+  - term: kernel (matching kernel)
+    definition: "The small array of convolution weights xPois fits to blur the reference until its PSF matches the target's. Each output pixel is a weighted sum of its neighbours. Its sum estimates the flux scale between the two images."
+    source: docs/glossary.md, "Kernel" (first sense); docs/guide/first-difference.qmd, "Match the blur and subtract"
+    introduce_at: "1.4"
+    bridges: ["a blur recipe", "a smoothing filter in image editing"]
+    avoid: ["kernel without saying which sense once module 03 starts", "filter (as the term)"]
+    hold_back: "Checkpoint 1.4 asks why the difference image has a NaN edge. Don't link the kernel's size to the edges before it passes."
+
+  - term: kernel mismatch
+    definition: "Reference flux the kernel failed to match, left in the difference image at a source that didn't change."
+    source: docs/glossary.md, "Kernel mismatch"
+    introduce_at: "1.4"
+    bridges: ["the hole-and-halo left by an imperfect blur match"]
+    avoid: ["ring (as the term)"]
+
+  - term: chi2/dof
+    definition: "How far the subtraction's residuals are from the noise the variance predicts, per degree of freedom. Near 1 means 'about as large as the noise'. On its own it does not prove the subtraction is good."
+    source: docs/guide/first-difference.qmd, "Match the blur and subtract"
+    introduce_at: "1.4"
+    bridges: ["a goodness-of-fit score"]
+    avoid: ["accuracy", "quality score"]
+
+  - term: standardized residual (z)
+    definition: "The difference image divided by its predicted noise, pixel by pixel. A noise diagnostic in approximate noise units, not a calibrated significance."
+    source: docs/guide/first-difference.qmd, "Find the candidates"
+    introduce_at: "1.5"
+    bridges: ["how many 'noise units' each pixel stands out"]
+    avoid: ["sigma (as in a 5-sigma detection)", "significance", "S/N (close, but not this)"]
+
+  - term: threshold
+    definition: "The z value above which pixels are grouped into regions worth measuring (5 in the guide). It does not set a false-detection probability."
+    source: docs/guide/first-difference.qmd, "Find the candidates"
+    introduce_at: "1.5"
+    bridges: ["a cut-off"]
+    avoid: ["5-sigma detection"]
+
+  - term: hotspot
+    definition: "A region of the standardized residual above the threshold, as identify_residual_hotspots returns it, with its peak position. Hotspots become the candidates xFit measures."
+    source: docs/guide/first-difference.qmd, "Find the candidates"
+    introduce_at: "1.5"
+    bridges: ["a flagged spot"]
+    avoid: ["detection", "blob"]
+    hold_back: "The hotspot's peak is given as (y, x). That is checkpoint 1.7's bug. Don't point it out, or write it into learner/vocabulary.md, before 1.7 passes."
+
+  - term: stamp
+    definition: "A small cutout around a candidate. xFit fits batches of stamps."
+    source: docs/glossary.md, "Stamp"
+    introduce_at: "1.6"
+    bridges: ["a thumbnail crop"]
+    avoid: ["window (it's the function's name, window_stamps, not the term)", "patch"]
+
+  - term: flux
+    definition: "The total light from a source, in data numbers (DN). Measured on a difference image, it's a difference flux: the change between the target and the matched reference."
+    source: docs/guide/first-difference.qmd, "Measure the candidates"
+    introduce_at: "1.1"
+    bridges: ["total brightness of a source"]
+    avoid: ["brightness (ambiguous)", "magnitude (astronomers' log scale)", "intensity"]
+
+  - term: amplitude
+    definition: "The fitted Gaussian's peak height. Its sign says brighter (+) or fainter (-). xFit reports flux as 2*pi*|A|*sx*sy, a nonnegative magnitude, so the sign lives in the amplitude."
+    source: docs/guide/measure.qmd ("flux is the nonnegative lobe-flux magnitude")
+    introduce_at: "1.6"
+    bridges: ["peak brightness, as opposed to total brightness"]
+    avoid: ["height (fine as a bridge)", "flux (it isn't the flux)"]
+
+  - term: error bar
+    definition: "One standard deviation of a measured quantity, here the flux_error xFit returns. It is computed from the variance plane, so it is only as right as that plane."
+    source: docs/glossary.md, "Error bar"
+    introduce_at: "1.2"
+    bridges: ["the ± after a measurement"]
+    avoid: ["accuracy", "variance (it's the square root of a variance, not the variance plane)"]
+
+  - term: fit status (converged, uncertainty_valid)
+    definition: "Flags saying the optimizer finished and the errors could be computed. Necessary, not sufficient: they say the optimizer finished, not that it fitted the right thing."
+    source: docs/guide/first-difference.qmd, "Measure the candidates"
+    introduce_at: "1.6"
+    bridges: ["the fit didn't crash"]
+    avoid: ["success", "valid result"]
+
+confusables:
+  - words: ["PSF width (psf_sigma, sigma_x, sigma_y)", "variance plane", "error bar / covariance / standard_errors", "noise"]
+    rule: "Four kinds of spread with similar names. Say which one each time, with its units: a PSF width is in pixels; a variance plane is in squared data units per pixel; an error bar is in the measured quantity's units; noise is the random wobble the variance plane describes. See M-SIGMA-VARIANCE."
+
+collisions:
+  - word: artifact
+    cuphoton_meaning: "A saved output product of a run (an array, a table, a metric file). docs/glossary.md, 'Artifact'. The glossary's Real/bogus entry also uses it loosely for spurious detections, so it is ambiguous even in the docs."
+    rule: "Never use it for a spurious residual; say 'bogus residual'. If the learner uses it that way, map it once: 'in cuPhoton, artifact means a saved output file; what you mean we call a bogus residual'."
+  - word: exposure
+    cuphoton_meaning: "One detector image with its variance, mask, WCS, PSF, timing and metadata. docs/glossary.md, 'Exposure'."
+    rule: "Say 'exposure time' for duration and 'image' for the picture."
+  - word: kernel
+    cuphoton_meaning: "Two meanings: the convolution weights xPois fits (module 01), and a function launched on the GPU (module 03)."
+    rule: "Not used in module 00. Introduce the matching sense in module 01 and the GPU sense in module 03, and name which one each time."
