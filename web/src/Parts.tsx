@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { fmtTime, useCtx } from "./ctx.tsx";
-import { Definition, Inline } from "./Prose.tsx";
+import { Inline, Typed } from "./Prose.tsx";
 import type { FigureOnPage, Part, RunRecord } from "./types.ts";
 
 export function PartView({ part, idx }: { part: Part; idx: number }) {
@@ -9,7 +9,6 @@ export function PartView({ part, idx }: { part: Part; idx: number }) {
       return (
         <div className="prose">
           <p><Inline text={part.text} where={`p${idx}`} /></p>
-          <Definition where={`p${idx}`} />
         </div>
       );
     case "video": return <Video part={part} />;
@@ -155,7 +154,6 @@ function Chain({ part, idx }: { part: Extract<Part, { kind: "chain" }>; idx: num
           </div>
         </div>
       )}
-      <Definition where={where} />
       <figcaption><span><strong>{part.hi ? "Where we are in the chain" : "The whole chain"}.</strong> {part.caption}</span></figcaption>
     </figure>
   );
@@ -168,8 +166,10 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
   const [unrolled, setUnrolled] = useState(false);
   const [draft, setDraft] = useState("");
   const log = st?.log ?? [];
+  const seenAtMount = useRef(log.length); // messages already there when the page opened don't type out
   const lastLearner = [...log].reverse().findIndex((m) => m.who === "learner");
-  const waiting = !settled && log.length > 0 && log[log.length - 1].who === "learner" && !!ctx.state.activity.main;
+  const streaming = ctx.state.activity.drafts?.[`turn:${ctx.lesson.id}/${part.id}`];
+  const waiting = !settled && !streaming && log.length > 0 && log[log.length - 1].who === "learner" && !!ctx.state.activity.main;
   const exchanges = log.filter((m) => m.text).length;
   const send = () => {
     const t = draft.trim();
@@ -202,13 +202,14 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
           )}
           <div className="turn-col">
             {part.lead && <p style={{ margin: 0 }}><Inline text={part.lead} where={where} /></p>}
-            <Definition where={where} />
             {part.prompt && <p style={{ margin: 0 }}><Inline text={part.prompt} where={where} /></p>}
-            {log.map((m, i) => m.figure ? (
+            {/* The streaming draft takes the next log index, so its typing carries on into the final message. */}
+            {[...log, ...(streaming ? [{ who: "tutor" as const, text: streaming, at: 0 }] : [])].map((m, i) => "figure" in m && m.figure ? (
               <div key={i} className="msg figure"><ProducedFigure fig={m.figure} compact /></div>
             ) : (
-              <div key={i} className={`msg ${m.who}`}>
-                <span className="who">{m.who === "tutor" ? "Tutor" : "You"}</span>{m.text}
+              <div key={i} className={`msg ${m.who}`} aria-live={m.who === "tutor" ? "polite" : undefined}>
+                <span className="who">{m.who === "tutor" ? "Tutor" : "You"}</span>
+                {m.who === "tutor" ? <Typed text={m.text} where={`${where}-m${i}`} animate={i >= seenAtMount.current} /> : m.text}
               </div>
             ))}
             {waiting && <span className="typing">The tutor is {ctx.state.activity.main === "Running" ? "running it" : "thinking"}</span>}

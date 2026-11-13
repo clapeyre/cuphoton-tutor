@@ -21,8 +21,8 @@ objectives:
   - id: O5
     text: Adapt the workflow to new data, including an honest noise model.
 
-# Units, in order. Each unit directory holds unit.yaml and one directory per lesson.
-units:
+# Modules, in order. Each module directory holds module.yaml and one directory per lesson.
+modules:
   - 00-what-changed
   - 01-first-difference
   - 02-trust-the-run

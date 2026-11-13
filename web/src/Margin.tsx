@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useCtx } from "./ctx.tsx";
+import { Typed } from "./Prose.tsx";
 import type { Pointer } from "./types.ts";
 
 /** The margin is for conversations only: one ask box, side trips, and notes to the authors. */
@@ -12,6 +13,9 @@ export function Margin({ pointer, setPointer, onClose }: {
   const [draft, setDraft] = useState("");
   const [tripDraft, setTripDraft] = useState("");
   const askRef = useRef<HTMLTextAreaElement>(null);
+  // Messages a side trip already had when it was opened don't type out again.
+  const seen = useRef<{ id: string; n: number } | null>(null);
+  if (open && seen.current?.id !== open.id) seen.current = { id: open.id, n: open.messages.length };
   useEffect(() => { if (pointer && !open) askRef.current?.focus(); }, [pointer, open]);
 
   const ask = () => {
@@ -38,10 +42,13 @@ export function Margin({ pointer, setPointer, onClose }: {
         {open.about?.kind === "video" && open.about.src && open.about.at === 0 && (
           <video controls preload="metadata" src={open.about.src} />
         )}
-        {open.messages.map((m, i) => (
-          <div key={i} className={`msg ${m.who}`}><span className="who">{m.who === "tutor" ? "Tutor" : "You"}</span>{m.text}</div>
+        {[...open.messages, ...(busy && activity.drafts?.[`thread:${open.id}`] ? [{ who: "tutor" as const, text: activity.drafts[`thread:${open.id}`] }] : [])].map((m, i) => (
+          <div key={i} className={`msg ${m.who}`} aria-live={m.who === "tutor" ? "polite" : undefined}>
+            <span className="who">{m.who === "tutor" ? "Tutor" : "You"}</span>
+            {m.who === "tutor" ? <Typed text={m.text} where={`trip-${i}`} animate={i >= (seen.current?.n ?? 0)} /> : m.text}
+          </div>
         ))}
-        {busy && <span className="typing">The tutor is answering</span>}
+        {busy && !activity.drafts?.[`thread:${open.id}`] && <span className="typing">The tutor is answering</span>}
         <label htmlFor="trip-in" className="note">Ask a follow-up</label>
         <textarea id="trip-in" className="input" rows={2} value={tripDraft} onChange={(e) => setTripDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) sendTrip(); }} />

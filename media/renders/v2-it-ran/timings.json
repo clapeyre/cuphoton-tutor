@@ -1,0 +1,1437 @@
+{
+  "s1": {
+    "duration": 13.7,
+    "text": "Your agent ran the pipeline. No errors, a tidy summary, a green light. It's tempting to stop there. But \"it ran\" and \"it's right\" are different claims, and the gap between them is where most mistakes hide.",
+    "words": [
+      {
+        "w": "Your",
+        "start": 0.275,
+        "end": 0.425
+      },
+      {
+        "w": "agent",
+        "start": 0.425,
+        "end": 0.825
+      },
+      {
+        "w": "ran",
+        "start": 0.825,
+        "end": 1.062
+      },
+      {
+        "w": "the",
+        "start": 1.062,
+        "end": 1.15
+      },
+      {
+        "w": "pipeline",
+        "start": 1.15,
+        "end": 2.05
+      },
+      {
+        "w": ".",
+        "start": 2.05,
+        "end": 2.2
+      },
+      {
+        "w": "No",
+        "start": 2.2,
+        "end": 2.487
+      },
+      {
+        "w": "errors",
+        "start": 2.487,
+        "end": 2.975
+      },
+      {
+        "w": ",",
+        "start": 2.975,
+        "end": 3.025
+      },
+      {
+        "w": "a",
+        "start": 3.025,
+        "end": 3.138
+      },
+      {
+        "w": "tidy",
+        "start": 3.138,
+        "end": 3.513
+      },
+      {
+        "w": "summary",
+        "start": 3.513,
+        "end": 4.0
+      },
+      {
+        "w": ",",
+        "start": 4.0,
+        "end": 4.075
+      },
+      {
+        "w": "a",
+        "start": 4.075,
+        "end": 4.188
+      },
+      {
+        "w": "green",
+        "start": 4.188,
+        "end": 4.55
+      },
+      {
+        "w": "light",
+        "start": 4.55,
+        "end": 5.2
+      },
+      {
+        "w": ".",
+        "start": 5.2,
+        "end": 5.3
+      },
+      {
+        "w": "It's",
+        "start": 5.3,
+        "end": 5.55
+      },
+      {
+        "w": "tempting",
+        "start": 5.55,
+        "end": 5.975
+      },
+      {
+        "w": "to",
+        "start": 5.975,
+        "end": 6.075
+      },
+      {
+        "w": "stop",
+        "start": 6.075,
+        "end": 6.4
+      },
+      {
+        "w": "there",
+        "start": 6.4,
+        "end": 7.0
+      },
+      {
+        "w": ".",
+        "start": 7.0,
+        "end": 7.1
+      },
+      {
+        "w": "But",
+        "start": 7.1,
+        "end": 7.237
+      },
+      {
+        "w": "\"",
+        "start": 7.237,
+        "end": 7.275
+      },
+      {
+        "w": "it",
+        "start": 7.275,
+        "end": 7.412
+      },
+      {
+        "w": "ran",
+        "start": 7.412,
+        "end": 7.875
+      },
+      {
+        "w": "\"",
+        "start": 7.875,
+        "end": 7.975
+      },
+      {
+        "w": "and",
+        "start": 7.975,
+        "end": 8.137
+      },
+      {
+        "w": "\"",
+        "start": 8.137,
+        "end": 8.175
+      },
+      {
+        "w": "it's",
+        "start": 8.175,
+        "end": 8.35
+      },
+      {
+        "w": "right",
+        "start": 8.35,
+        "end": 8.65
+      },
+      {
+        "w": "\"",
+        "start": 8.65,
+        "end": 8.725
+      },
+      {
+        "w": "are",
+        "start": 8.725,
+        "end": 8.825
+      },
+      {
+        "w": "different",
+        "start": 8.825,
+        "end": 9.125
+      },
+      {
+        "w": "claims",
+        "start": 9.125,
+        "end": 9.9
+      },
+      {
+        "w": ",",
+        "start": 9.9,
+        "end": 10.0
+      },
+      {
+        "w": "and",
+        "start": 10.0,
+        "end": 10.113
+      },
+      {
+        "w": "the",
+        "start": 10.113,
+        "end": 10.2
+      },
+      {
+        "w": "gap",
+        "start": 10.2,
+        "end": 10.475
+      },
+      {
+        "w": "between",
+        "start": 10.475,
+        "end": 10.825
+      },
+      {
+        "w": "them",
+        "start": 10.825,
+        "end": 11.088
+      },
+      {
+        "w": "is",
+        "start": 11.088,
+        "end": 11.25
+      },
+      {
+        "w": "where",
+        "start": 11.25,
+        "end": 11.425
+      },
+      {
+        "w": "most",
+        "start": 11.425,
+        "end": 11.725
+      },
+      {
+        "w": "mistakes",
+        "start": 11.725,
+        "end": 12.225
+      },
+      {
+        "w": "hide",
+        "start": 12.225,
+        "end": 12.825
+      },
+      {
+        "w": ".",
+        "start": 12.825,
+        "end": 13.0
+      }
+    ]
+  },
+  "s2": {
+    "duration": 18.325,
+    "text": "First question: where did it actually run? cuPhoton's default backend, auto, tries the GPU and quietly falls back to the CPU if it can't use it. The run still succeeds. The only trace is in the record it leaves behind, the receipt. So ask your agent for it, every time.",
+    "words": [
+      {
+        "w": "First",
+        "start": 0.3,
+        "end": 0.537
+      },
+      {
+        "w": "question",
+        "start": 0.537,
+        "end": 1.1
+      },
+      {
+        "w": ":",
+        "start": 1.1,
+        "end": 1.175
+      },
+      {
+        "w": "where",
+        "start": 1.175,
+        "end": 1.312
+      },
+      {
+        "w": "did",
+        "start": 1.312,
+        "end": 1.438
+      },
+      {
+        "w": "it",
+        "start": 1.438,
+        "end": 1.525
+      },
+      {
+        "w": "actually",
+        "start": 1.525,
+        "end": 1.95
+      },
+      {
+        "w": "run",
+        "start": 1.95,
+        "end": 2.625
+      },
+      {
+        "w": "?",
+        "start": 2.625,
+        "end": 2.763
+      },
+      {
+        "w": "cuPhoton's",
+        "start": 2.763,
+        "end": 3.575
+      },
+      {
+        "w": "default",
+        "start": 3.575,
+        "end": 4.0
+      },
+      {
+        "w": "backend",
+        "start": 4.0,
+        "end": 4.4
+      },
+      {
+        "w": ",",
+        "start": 4.4,
+        "end": 4.45
+      },
+      {
+        "w": "auto",
+        "start": 4.45,
+        "end": 4.95
+      },
+      {
+        "w": ",",
+        "start": 4.95,
+        "end": 5.088
+      },
+      {
+        "w": "tries",
+        "start": 5.088,
+        "end": 5.425
+      },
+      {
+        "w": "the",
+        "start": 5.425,
+        "end": 5.537
+      },
+      {
+        "w": "GPU",
+        "start": 5.537,
+        "end": 6.162
+      },
+      {
+        "w": "and",
+        "start": 6.162,
+        "end": 6.312
+      },
+      {
+        "w": "quietly",
+        "start": 6.312,
+        "end": 6.862
+      },
+      {
+        "w": "falls",
+        "start": 6.862,
+        "end": 7.2
+      },
+      {
+        "w": "back",
+        "start": 7.2,
+        "end": 7.475
+      },
+      {
+        "w": "to",
+        "start": 7.475,
+        "end": 7.562
+      },
+      {
+        "w": "the",
+        "start": 7.562,
+        "end": 7.688
+      },
+      {
+        "w": "CPU",
+        "start": 7.688,
+        "end": 8.3
+      },
+      {
+        "w": "if",
+        "start": 8.3,
+        "end": 8.412
+      },
+      {
+        "w": "it",
+        "start": 8.412,
+        "end": 8.5
+      },
+      {
+        "w": "can't",
+        "start": 8.5,
+        "end": 8.75
+      },
+      {
+        "w": "use",
+        "start": 8.75,
+        "end": 8.988
+      },
+      {
+        "w": "it",
+        "start": 8.988,
+        "end": 9.5
+      },
+      {
+        "w": ".",
+        "start": 9.5,
+        "end": 9.6
+      },
+      {
+        "w": "The",
+        "start": 9.6,
+        "end": 9.738
+      },
+      {
+        "w": "run",
+        "start": 9.738,
+        "end": 10.088
+      },
+      {
+        "w": "still",
+        "start": 10.088,
+        "end": 10.375
+      },
+      {
+        "w": "succeeds",
+        "start": 10.375,
+        "end": 11.35
+      },
+      {
+        "w": ".",
+        "start": 11.35,
+        "end": 11.488
+      },
+      {
+        "w": "The",
+        "start": 11.488,
+        "end": 11.65
+      },
+      {
+        "w": "only",
+        "start": 11.65,
+        "end": 11.963
+      },
+      {
+        "w": "trace",
+        "start": 11.963,
+        "end": 12.35
+      },
+      {
+        "w": "is",
+        "start": 12.35,
+        "end": 12.475
+      },
+      {
+        "w": "in",
+        "start": 12.475,
+        "end": 12.562
+      },
+      {
+        "w": "the",
+        "start": 12.562,
+        "end": 12.65
+      },
+      {
+        "w": "record",
+        "start": 12.65,
+        "end": 13.012
+      },
+      {
+        "w": "it",
+        "start": 13.012,
+        "end": 13.125
+      },
+      {
+        "w": "leaves",
+        "start": 13.125,
+        "end": 13.45
+      },
+      {
+        "w": "behind",
+        "start": 13.45,
+        "end": 14.0
+      },
+      {
+        "w": ",",
+        "start": 14.0,
+        "end": 14.05
+      },
+      {
+        "w": "the",
+        "start": 14.05,
+        "end": 14.15
+      },
+      {
+        "w": "receipt",
+        "start": 14.15,
+        "end": 14.95
+      },
+      {
+        "w": ".",
+        "start": 14.95,
+        "end": 15.088
+      },
+      {
+        "w": "So",
+        "start": 15.088,
+        "end": 15.287
+      },
+      {
+        "w": "ask",
+        "start": 15.287,
+        "end": 15.537
+      },
+      {
+        "w": "your",
+        "start": 15.537,
+        "end": 15.675
+      },
+      {
+        "w": "agent",
+        "start": 15.675,
+        "end": 16.025
+      },
+      {
+        "w": "for",
+        "start": 16.025,
+        "end": 16.175
+      },
+      {
+        "w": "it",
+        "start": 16.175,
+        "end": 16.4
+      },
+      {
+        "w": ",",
+        "start": 16.4,
+        "end": 16.5
+      },
+      {
+        "w": "every",
+        "start": 16.5,
+        "end": 16.8
+      },
+      {
+        "w": "time",
+        "start": 16.8,
+        "end": 17.475
+      },
+      {
+        "w": ".",
+        "start": 17.475,
+        "end": 17.625
+      }
+    ]
+  },
+  "s3": {
+    "duration": 15.6,
+    "text": "Second question: does the output look like what it should? Both of these runs finished without complaint. Only one of them matched the blur. You can't tell from a log line. You can tell in half a second from the picture, if you know what the picture should look like.",
+    "words": [
+      {
+        "w": "Second",
+        "start": 0.275,
+        "end": 0.562
+      },
+      {
+        "w": "question",
+        "start": 0.562,
+        "end": 1.275
+      },
+      {
+        "w": ":",
+        "start": 1.275,
+        "end": 1.375
+      },
+      {
+        "w": "does",
+        "start": 1.375,
+        "end": 1.538
+      },
+      {
+        "w": "the",
+        "start": 1.538,
+        "end": 1.663
+      },
+      {
+        "w": "output",
+        "start": 1.663,
+        "end": 2.125
+      },
+      {
+        "w": "look",
+        "start": 2.125,
+        "end": 2.35
+      },
+      {
+        "w": "like",
+        "start": 2.35,
+        "end": 2.55
+      },
+      {
+        "w": "what",
+        "start": 2.55,
+        "end": 2.688
+      },
+      {
+        "w": "it",
+        "start": 2.688,
+        "end": 2.788
+      },
+      {
+        "w": "should",
+        "start": 2.788,
+        "end": 3.425
+      },
+      {
+        "w": "?",
+        "start": 3.425,
+        "end": 3.612
+      },
+      {
+        "w": "Both",
+        "start": 3.612,
+        "end": 3.888
+      },
+      {
+        "w": "of",
+        "start": 3.888,
+        "end": 3.975
+      },
+      {
+        "w": "these",
+        "start": 3.975,
+        "end": 4.263
+      },
+      {
+        "w": "runs",
+        "start": 4.263,
+        "end": 4.737
+      },
+      {
+        "w": "finished",
+        "start": 4.737,
+        "end": 5.175
+      },
+      {
+        "w": "without",
+        "start": 5.175,
+        "end": 5.5
+      },
+      {
+        "w": "complaint",
+        "start": 5.5,
+        "end": 6.375
+      },
+      {
+        "w": ".",
+        "start": 6.375,
+        "end": 6.513
+      },
+      {
+        "w": "Only",
+        "start": 6.513,
+        "end": 6.825
+      },
+      {
+        "w": "one",
+        "start": 6.825,
+        "end": 6.963
+      },
+      {
+        "w": "of",
+        "start": 6.963,
+        "end": 7.037
+      },
+      {
+        "w": "them",
+        "start": 7.037,
+        "end": 7.237
+      },
+      {
+        "w": "matched",
+        "start": 7.237,
+        "end": 7.675
+      },
+      {
+        "w": "the",
+        "start": 7.675,
+        "end": 7.775
+      },
+      {
+        "w": "blur",
+        "start": 7.775,
+        "end": 8.325
+      },
+      {
+        "w": ".",
+        "start": 8.325,
+        "end": 8.45
+      },
+      {
+        "w": "You",
+        "start": 8.45,
+        "end": 8.613
+      },
+      {
+        "w": "can't",
+        "start": 8.613,
+        "end": 8.912
+      },
+      {
+        "w": "tell",
+        "start": 8.912,
+        "end": 9.225
+      },
+      {
+        "w": "from",
+        "start": 9.225,
+        "end": 9.363
+      },
+      {
+        "w": "a",
+        "start": 9.363,
+        "end": 9.45
+      },
+      {
+        "w": "log",
+        "start": 9.45,
+        "end": 9.775
+      },
+      {
+        "w": "line",
+        "start": 9.775,
+        "end": 10.4
+      },
+      {
+        "w": ".",
+        "start": 10.4,
+        "end": 10.5
+      },
+      {
+        "w": "You",
+        "start": 10.5,
+        "end": 10.625
+      },
+      {
+        "w": "can",
+        "start": 10.625,
+        "end": 10.812
+      },
+      {
+        "w": "tell",
+        "start": 10.812,
+        "end": 11.125
+      },
+      {
+        "w": "in",
+        "start": 11.125,
+        "end": 11.25
+      },
+      {
+        "w": "half",
+        "start": 11.25,
+        "end": 11.463
+      },
+      {
+        "w": "a",
+        "start": 11.463,
+        "end": 11.525
+      },
+      {
+        "w": "second",
+        "start": 11.525,
+        "end": 11.863
+      },
+      {
+        "w": "from",
+        "start": 11.863,
+        "end": 11.988
+      },
+      {
+        "w": "the",
+        "start": 11.988,
+        "end": 12.075
+      },
+      {
+        "w": "picture",
+        "start": 12.075,
+        "end": 12.675
+      },
+      {
+        "w": ",",
+        "start": 12.675,
+        "end": 12.775
+      },
+      {
+        "w": "if",
+        "start": 12.775,
+        "end": 12.9
+      },
+      {
+        "w": "you",
+        "start": 12.9,
+        "end": 13.0
+      },
+      {
+        "w": "know",
+        "start": 13.0,
+        "end": 13.175
+      },
+      {
+        "w": "what",
+        "start": 13.175,
+        "end": 13.312
+      },
+      {
+        "w": "the",
+        "start": 13.312,
+        "end": 13.4
+      },
+      {
+        "w": "picture",
+        "start": 13.4,
+        "end": 13.825
+      },
+      {
+        "w": "should",
+        "start": 13.825,
+        "end": 14.0
+      },
+      {
+        "w": "look",
+        "start": 14.0,
+        "end": 14.2
+      },
+      {
+        "w": "like",
+        "start": 14.2,
+        "end": 14.75
+      },
+      {
+        "w": ".",
+        "start": 14.75,
+        "end": 14.9
+      }
+    ]
+  },
+  "s4": {
+    "duration": 18.875,
+    "text": "Third question: did the measurements actually converge? Fits report whether they did, and whether their error bars can be trusted. A number without that flag is just a number. But the flag is a minimum, not a proof: a fit can converge and still be wrong, so check the value against the picture too.",
+    "words": [
+      {
+        "w": "Third",
+        "start": 0.275,
+        "end": 0.525
+      },
+      {
+        "w": "question",
+        "start": 0.525,
+        "end": 1.15
+      },
+      {
+        "w": ":",
+        "start": 1.15,
+        "end": 1.225
+      },
+      {
+        "w": "did",
+        "start": 1.225,
+        "end": 1.363
+      },
+      {
+        "w": "the",
+        "start": 1.363,
+        "end": 1.45
+      },
+      {
+        "w": "measurements",
+        "start": 1.45,
+        "end": 1.962
+      },
+      {
+        "w": "actually",
+        "start": 1.962,
+        "end": 2.4
+      },
+      {
+        "w": "converge",
+        "start": 2.4,
+        "end": 3.175
+      },
+      {
+        "w": "?",
+        "start": 3.175,
+        "end": 3.325
+      },
+      {
+        "w": "Fits",
+        "start": 3.325,
+        "end": 3.625
+      },
+      {
+        "w": "report",
+        "start": 3.625,
+        "end": 4.075
+      },
+      {
+        "w": "whether",
+        "start": 4.075,
+        "end": 4.325
+      },
+      {
+        "w": "they",
+        "start": 4.325,
+        "end": 4.475
+      },
+      {
+        "w": "did",
+        "start": 4.475,
+        "end": 4.875
+      },
+      {
+        "w": ",",
+        "start": 4.875,
+        "end": 4.975
+      },
+      {
+        "w": "and",
+        "start": 4.975,
+        "end": 5.1
+      },
+      {
+        "w": "whether",
+        "start": 5.1,
+        "end": 5.375
+      },
+      {
+        "w": "their",
+        "start": 5.375,
+        "end": 5.562
+      },
+      {
+        "w": "error",
+        "start": 5.562,
+        "end": 5.875
+      },
+      {
+        "w": "bars",
+        "start": 5.875,
+        "end": 6.275
+      },
+      {
+        "w": "can",
+        "start": 6.275,
+        "end": 6.388
+      },
+      {
+        "w": "be",
+        "start": 6.388,
+        "end": 6.525
+      },
+      {
+        "w": "trusted",
+        "start": 6.525,
+        "end": 7.375
+      },
+      {
+        "w": ".",
+        "start": 7.375,
+        "end": 7.537
+      },
+      {
+        "w": "A",
+        "start": 7.537,
+        "end": 7.65
+      },
+      {
+        "w": "number",
+        "start": 7.65,
+        "end": 8.025
+      },
+      {
+        "w": "without",
+        "start": 8.025,
+        "end": 8.35
+      },
+      {
+        "w": "that",
+        "start": 8.35,
+        "end": 8.588
+      },
+      {
+        "w": "flag",
+        "start": 8.588,
+        "end": 9.05
+      },
+      {
+        "w": "is",
+        "start": 9.05,
+        "end": 9.2
+      },
+      {
+        "w": "just",
+        "start": 9.2,
+        "end": 9.412
+      },
+      {
+        "w": "a",
+        "start": 9.412,
+        "end": 9.475
+      },
+      {
+        "w": "number",
+        "start": 9.475,
+        "end": 10.25
+      },
+      {
+        "w": ".",
+        "start": 10.25,
+        "end": 10.375
+      },
+      {
+        "w": "But",
+        "start": 10.375,
+        "end": 10.512
+      },
+      {
+        "w": "the",
+        "start": 10.512,
+        "end": 10.625
+      },
+      {
+        "w": "flag",
+        "start": 10.625,
+        "end": 11.1
+      },
+      {
+        "w": "is",
+        "start": 11.1,
+        "end": 11.225
+      },
+      {
+        "w": "a",
+        "start": 11.225,
+        "end": 11.338
+      },
+      {
+        "w": "minimum",
+        "start": 11.338,
+        "end": 11.875
+      },
+      {
+        "w": ",",
+        "start": 11.875,
+        "end": 11.975
+      },
+      {
+        "w": "not",
+        "start": 11.975,
+        "end": 12.188
+      },
+      {
+        "w": "a",
+        "start": 12.188,
+        "end": 12.25
+      },
+      {
+        "w": "proof",
+        "start": 12.25,
+        "end": 12.95
+      },
+      {
+        "w": ":",
+        "start": 12.95,
+        "end": 13.062
+      },
+      {
+        "w": "a",
+        "start": 13.062,
+        "end": 13.188
+      },
+      {
+        "w": "fit",
+        "start": 13.188,
+        "end": 13.425
+      },
+      {
+        "w": "can",
+        "start": 13.425,
+        "end": 13.625
+      },
+      {
+        "w": "converge",
+        "start": 13.625,
+        "end": 14.262
+      },
+      {
+        "w": "and",
+        "start": 14.262,
+        "end": 14.438
+      },
+      {
+        "w": "still",
+        "start": 14.438,
+        "end": 14.725
+      },
+      {
+        "w": "be",
+        "start": 14.725,
+        "end": 14.887
+      },
+      {
+        "w": "wrong",
+        "start": 14.887,
+        "end": 15.4
+      },
+      {
+        "w": ",",
+        "start": 15.4,
+        "end": 15.5
+      },
+      {
+        "w": "so",
+        "start": 15.5,
+        "end": 15.725
+      },
+      {
+        "w": "check",
+        "start": 15.725,
+        "end": 16.0
+      },
+      {
+        "w": "the",
+        "start": 16.0,
+        "end": 16.1
+      },
+      {
+        "w": "value",
+        "start": 16.1,
+        "end": 16.5
+      },
+      {
+        "w": "against",
+        "start": 16.5,
+        "end": 16.887
+      },
+      {
+        "w": "the",
+        "start": 16.887,
+        "end": 16.975
+      },
+      {
+        "w": "picture",
+        "start": 16.975,
+        "end": 17.413
+      },
+      {
+        "w": "too",
+        "start": 17.413,
+        "end": 18.025
+      },
+      {
+        "w": ".",
+        "start": 18.025,
+        "end": 18.175
+      }
+    ]
+  },
+  "s5": {
+    "duration": 14.4,
+    "text": "Three questions, after every run. Better still, make them part of what you ask for in the first place: \"run it, and show me where it ran, the difference image, and the fit status.\" That's what directing an agent well looks like.",
+    "words": [
+      {
+        "w": "Three",
+        "start": 0.3,
+        "end": 0.5
+      },
+      {
+        "w": "questions",
+        "start": 0.5,
+        "end": 1.125
+      },
+      {
+        "w": ",",
+        "start": 1.125,
+        "end": 1.2
+      },
+      {
+        "w": "after",
+        "start": 1.2,
+        "end": 1.525
+      },
+      {
+        "w": "every",
+        "start": 1.525,
+        "end": 1.85
+      },
+      {
+        "w": "run",
+        "start": 1.85,
+        "end": 2.5
+      },
+      {
+        "w": ".",
+        "start": 2.5,
+        "end": 2.638
+      },
+      {
+        "w": "Better",
+        "start": 2.638,
+        "end": 3.0
+      },
+      {
+        "w": "still",
+        "start": 3.0,
+        "end": 3.425
+      },
+      {
+        "w": ",",
+        "start": 3.425,
+        "end": 3.5
+      },
+      {
+        "w": "make",
+        "start": 3.5,
+        "end": 3.712
+      },
+      {
+        "w": "them",
+        "start": 3.712,
+        "end": 3.85
+      },
+      {
+        "w": "part",
+        "start": 3.85,
+        "end": 4.088
+      },
+      {
+        "w": "of",
+        "start": 4.088,
+        "end": 4.162
+      },
+      {
+        "w": "what",
+        "start": 4.162,
+        "end": 4.3
+      },
+      {
+        "w": "you",
+        "start": 4.3,
+        "end": 4.438
+      },
+      {
+        "w": "ask",
+        "start": 4.438,
+        "end": 4.75
+      },
+      {
+        "w": "for",
+        "start": 4.75,
+        "end": 4.888
+      },
+      {
+        "w": "in",
+        "start": 4.888,
+        "end": 4.963
+      },
+      {
+        "w": "the",
+        "start": 4.963,
+        "end": 5.062
+      },
+      {
+        "w": "first",
+        "start": 5.062,
+        "end": 5.35
+      },
+      {
+        "w": "place",
+        "start": 5.35,
+        "end": 6.025
+      },
+      {
+        "w": ":",
+        "start": 6.025,
+        "end": 6.15
+      },
+      {
+        "w": "\"",
+        "start": 6.15,
+        "end": 6.225
+      },
+      {
+        "w": "run",
+        "start": 6.225,
+        "end": 6.463
+      },
+      {
+        "w": "it",
+        "start": 6.463,
+        "end": 6.775
+      },
+      {
+        "w": ",",
+        "start": 6.775,
+        "end": 6.85
+      },
+      {
+        "w": "and",
+        "start": 6.85,
+        "end": 7.0
+      },
+      {
+        "w": "show",
+        "start": 7.0,
+        "end": 7.25
+      },
+      {
+        "w": "me",
+        "start": 7.25,
+        "end": 7.425
+      },
+      {
+        "w": "where",
+        "start": 7.425,
+        "end": 7.612
+      },
+      {
+        "w": "it",
+        "start": 7.612,
+        "end": 7.725
+      },
+      {
+        "w": "ran",
+        "start": 7.725,
+        "end": 8.2
+      },
+      {
+        "w": ",",
+        "start": 8.2,
+        "end": 8.275
+      },
+      {
+        "w": "the",
+        "start": 8.275,
+        "end": 8.375
+      },
+      {
+        "w": "difference",
+        "start": 8.375,
+        "end": 8.812
+      },
+      {
+        "w": "image",
+        "start": 8.812,
+        "end": 9.275
+      },
+      {
+        "w": ",",
+        "start": 9.275,
+        "end": 9.35
+      },
+      {
+        "w": "and",
+        "start": 9.35,
+        "end": 9.463
+      },
+      {
+        "w": "the",
+        "start": 9.463,
+        "end": 9.562
+      },
+      {
+        "w": "fit",
+        "start": 9.562,
+        "end": 9.8
+      },
+      {
+        "w": "status",
+        "start": 9.8,
+        "end": 10.775
+      },
+      {
+        "w": ".",
+        "start": 10.775,
+        "end": 10.875
+      },
+      {
+        "w": "\"",
+        "start": 10.875,
+        "end": 10.938
+      },
+      {
+        "w": "That's",
+        "start": 10.938,
+        "end": 11.238
+      },
+      {
+        "w": "what",
+        "start": 11.238,
+        "end": 11.375
+      },
+      {
+        "w": "directing",
+        "start": 11.375,
+        "end": 11.925
+      },
+      {
+        "w": "an",
+        "start": 11.925,
+        "end": 12.062
+      },
+      {
+        "w": "agent",
+        "start": 12.062,
+        "end": 12.5
+      },
+      {
+        "w": "well",
+        "start": 12.5,
+        "end": 12.725
+      },
+      {
+        "w": "looks",
+        "start": 12.725,
+        "end": 13.0
+      },
+      {
+        "w": "like",
+        "start": 13.0,
+        "end": 13.55
+      },
+      {
+        "w": ".",
+        "start": 13.55,
+        "end": 13.7
+      }
+    ]
+  }
+}

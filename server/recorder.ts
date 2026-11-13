@@ -90,7 +90,9 @@ export class Recorder {
         receipt = Object.fromEntries(["workflow", "requested_backend", "backend", "device", "dtype", "fits_reader"].filter((k) => k in j).map((k) => [k, j[k]]));
       } catch {}
     }
-    const stage = STAGES.find((s) => new RegExp(`\\b${s}\\b|cuphoton\\.${s.toLowerCase()}|\\b${s.toLowerCase()}\\b`).test(all));
+    // Every cuPhoton stage the run used, in pipeline order ("xRep + xPois").
+    const stages = STAGES.filter((s) => new RegExp(`\\b${s}\\b|cuphoton\\.${s.toLowerCase()}|\\b${s.toLowerCase()}\\b`).test(all));
+    const stage = stages.length ? stages.join(" + ") : /cuphoton\.core|fits_io/.test(all) ? "cuPhoton Core" : undefined;
     const by = stage ?? (/\bnumpy\b|\bnp\./.test(all) ? "NumPy" : /python/.test(all) ? "Python" : "shell");
     const gpu = receipt
       ? /cuda|gpu/i.test(String(receipt.device ?? "")) || /cupy|torch|cutile|native/i.test(String(receipt.backend ?? ""))

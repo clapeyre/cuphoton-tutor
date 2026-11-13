@@ -59,7 +59,7 @@ const server = http.createServer((req, res) => {
   const p = url.pathname;
   const json = (o: unknown, code = 200) => { res.writeHead(code, { "content-type": "application/json" }).end(JSON.stringify(o)); };
   if (p === "/api/course") {
-    return json({ title: course.title, units: courseOutline(course), chain: course.chain, glossary: [...course.glossary.values()], order: course.order, videos: course.videos });
+    return json({ title: course.title, modules: courseOutline(course), chain: course.chain, glossary: [...course.glossary.values()], order: course.order, videos: course.videos });
   }
   if (p.startsWith("/api/lesson/")) {
     const l = course.lessons.get(decodeURIComponent(p.slice("/api/lesson/".length)));
@@ -78,7 +78,7 @@ const server = http.createServer((req, res) => {
     return f ? sendFile(req, res, f) : json({ error: "not found" }, 404);
   }
   if (p.startsWith("/course-files/")) {
-    const f = under(path.join(config.courseDir, "units"), p.slice("/course-files/units/".length), IMG);
+    const f = under(path.join(config.courseDir, "modules"), p.slice("/course-files/modules/".length), IMG);
     return f ? sendFile(req, res, f) : json({ error: "not found" }, 404);
   }
   if (p.startsWith("/workspace/")) {

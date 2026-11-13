@@ -14,7 +14,11 @@ import type { Course, Lesson } from "./content.ts";
 import { Recorder } from "./recorder.ts";
 import { QUEUE, Store, type FigureOnPage, type Pointer, type Thread } from "./state.ts";
 
-export type Activity = { main: string | null; threads: Record<string, boolean> };
+// drafts: text the tutor is streaming right now, keyed "turn:<lesson>/<turn>" or "thread:<id>".
+export type Activity = { main: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
+
+/** Text blocks of an assistant message so far (thinking and tool calls excluded). */
+const textOf = (m: any) => (Array.isArray(m?.content) ? m.content : []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("").trim();
 
 const text = (t: string) => ({ content: [{ type: "text" as const, text: t }], details: {} });
 
@@ -27,8 +31,9 @@ export class Tutor {
   private pendingNotes: string[] = [];
   private spokeIn = new Set<string>(); // turn ids the tutor addressed during the current prompt
   private promptLesson: string | null = null; // the lesson the current main prompt is about
+  private streamTurn: string | null = null; // the turn whose conversation the current main prompt's text goes to
   recorder = new Recorder();
-  activity: Activity = { main: null, threads: {} };
+  activity: Activity = { main: null, threads: {}, drafts: {} };
   onActivity: () => void = () => {};
   onNote: (n: { kind: string; summary: string }) => void = () => {};
 
@@ -52,12 +57,12 @@ export class Tutor {
 
   private systemPrompt(kind: "main" | "margin") {
     const base = fs.readFileSync(path.join(config.tutorDir, "SYSTEM.md"), "utf8");
-    const outline = this.course.units.map((u) =>
-      `- Unit ${u.id} · ${u.title}\n` + u.lessons.map((l) => `  - ${l.id} ${l.title} (turns: ${l.turnIds.join(", ") || "none"})`).join("\n")).join("\n");
+    const outline = this.course.modules.map((u) =>
+      `- Module ${u.id} · ${u.title}\n` + u.lessons.map((l) => `  - ${l.id} ${l.title} (turns: ${l.turnIds.join(", ") || "none"})`).join("\n")).join("\n");
     const env = [
       "## Environment",
       `- Learner workspace (your cwd): ${config.learnerDir}`,
-      `- Course files (read-only): ${config.courseDir} — vocabulary.yaml, concepts.yaml, misconceptions.md, units/*/<lesson>/lesson.md and tutor.md`,
+      `- Course files (read-only): ${config.courseDir} — vocabulary.yaml, concepts.yaml, misconceptions.md, modules/*/<lesson>/lesson.md and tutor.md`,
       `- cuPhoton checkout, pinned at ${this.course.commit}: ${config.cuphotonDir}`,
       "", "## The course", outline,
     ].join("\n");
@@ -110,9 +115,22 @@ export class Tutor {
         if (ev.type === "tool_execution_start") {
           this.recorder.start(ev.toolCallId, ev.toolName, ev.args);
           const label = ev.toolName === "bash" ? "Running" : ev.toolName === "show_figure" ? "Placing a figure" : ev.toolName === "read" ? "Reading" : "Working";
-          this.setMain(label);
+          if (!this.background) this.setMain(label); // preparing ahead is invisible to the learner
         } else if (ev.type === "tool_execution_end") {
           this.recorder.end(ev.toolCallId, ev.isError, ev.durationMs);
+        } else if (this.streamTurn && ev.type === "message_update" && ev.assistantMessageEvent?.type === "text_delta") {
+          // In a Your-turn conversation the tutor's text is its reply: stream it into the turn.
+          this.activity.drafts[`turn:${this.streamTurn}`] = textOf(ev.message);
+          this.onActivity();
+        } else if (this.streamTurn && ev.type === "message_end" && ev.message?.role === "assistant") {
+          const said = textOf(ev.message);
+          delete this.activity.drafts[`turn:${this.streamTurn}`];
+          if (said) {
+            const [lid, tid] = this.streamTurn.split("/");
+            this.store.turn(lid, tid).log.push({ who: "tutor", text: said, at: Date.now() });
+            this.spokeIn.add(this.streamTurn);
+            this.store.save(this.lessonTurns);
+          } else this.onActivity();
         }
       });
     }
@@ -252,12 +270,24 @@ export class Tutor {
 
   private setMain(label: string | null) { this.activity.main = label; this.onActivity(); }
 
-  private enqueue(lessonId: string, label: string, msg: string, after?: (finalText: string) => void) {
+  private foreground = 0; // learner-driven prompts queued or running
+  private background: string | null = null; // lesson being prepared ahead, while it runs
+  private interrupted: string | null = null; // a lesson whose preparation the learner just interrupted
+
+  private enqueue(lessonId: string, label: string, msg: string, after?: (finalText: string) => void, streamTurn: string | null = null) {
+    this.foreground++;
+    // Anything the learner does comes first: interrupt a lesson being prepared ahead (it's retried later).
+    if (this.background) { this.interrupted = this.background; this.main.abort().catch(() => {}); }
     const run = async () => {
       this.promptLesson = lessonId;
+      this.streamTurn = streamTurn;
       this.setMain(label);
       this.spokeIn.clear();
       const notes = this.pendingNotes.splice(0);
+      if (this.interrupted) {
+        notes.push(`[page] Preparing lesson ${this.interrupted} was interrupted by the learner. Drop it for now (you'll be asked again later) and deal only with what follows.`);
+        this.interrupted = null;
+      }
       const full = (notes.length ? notes.join("\n") + "\n\n" : "") + msg;
       try {
         await this.main.prompt(full);
@@ -266,11 +296,59 @@ export class Tutor {
         console.error("[tutor] main prompt failed:", e?.message ?? e);
         after?.("");
       } finally {
+        this.streamTurn = null;
+        this.activity.drafts = Object.fromEntries(Object.entries(this.activity.drafts).filter(([k]) => !k.startsWith("turn:")));
+        this.foreground--;
         this.setMain(null);
+        if (!this.foreground) this.prepareAhead();
       }
     };
     this.chain = this.chain.then(run, run);
     return this.chain;
+  }
+
+  /** Slots the tutor fills as soon as a lesson opens: those placed before its first Your turn. */
+  private openingSlots(lesson: Lesson) {
+    const firstTurn = lesson.parts.findIndex((p) => p.kind === "turn");
+    return lesson.parts.filter((p, i) => p.kind === "slot" && (firstTurn < 0 || i < firstTurn)).map((p: any) => p.id as string);
+  }
+
+  private briefing(lesson: Lesson) {
+    return ["<lesson.md>", lesson.source.trim(), "</lesson.md>", "", "<tutor.md>", lesson.tutorNotes.trim(), "</tutor.md>"].join("\n");
+  }
+
+  /** While the learner works, make the next lesson's opening figures so they're there when it opens.
+   *  Runs only when nothing else is queued; any learner action interrupts it. */
+  private prepareAhead() {
+    const cur = this.store.page.current;
+    const order = this.course.order;
+    const next = cur ? this.course.lessons.get(order[order.indexOf(cur) + 1]) : undefined;
+    if (!next) return;
+    const st = this.store.lesson(next.id);
+    const missing = this.openingSlots(next).filter((x) => !st.slots[x]);
+    if (st.visited || !missing.length) return;
+    const run = async () => {
+      if (this.foreground || st.visited) return;
+      this.background = next.id;
+      this.promptLesson = next.id;
+      this.spokeIn.clear();
+      const notes = this.pendingNotes.splice(0);
+      const msg = [
+        `[page] Prepare lesson ${next.id} "${next.title}" ahead: the learner is still on ${cur} and hasn't opened it.`,
+        `Fill only these slots now: ${missing.join(", ")}. Don't use ask or settle, and say nothing; you'll be told when the learner opens it.`,
+        st.briefed ? "(You read this lesson's text and notes earlier.)" : "\n" + this.briefing(next),
+      ].join("\n");
+      st.briefed = true;
+      try {
+        await this.main.prompt((notes.length ? notes.join("\n") + "\n\n" : "") + msg);
+      } catch (e: any) {
+        console.error("[tutor] preparing ahead failed:", e?.message ?? e);
+      } finally {
+        this.background = null;
+        this.store.save(this.lessonTurns);
+      }
+    };
+    this.chain = this.chain.then(run, run);
   }
 
   lessonOpened(lesson: Lesson) {
@@ -280,13 +358,15 @@ export class Tutor {
     this.store.page.current = lesson.id;
     this.store.save(this.lessonTurns);
     const missing = lesson.slotIds.filter((x) => !st.slots[x]);
-    if (!first && missing.length === 0) return;
+    if (!first && missing.length === 0) { if (!this.foreground) this.prepareAhead(); return; }
     const turnState = lesson.turnIds.map((t) => `${t}: ${st.turns[t]?.status ?? "open"}`).join("; ");
+    const head = `[page] Learner opened lesson ${lesson.id} "${lesson.title}" (first visit). Turns: ${turnState || "none"}.\nSlots to fill when due: ${missing.join(", ") || "none"}.`;
     const msg = first
-      ? [`[page] Learner opened lesson ${lesson.id} "${lesson.title}" (first visit). Turns: ${turnState || "none"}.`,
-         `Slots to fill when due: ${missing.join(", ") || "none"}.`, "",
-         "<lesson.md>", lesson.source.trim(), "</lesson.md>", "", "<tutor.md>", lesson.tutorNotes.trim(), "</tutor.md>"].join("\n")
+      ? st.briefed
+        ? `${head}\nYou read this lesson's text and notes when preparing it ahead${missing.length ? "" : ", and its opening slots are filled"}.`
+        : `${head}\n\n${this.briefing(lesson)}`
       : `[page] Learner is back on lesson ${lesson.id}. Turns: ${turnState}. Unfilled slots: ${missing.join(", ")}. Fill any that are due now; otherwise stop.`;
+    st.briefed = true;
     this.enqueue(lesson.id, "Preparing the lesson", msg);
   }
 
@@ -302,14 +382,13 @@ export class Tutor {
     const part = lesson.parts.find((p) => p.kind === "turn" && p.id === turnId) as any;
     const asked = firstMsg ? `(The page asked: ${part?.lead ? part.lead.replace(/\[\[(.*?)\]\]/g, "$1") + " " : ""}${part?.prompt ?? ""})\n` : "";
     const key = `${lessonId}/${turnId}`;
-    this.enqueue(lessonId, "Thinking", `[your-turn ${key}] ${asked}Learner: ${said}`, (finalText) => {
-      // Contract: the tutor answers with ask/settle. If it wrote plain text instead, post that.
+    this.enqueue(lessonId, "Thinking", `[your-turn ${key}] ${asked}Learner: ${said}`, () => {
+      // The tutor's text was streamed into the turn. If it said nothing at all, say so.
       if (!this.spokeIn.has(key)) {
-        const fallback = finalText.trim() || "Sorry, I lost my train of thought there. Could you say that again?";
-        this.store.turn(lessonId, turnId).log.push({ who: "tutor", text: fallback, at: Date.now() });
+        this.store.turn(lessonId, turnId).log.push({ who: "tutor", text: "Sorry, I lost my train of thought there. Could you say that again?", at: Date.now() });
         this.store.save(this.lessonTurns);
       }
-    });
+    }, key);
   }
 
   note(msg: string) { this.pendingNotes.push(msg); }
@@ -323,6 +402,12 @@ export class Tutor {
       const entries = this.main.sessionManager.getBranch();
       const sm = SessionManager.inMemory(config.learnerDir, undefined, header ? [header, ...entries] as any : (entries as any));
       s = await this.makeSession(sm, "margin");
+      s.subscribe((ev: any) => {
+        if (ev.type === "message_update" && ev.assistantMessageEvent?.type === "text_delta") {
+          this.activity.drafts[`thread:${thread.id}`] = textOf(ev.message);
+          this.onActivity();
+        }
+      });
       this.margins.set(thread.id, s);
     }
     const lesson = this.course.lessons.get(thread.from);
@@ -342,7 +427,9 @@ export class Tutor {
       await s.prompt(`${head}\nLearner: ${question}`, images.length ? { images } : undefined);
       return s.getLastAssistantText()?.trim() || "…";
     } finally {
-      delete this.activity.threads[thread.id]; this.onActivity();
+      delete this.activity.threads[thread.id];
+      delete this.activity.drafts[`thread:${thread.id}`];
+      this.onActivity();
     }
   }
 

@@ -7,3 +7,17 @@ server.pid
 server.log
 web/dist/
 runs-*.log
+.DS_Store
+._*
+
+# media pipeline intermediates (regenerable, see media/README.md); final videos live in media/videos/
+media/renders/data/
+media/renders/*/audio/
+media/renders/*/manim/
+media/renders/*/cues/
+media/renders/*/stills/
+media/renders/*/*.wav
+media/renders/*/*.mp4
+media/renders/*/*.srt
+media/renders/*/*.png
+media/**/__pycache__/

@@ -38,13 +38,16 @@ terms:
     avoid: ["floor", "sky floor", "baseline", "offset (as a noun)", "sky glow (as a term)"]
 
   - term: noise
-    definition: "The random wobble of every pixel value around its expected level. For light it comes from counting photons, so it grows with the square root of the counts (Poisson noise). State this premise; don't make the learner guess it."
+    read_more: "Wikipedia: shot noise | https://en.wikipedia.org/wiki/Shot_noise"
+    definition: "The random wobble of every pixel value around its expected level. Light arrives as individual photons, so the count in a pixel follows a Poisson distribution, whose spread is the square root of its mean: 100 counts wobble by about 10, 10,000 counts by about 100. This is called shot noise."
+    tutor_note: "A premise of the course. State it; never make the learner guess it."
     source: "course (docs/guide/first-difference.qmd, variance plane: 'source and sky shot noise')"
     introduce_at: "0.1"
     bridges: ["grain in a photo taken in low light"]
     avoid: ["scatter (as a term)", "spread (means the PSF's width)"]
 
   - term: exposure time
+    read_more: "Wikipedia: signal-to-noise ratio (imaging) | https://en.wikipedia.org/wiki/Signal-to-noise_ratio_(imaging)"
     definition: "How long the detector collects light for one image. Doubling it roughly doubles the light collected in every pixel (any fixed detector offset stays the same)."
     source: course
     introduce_at: "0.1"
@@ -79,7 +82,15 @@ terms:
     bridges: ["night 2", "the 'after' picture"]
     avoid: ["science image (not cuPhoton's word)", "second image"]
 
+  - term: pointing
+    definition: "Where exactly the telescope is aimed. If it differs slightly between two nights, the same star lands on different pixels in the two images."
+    source: course
+    introduce_at: "0.2"
+    bridges: ["aim"]
+    avoid: ["offset (on its own: also means a constant added to pixel values)"]
+
   - term: seeing
+    read_more: "Wikipedia: astronomical seeing | https://en.wikipedia.org/wiki/Astronomical_seeing"
     definition: "The blurring of starlight by turbulent air above the telescope. It changes from night to night, so the same star can be sharper on one night than on another with identical hardware."
     source: "course (the docs use the word without defining it: docs/guide/transient-chain.qmd, 'set them for your seeing')"
     introduce_at: "0.2 (as a Given, after the learner has seen the blur)"
@@ -87,6 +98,7 @@ terms:
     avoid: ["focus (it isn't a focus problem)"]
 
   - term: PSF (point-spread function)
+    read_more: "Wikipedia: point spread function | https://en.wikipedia.org/wiki/Point_spread_function"
     definition: "The shape a single point of light takes in the image: the star's blur profile. Its width is set by the optics and the seeing."
     source: docs/glossary.md, "PSF"
     introduce_at: "0.2"
@@ -94,6 +106,7 @@ terms:
     avoid: ["spread (as a term)", "size of the star"]
 
   - term: alignment
+    read_more: "Wikipedia: image registration | https://en.wikipedia.org/wiki/Image_registration"
     definition: "Putting the two images on the same pixel grid, so the same source sits at the same pixel in both. cuPhoton's stage for this is reprojection (xRep)."
     source: course; docs/glossary.md, "Reprojection"
     introduce_at: "0.3"
@@ -101,6 +114,7 @@ terms:
     avoid: ["shifting (alignment also rotates and rescales)"]
 
   - term: difference image
+    read_more: "Alard & Lupton 1998, image subtraction with a matching kernel | https://ui.adsabs.harvard.edu/abs/1998ApJ...503..325A"
     definition: "The target image minus the reference image, after both have been aligned and the reference's blur and background have been matched to the target. Only real changes and noise should remain."
     source: docs/glossary.md, "Difference image"
     introduce_at: "0.3 (the raw subtraction is 'a plain subtraction', not yet a difference image)"
@@ -138,6 +152,7 @@ terms:
 
   # --- Module 01 ---------------------------------------------------------------
   - term: FITS file, HDU, header
+    read_more: "Wikipedia: FITS | https://en.wikipedia.org/wiki/FITS"
     definition: "The astronomy file format. A FITS file holds one or more HDUs (header/data units); each has a header of metadata (telescope, gain, WCS, ...) and data, here the image."
     source: docs/glossary.md, "FITS", "HDU"
     introduce_at: "1.1"
@@ -159,6 +174,7 @@ terms:
     avoid: ["amplification", "ISO"]
 
   - term: variance plane
+    read_more: "Wikipedia: variance | https://en.wikipedia.org/wiki/Variance"
     definition: "One number per pixel: the expected noise variance of that pixel, in squared data units, built from a noise model (here, image level / gain). It sets each pixel's fit weight."
     source: docs/glossary.md, "Variance"; docs/guide/first-difference.qmd
     introduce_at: "1.2"
@@ -167,6 +183,7 @@ terms:
     hold_back: "Checkpoint 1.2 asks what variance x 4 does to a flux and its error. Don't state it before."
 
   - term: WCS
+    read_more: "Astropy docs: world coordinate systems | https://docs.astropy.org/en/stable/wcs/index.html"
     definition: "World Coordinate System: header metadata that maps each pixel to a position on the sky."
     source: docs/glossary.md, "WCS"
     introduce_at: "1.3"
@@ -188,6 +205,7 @@ terms:
     avoid: ["bad-pixel map (only one of the two kinds)"]
 
   - term: kernel (matching kernel)
+    read_more: "Alard & Lupton 1998, the classic kernel-matching method | https://ui.adsabs.harvard.edu/abs/1998ApJ...503..325A"
     definition: "The small array of convolution weights xPois fits to blur the reference until its PSF matches the target's. Each output pixel is a weighted sum of its neighbours. Its sum estimates the flux scale between the two images."
     source: docs/glossary.md, "Kernel" (first sense); docs/guide/first-difference.qmd, "Match the blur and subtract"
     introduce_at: "1.4"

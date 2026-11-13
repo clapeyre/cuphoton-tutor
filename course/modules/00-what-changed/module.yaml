@@ -1,0 +1,33 @@
+id: "00"
+title: What changed in the sky?
+question: When so much else differs between two nights, how do you find what really changed in the sky?
+needs: none   # Python with NumPy and Matplotlib in the learner workspace is enough
+objectives: [O1]
+misconceptions: [M-SUBTRACT, M-ALIGN-BLUR, M-NEWSIGNAL]
+time: 30–45 min
+# Shown at the top of the module's first lesson. Paragraphs are separated by a
+# blank line; inline markup ([[term]], [text](url), **bold**) works.
+intro: |
+  Welcome. This course teaches **cuPhoton**, NVIDIA's GPU library for
+  astronomical imaging, and in particular for one job: comparing two pictures of
+  the same patch of sky to find what changed in it: a supernova going off, an
+  asteroid crossing, a variable star brightening. Astronomers call such events
+  [transients](https://en.wikipedia.org/wiki/Transient_astronomical_event), and
+  the method **difference imaging**. Modern sky surveys run it on every image,
+  every night.
+
+  You'll work the way you will later use the library: with an AI agent that
+  writes and runs the code. The tutor behind this page does the typing, on a
+  real GPU. Your job is the part an agent can't do for you: knowing what each
+  step should produce, and telling whether a result is right.
+
+  **Module 00 has no code at all.** Before any library, it builds the one idea
+  that cuPhoton is built on: when two pictures of the same sky differ, most of
+  the differences have nothing to do with the sky. Four short lessons, 30–45
+  minutes in all.
+
+  How the page works: read, watch, and answer each **Your turn** box in your own
+  words. There's no grade; the tutor replies, pushes a little, and closes the
+  box once you have the idea. Words with a dotted underline have a short
+  definition. To ask about anything else, use the box on the right, or select
+  some text first and then ask.

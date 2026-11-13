@@ -9,9 +9,11 @@ export interface Ctx {
   send: (m: unknown) => void;
   /** Open the margin with a pointer ("About: …"), remembering where the learner was. */
   askAbout: (p: Pointer | null, opts?: { video?: HTMLVideoElement }) => void;
-  def: { where: string; key: string } | null;
-  setDef: (d: { where: string; key: string } | null) => void;
+  def: TermDef | null;
+  setDef: (d: TermDef | null) => void;
 }
+/** An open definition: which term, where on the page, and the term's position (document coordinates). */
+export interface TermDef { where: string; key: string; anchor: { x: number; y: number; top: number } }
 export const C = createContext<Ctx>(null as any);
 export const useCtx = () => useContext(C);
 
@@ -26,7 +28,7 @@ export function lookup(glossary: Map<string, GlossaryEntry>, raw: string): Gloss
 /** A hold-back is active while the lesson it guards still has open turns. */
 export function heldUntil(ctx: Pick<Ctx, "course" | "state">, e: GlossaryEntry): string | null {
   if (!e.holdUntil) return null;
-  const outline = ctx.course.units.flatMap((u) => u.lessons).find((l) => l.id === e.holdUntil);
+  const outline = ctx.course.modules.flatMap((u) => u.lessons).find((l) => l.id === e.holdUntil);
   if (!outline) return null;
   const st = ctx.state.page.lessons[e.holdUntil];
   const settled = st ? Object.values(st.turns).filter((t) => t.status === "settled").length : 0;

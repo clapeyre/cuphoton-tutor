@@ -9,11 +9,11 @@ v1-why-not-subtract:
   duration: "1:34"
   chapters:
     - [0, goal]
-    - [15, subtraction]
+    - [14.9, subtraction]
     - [28.8, xRep]
     - [41.1, rings]
     - [53.1, xPois]
-    - [79.8, chain]
+    - [79.7, chain]
 v2-it-ran:
   title: It ran. Is it right?
   duration: "1:21"

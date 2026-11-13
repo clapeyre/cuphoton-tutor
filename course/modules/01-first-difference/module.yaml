@@ -1,0 +1,22 @@
+id: "01"
+title: Your first difference
+question: Module 00's plan, run for real. Does cuPhoton find the two changes we put in, and how would you know its answer is right?
+needs: linux_cpu   # cuPhoton CPU profile; no GPU needed
+objectives: [O1, O2, O3]
+misconceptions: [M-AXIS, M-VARIANCE-COSMETIC, M-CHI2-VALIDATES, M-Z-SIGNIFICANCE, M-FLUX-SIGN, M-AGENT-SUCCESS, M-FIT-TWO-IMAGES, M-SIGMA-VARIANCE]
+source: docs/guide/first-difference.qmd and docs/guide/_sample-pair.qmd in the pinned checkout
+time: 60–90 min
+intro: |
+  In Module 00 you built a plan: align, match the background and the blur,
+  subtract, then decide what's left. This module runs that plan for real with
+  cuPhoton, one stage at a time, on a CPU.
+
+  From here on **you direct the agent**. Each lesson asks you to predict what a
+  stage will produce before it runs; then you tell the tutor to run it, and you
+  compare. The tutor writes and runs the code; every figure it makes carries a
+  **run record** with the stage that ran, the device, the time and the code, if
+  you want to read it. You never have to.
+
+  We use a synthetic pair of images, made by cuPhoton's own tutorial, because
+  its changes were put in on purpose: we know the right answer, so we can check
+  every result against it. The last lesson shows why that matters.

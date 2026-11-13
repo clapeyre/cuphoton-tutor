@@ -1,79 +1,83 @@
 1
-00:00:00,000 --> 00:00:01,816
+00:00:00,275 --> 00:00:02,200
 Your agent ran the pipeline.
 
 2
-00:00:01,816 --> 00:00:04,475
+00:00:02,200 --> 00:00:05,300
 No errors, a tidy summary, a green light.
 
 3
-00:00:04,475 --> 00:00:06,291
+00:00:05,300 --> 00:00:07,100
 It's tempting to stop there.
 
 4
-00:00:06,291 --> 00:00:13,100
-But "it ran" and "it's right" are different claims, and the gap between them is where most mistakes hide.
+00:00:07,100 --> 00:00:13,100
+But " it ran " and " it's right " are different claims, and the gap between them is where most mistakes hide.
 
 5
-00:00:13,700 --> 00:00:16,509
+00:00:14,000 --> 00:00:16,463
 First question: where did it actually run?
 
 6
-00:00:16,509 --> 00:00:23,265
+00:00:16,463 --> 00:00:23,300
 cuPhoton's default backend, auto, tries the GPU and quietly falls back to the CPU if it can't use it.
 
 7
-00:00:23,265 --> 00:00:24,803
+00:00:23,300 --> 00:00:25,188
 The run still succeeds.
 
 8
-00:00:24,803 --> 00:00:28,950
+00:00:25,188 --> 00:00:28,788
 The only trace is in the record it leaves behind, the receipt.
 
 9
-00:00:28,950 --> 00:00:31,425
+00:00:28,788 --> 00:00:31,425
 So ask your agent for it, every time.
 
 10
-00:00:32,025 --> 00:00:35,333
+00:00:32,300 --> 00:00:35,637
 Second question: does the output look like what it should?
 
 11
-00:00:35,333 --> 00:00:37,957
+00:00:35,637 --> 00:00:38,538
 Both of these runs finished without complaint.
 
 12
-00:00:37,957 --> 00:00:39,896
+00:00:38,538 --> 00:00:40,475
 Only one of them matched the blur.
 
 13
-00:00:39,896 --> 00:00:41,664
+00:00:40,475 --> 00:00:42,525
 You can't tell from a log line.
 
 14
-00:00:41,664 --> 00:00:47,025
+00:00:42,525 --> 00:00:47,025
 You can tell in half a second from the picture, if you know what the picture should look like.
 
 15
-00:00:47,625 --> 00:00:51,032
+00:00:47,900 --> 00:00:50,950
 Third question: did the measurements actually converge?
 
 16
-00:00:51,032 --> 00:00:55,616
+00:00:50,950 --> 00:00:55,162
 Fits report whether they did, and whether their error bars can be trusted.
 
 17
-00:00:55,616 --> 00:00:58,342
+00:00:55,162 --> 00:00:58,000
 A number without that flag is just a number.
 
 18
-00:00:58,342 --> 00:01:05,900
+00:00:58,000 --> 00:01:05,900
 But the flag is a minimum, not a proof: a fit can converge and still be wrong, so check the value against the picture too.
 
 19
-00:01:06,500 --> 00:01:08,506
+00:01:06,800 --> 00:01:09,138
 Three questions, after every run.
 
 20
-00:01:08,506 --> 00:01:20,300
-Better still, make them part of what you ask for in the first place: "run it, and show me where it ran, the difference image, and the fit status." That's what directing an agent well looks like.
+00:01:09,138 --> 00:01:17,375
+Better still, make them part of what you ask for in the first place: " run it, and show me where it ran, the difference image, and the fit status.
+
+21
+00:01:17,375 --> 00:01:20,300
+" That's what directing an agent well looks like.

@@ -8,13 +8,13 @@ export type Part =
   | { kind: "ref"; text: string; label: string; video?: string; videoTitle?: string };
 
 export interface Lesson {
-  id: string; unit: string; slug: string; title: string; question: string; terms: string[];
-  parts: Part[]; closure: { found: string; raises: string } | null; turnIds: string[]; slotIds: string[];
+  id: string; module: string; slug: string; title: string; question: string; terms: string[];
+  parts: Part[]; closure: { found: string; matters?: string; raises: string } | null; intro?: string[]; turnIds: string[]; slotIds: string[];
 }
-export interface GlossaryEntry { key: string; label: string; definition: string; holdUntil?: string; concept?: boolean }
+export interface GlossaryEntry { key: string; label: string; definition: string; holdUntil?: string; concept?: boolean; link?: { url: string; label: string } }
 export interface Course {
   title: string;
-  units: { id: string; title: string; lessons: { id: string; title: string; turns: number }[] }[];
+  modules: { id: string; title: string; lessons: { id: string; title: string; turns: number }[] }[];
   chain: { id: string; does: string; definition: string }[];
   glossary: GlossaryEntry[];
   order: string[];
@@ -33,6 +33,6 @@ export interface PageState { current: string | null; lessons: Record<string, Les
 export interface ServerState {
   page: PageState;
   boxes: Record<string, "empty" | "half" | "full">;
-  activity: { main: string | null; threads: Record<string, boolean> };
+  activity: { main: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
   notes: { ts: string; kind: string; summary: string }[];
 }

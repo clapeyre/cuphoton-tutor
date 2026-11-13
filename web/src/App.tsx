@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { C, lookup, type Ctx } from "./ctx.tsx";
+import { C, lookup, type Ctx, type TermDef } from "./ctx.tsx";
 import { Margin } from "./Margin.tsx";
-import { Definition, Inline } from "./Prose.tsx";
+import { Inline, TermPopover } from "./Prose.tsx";
 import { PartView } from "./Parts.tsx";
 import type { Course, Lesson, Pointer, ServerState } from "./types.ts";
 
@@ -36,10 +36,10 @@ export function App() {
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Record<string, Lesson>>({});
   const [lessonId, setLessonId] = useState<string | null>(hashLesson());
-  const [def, setDef] = useState<{ where: string; key: string } | null>(null);
+  const [def, setDef] = useState<TermDef | null>(null);
   const [pointer, setPointer] = useState<Pointer | null>(null);
   const place = useRef<{ y: number; video?: HTMLVideoElement; t?: number; playing?: boolean } | null>(null);
-  const [openUnits, setOpenUnits] = useState<Record<string, boolean>>({});
+  const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
 
   useEffect(() => { fetch("/api/course").then((r) => r.json()).then(setCourse); }, []);
   useEffect(() => {
@@ -91,11 +91,11 @@ export function App() {
 
   if (!course || !state) return <div style={{ padding: 32 }} className="note">Loading…</div>;
 
-  const allLessons = course.units.flatMap((u) => u.lessons.map((l) => ({ ...l, unit: u })));
+  const allLessons = course.modules.flatMap((u) => u.lessons.map((l) => ({ ...l, module: u })));
   const idx = allLessons.findIndex((l) => l.id === lessonId);
   const prev = idx > 0 ? allLessons[idx - 1] : null;
   const next = idx >= 0 && idx < allLessons.length - 1 ? allLessons[idx + 1] : null;
-  const unit = course.units.find((u) => u.lessons.some((l) => l.id === lessonId));
+  const module = course.modules.find((u) => u.lessons.some((l) => l.id === lessonId));
   const go = (id: string) => { location.hash = `#/${id}`; };
   const box = (id: string) => state.boxes[id] ?? "empty";
 
@@ -107,9 +107,9 @@ export function App() {
       <header className="top">
         <div className="brand"><span className="logo" aria-hidden="true" /><span>cuPhoton Learn</span></div>
         <nav className="strip" aria-label="Course progress">
-          {course.units.map((u) => (
+          {course.modules.map((u) => (
             <div key={u.id} className="strip-group">
-              <span className={`strip-label ${u.id === unit?.id ? "cur" : ""}`}>{u.id}</span>
+              <span className={`strip-label ${u.id === module?.id ? "cur" : ""}`}>{u.id}</span>
               <div className="boxes">
                 {u.lessons.map((l) => (
                   <button key={l.id} type="button" className={`sq ${box(l.id)} ${l.id === lessonId ? "cur" : ""}`}
@@ -122,11 +122,11 @@ export function App() {
       </header>
       <div className="cols">
         <nav className="map" aria-label="Course map">
-          {course.units.map((u) => {
-            const open = openUnits[u.id] ?? u.id === unit?.id;
+          {course.modules.map((u) => {
+            const open = openModules[u.id] ?? u.id === module?.id;
             return (
               <div key={u.id} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <button type="button" className="row unit-head" aria-expanded={open} onClick={() => setOpenUnits({ ...openUnits, [u.id]: !open })}>
+                <button type="button" className="row module-head" aria-expanded={open} onClick={() => setOpenModules({ ...openModules, [u.id]: !open })}>
                   {u.id} · {u.title}
                 </button>
                 {open && u.lessons.map((l) => (
@@ -144,7 +144,7 @@ export function App() {
           <C.Provider value={ctx}>
             <main className="lesson" onMouseUp={onMouseUp}>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <div className="crumb">Unit {unit?.id} · {unit?.title} · Lesson {lesson.id}</div>
+                <div className="crumb">Module {module?.id} · {module?.title} · Lesson {lesson.id}</div>
                 <h1>{lesson.title}</h1>
                 <p className="question">{lesson.question}</p>
                 {lesson.terms.length > 0 && (
@@ -153,14 +153,32 @@ export function App() {
                     <Inline where="terms" text={lesson.terms.map((t) => `[[${t}${t.startsWith("@") && !t.includes("|") ? "|" + (lookup(glossary, t)?.label ?? t) : ""}]]`).join("  ")} />
                   </div>
                 )}
-                <Definition where="terms" />
               </div>
+              {lesson.intro && (
+                <section className="intro" aria-label={`About Module ${module?.id}`}>
+                  <div className="small-caps">Module {module?.id} · {module?.title}</div>
+                  {lesson.intro.map((t, i) => <p key={i}><Inline text={t} where={`intro${i}`} /></p>)}
+                </section>
+              )}
               {lesson.parts.map((p, i) => <PartView key={i} part={p} idx={i} />)}
               <div className="closure">
                 {lst?.revealed && lesson.closure && (
                   <>
-                    <p><strong>We found:</strong> {lesson.closure.found}</p>
-                    <p className="note" style={{ fontSize: 16 }}><strong style={{ color: "var(--text-color-primary)" }}>Which raises:</strong> {lesson.closure.raises}</p>
+                    <div className="small-caps">What we found</div>
+                    <p><Inline text={lesson.closure.found} where="found" /></p>
+                    {lesson.turnIds.some((t) => lst.turns[t]?.summary) && (
+                      <div className="yours">
+                        <span className="note">Your answers, in short</span>
+                        {lesson.turnIds.map((t) => lst.turns[t]?.summary && <span key={t}>“{lst.turns[t].summary}”</span>)}
+                      </div>
+                    )}
+                    {lesson.closure.matters && (
+                      <>
+                        <div className="small-caps">Why it matters</div>
+                        <p><Inline text={lesson.closure.matters} where="matters" /></p>
+                      </>
+                    )}
+                    <p className="raises"><strong>Which raises:</strong> <Inline text={lesson.closure.raises} where="raises" /></p>
                   </>
                 )}
                 <div className="nav">
@@ -169,6 +187,7 @@ export function App() {
                 </div>
               </div>
             </main>
+            <TermPopover />
             <aside className="margin" aria-label="Ask and side trips">
               <Margin pointer={pointer} setPointer={setPointer} onClose={returnToPlace} />
             </aside>

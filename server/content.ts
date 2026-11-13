@@ -16,21 +16,22 @@ export type Part =
 
 export interface Lesson {
   id: string;
-  unit: string;
+  module: string;
   slug: string;
   dir: string;
   title: string;
   question: string;
   terms: string[];
   parts: Part[];
-  closure: { found: string; raises: string } | null;
+  closure: { found: string; matters?: string; raises: string } | null;
+  intro?: string[]; // the module introduction, on the module's first lesson only
   turnIds: string[];
   slotIds: string[];
   source: string; // lesson.md, for the tutor
   tutorNotes: string; // tutor.md, for the tutor only
 }
 
-export interface Unit {
+export interface Module {
   id: string;
   dir: string;
   title: string;
@@ -45,12 +46,13 @@ export interface GlossaryEntry {
   definition: string;
   holdUntil?: string; // lesson id whose turns must settle before "ask more" opens
   concept?: boolean;
+  link?: { label: string; url: string }; // read_more in vocabulary.yaml
 }
 
 export interface Course {
   title: string;
   commit: string;
-  units: Unit[];
+  modules: Module[];
   lessons: Map<string, Lesson>;
   order: string[]; // lesson ids in reading order
   glossary: Map<string, GlossaryEntry>;
@@ -141,7 +143,7 @@ function parseBody(body: string, lessonDir: string, videos: Course["videos"], le
         parts.push({ kind: "ref", text: opts.text ?? "", label: opts.label ?? "", video: opts.video ? `/media/videos/${opts.video}.mp4` : undefined, videoTitle: opts.video ? videos[opts.video]?.title : undefined });
         break;
       case "closure":
-        closure = { found: opts.found ?? "", raises: opts.raises ?? "" };
+        closure = { found: opts.found ?? "", matters: opts.matters, raises: opts.raises ?? "" };
         break;
       default:
         console.warn(`[content] ${lessonId}: unknown directive :::${name}`);
@@ -155,14 +157,14 @@ export function loadCourse(): Course {
   const cy = YAML.parse(fs.readFileSync(path.join(config.courseDir, "course.yaml"), "utf8"));
   const videosFile = path.join(config.mediaDir, "videos.yaml");
   const videos = fs.existsSync(videosFile) ? YAML.parse(fs.readFileSync(videosFile, "utf8")) ?? {} : {};
-  const units: Unit[] = [];
+  const modules: Module[] = [];
   const lessons = new Map<string, Lesson>();
   const order: string[] = [];
-  for (const udir of cy.units as string[]) {
-    const ud = path.join(config.courseDir, "units", udir);
-    if (!fs.existsSync(path.join(ud, "unit.yaml"))) continue; // listed but not written yet
-    const uy = YAML.parse(fs.readFileSync(path.join(ud, "unit.yaml"), "utf8"));
-    const unit: Unit = { id: String(uy.id), dir: udir, title: uy.title, question: uy.question ?? "", misconceptions: uy.misconceptions ?? [], lessons: [] };
+  for (const udir of cy.modules as string[]) {
+    const ud = path.join(config.courseDir, "modules", udir);
+    if (!fs.existsSync(path.join(ud, "module.yaml"))) continue; // listed but not written yet
+    const uy = YAML.parse(fs.readFileSync(path.join(ud, "module.yaml"), "utf8"));
+    const module: Module = { id: String(uy.id), dir: udir, title: uy.title, question: uy.question ?? "", misconceptions: uy.misconceptions ?? [], lessons: [] };
     const ldirs = fs.readdirSync(ud).filter((d) => fs.existsSync(path.join(ud, d, "lesson.md"))).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
     for (const ld of ldirs) {
       const dir = path.join(ud, ld);
@@ -172,19 +174,27 @@ export function loadCourse(): Course {
       const { parts, closure } = parseBody(body, dir, videos, id);
       const notesFile = path.join(dir, "tutor.md");
       const lesson: Lesson = {
-        id, unit: unit.id, slug: ld, dir, title: meta.title ?? ld, question: meta.question ?? "",
+        id, module: module.id, slug: ld, dir, title: meta.title ?? ld, question: meta.question ?? "",
         terms: (meta.terms ?? []).map(String), parts, closure,
         turnIds: parts.flatMap((p) => (p.kind === "turn" ? [p.id] : [])),
         slotIds: parts.flatMap((p) => (p.kind === "slot" ? [p.id] : [])),
         source, tutorNotes: fs.existsSync(notesFile) ? fs.readFileSync(notesFile, "utf8") : "",
       };
-      unit.lessons.push(lesson);
+      // A module's intro (module.yaml `intro`, paragraphs separated by blank lines) opens its first lesson.
+      if (!module.lessons.length && uy.intro) lesson.intro = String(uy.intro).split(/\n\s*\n/).map((p) => p.replace(/\s+/g, " ").trim()).filter(Boolean);
+      module.lessons.push(lesson);
       lessons.set(id, lesson);
       order.push(id);
     }
-    units.push(unit);
+    modules.push(module);
   }
-  return { title: cy.title, commit: cy.cuphoton?.commit ?? "", units, lessons, order, glossary: loadGlossary(), chain: cy.chain ?? [], videos };
+  return { title: cy.title, commit: cy.cuphoton?.commit ?? "", modules, lessons, order, glossary: loadGlossary(), chain: cy.chain ?? [], videos };
+}
+
+// read_more: "Label | https://…" — one outside page that explains the idea in more depth.
+function readMore(v: unknown): { label: string; url: string } | undefined {
+  const m = typeof v === "string" ? v.match(/^(.*?)\s*\|\s*(https?:\/\/\S+)$/) : null;
+  return m ? { label: m[1], url: m[2] } : undefined;
 }
 
 function loadGlossary(): Map<string, GlossaryEntry> {
@@ -195,7 +205,7 @@ function loadGlossary(): Map<string, GlossaryEntry> {
     const names = String(t.term).split(/,(?![^(]*\))/).map((s) => s.trim());
     const label = String(t.term).replace(/\s*\(.*?\)\s*$/, "");
     for (const n of names) {
-      const e: GlossaryEntry = { key: normKey(n), label: names.length > 1 ? n : label, definition: t.definition, holdUntil: hold };
+      const e: GlossaryEntry = { key: normKey(n), label: names.length > 1 ? n : label, definition: t.definition, holdUntil: hold, link: readMore(t.read_more) };
       g.set(e.key, e);
       // "PSF (point-spread function)" is also reachable as "point-spread function"
       const paren = String(n).match(/\((.*?)\)/)?.[1];
@@ -218,5 +228,5 @@ export function publicLesson(l: Lesson) {
 }
 
 export function courseOutline(c: Course) {
-  return c.units.map((u) => ({ id: u.id, title: u.title, lessons: u.lessons.map((l) => ({ id: l.id, title: l.title, turns: l.turnIds.length })) }));
+  return c.modules.map((u) => ({ id: u.id, title: u.title, lessons: u.lessons.map((l) => ({ id: l.id, title: l.title, turns: l.turnIds.length })) }));
 }

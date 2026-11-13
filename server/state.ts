@@ -16,7 +16,7 @@ export interface TurnState {
   hints: string[]; // rungs used
   misconceptions: string[];
 }
-export interface LessonState { visited: boolean; turns: Record<string, TurnState>; slots: Record<string, FigureOnPage>; revealed: boolean }
+export interface LessonState { visited: boolean; briefed?: boolean; /* the tutor has read lesson.md and tutor.md */ turns: Record<string, TurnState>; slots: Record<string, FigureOnPage>; revealed: boolean }
 export interface Thread {
   id: string;
   from: string; // lesson id

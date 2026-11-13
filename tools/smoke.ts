@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { config } from "../server/config.ts";
-import { loadCourse } from "../server/content.ts";
+import { loadCourse, normKey } from "../server/content.ts";
 
 let failed = 0;
 const ok = (name: string, detail = "") => console.log(`  ok    ${name}${detail ? "  " + detail : ""}`);
@@ -22,9 +22,15 @@ try {
       for (const s of srcs) if (!fs.existsSync(path.join(config.courseDir, s.replace(/^\/course-files\//, "")))) { missing++; bad("course file", `${l.id}: ${s}`); }
     }
     if (!l.tutorNotes) bad("tutor notes", `${l.id} has no tutor.md`);
+    // Every [[term]] and key term must have a definition, or it renders as plain text.
+    const refs = [...l.source.matchAll(/\[\[(.+?)\]\]/g)].map((m) => m[1].split("|")[0]).concat(l.terms);
+    for (const r of refs) {
+      const k = r.startsWith("@") ? r : normKey(r);
+      if (!c.glossary.has(k) && !c.glossary.has(k.replace(/s$/, ""))) bad("term", `${l.id}: [[${r}]] has no definition`);
+    }
   }
   if (c.lessons.size === 0) bad("course", "no lessons found");
-  else if (!missing) ok("course", `${c.units.length} unit(s), ${c.lessons.size} lessons, ${c.glossary.size} glossary entries`);
+  else if (!missing) ok("course", `${c.modules.length} module(s), ${c.lessons.size} lessons, ${c.glossary.size} glossary entries`);
 } catch (e: any) { bad("course", e.message); }
 
 // 2. Learner Python: NumPy, Matplotlib, cuPhoton.
@@ -39,11 +45,11 @@ else {
   head === want ? ok("cuphoton checkout", `pinned ${head.slice(0, 12)}`) : bad("cuphoton checkout", `at ${head.slice(0, 12)}, course wants ${want.slice(0, 12)}`);
 }
 
-// 3. GPU: nvidia-smi, and CuPy can allocate and synchronize (GPU lessons need it; Unit 00 doesn't).
+// 3. GPU: nvidia-smi, and CuPy can allocate and synchronize (GPU lessons need it; Module 00 doesn't).
 const smi = spawnSync("nvidia-smi", ["--query-gpu=name,memory.total", "--format=csv,noheader"], { encoding: "utf8" });
 smi.status === 0 ? ok("gpu", smi.stdout.trim()) : bad("gpu", "nvidia-smi failed");
 const cupy = spawnSync(py, ["-c", "import cupy as cp; a=cp.arange(10); cp.cuda.Device().synchronize(); print(int(a.sum()))"], { encoding: "utf8" });
-cupy.status === 0 && cupy.stdout.trim() === "45" ? ok("cupy") : console.log(`  warn  cupy  not usable from ${py} (fine for Unit 00–02 on CPU)`);
+cupy.status === 0 && cupy.stdout.trim() === "45" ? ok("cupy") : console.log(`  warn  cupy  not usable from ${py} (fine for Module 00–02 on CPU)`);
 
 // 4. Endpoint: the configured model answers a tool call.
 try {

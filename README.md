@@ -44,7 +44,7 @@ To use another endpoint or self-hosted model, add a provider to
   the only context the tutor gets.
 - `server/` — content parser, pi sessions and page tools, run recorder, state.
 - `web/` — the page (React).
-- `media/` — videos with `.srt` subtitles, listed in `media/videos.yaml`.
+- `media/` — videos with `.srt` subtitles, listed in `media/videos.yaml`; the pipeline that makes them (scripts, scenes, narration) is in `media/pipeline`, see `media/README.md`.
 - `sim/` — the M0 simulated-learner harness.
 
 ## Lesson format
