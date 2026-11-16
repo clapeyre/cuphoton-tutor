@@ -38,6 +38,14 @@ anything parked from them is copied here with a pointer back.
   28 s (CuPy compiling kernels), later runs 3 s, because the compiled code is
   cached in `~/.cupy/kernel_cache`. 3.4 can only quote it.
 
+## Repository
+
+- **Videos and GitLab's 5 MiB per-file limit.** The pipeline re-encodes to
+  stay under it (render.sh warns above 4.5 MiB); v0 was re-encoded and the
+  unpushed history rewritten on 16 Nov 2026. If videos outgrow that (longer
+  or higher resolution), move `media/videos/*.mp4` to Git LFS, which needs
+  `git-lfs` installed wherever the repo is cloned.
+
 ## Upstream (cuPhoton)
 
 - **`examples/run_quickstarts.py` prints a stale summary on failure.** When the
