@@ -20,7 +20,7 @@ def timings(vid):
     return json.loads((RENDERS / vid / "timings.json").read_text())
 
 
-def to_image(arr, cmap="magma", lo=None, hi=None, height=6.0, nan_color=(0, 0, 0)):
+def to_image(arr, cmap="gray", lo=None, hi=None, height=6.0, nan_color=(0, 0, 0)):
     """2-D array (origin lower, as imshow) -> ImageMobject of the given scene height."""
     a = np.asarray(arr, float)
     lo = np.nanpercentile(a, 1) if lo is None else lo

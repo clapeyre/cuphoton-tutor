@@ -170,3 +170,16 @@ a.ext::after { content: " ↗"; font-size: 0.85em; }
 .hl .hljs-meta, .hl .hljs-variable, .hl .hljs-attr { color: #ffcb6b; }
 .hl .hljs-operator, .hl .hljs-punctuation { color: #89ddff; }
 .hl .hljs-attr { color: #82aaff; }
+.turn.locked { opacity: 0.6; padding-top: 12px; padding-bottom: 12px; }
+
+/* code you can spot at a glance: inline chips and framed blocks */
+code { font-family: var(--font-mono); font-size: 0.88em; padding: 1px 6px; border-radius: 4px; background: #0b1a00; border: 1px solid #2f4a0a; color: #d9f2a6; white-space: nowrap; }
+pre.hl { border: 1px solid var(--border-color-interaction-base); border-left: 3px solid var(--brand); }
+.run pre.hl { padding: 8px 10px; border-radius: 6px; background: #0a0a0a; }
+.msg-code { border-left: 3px solid var(--brand); }
+
+/* maths */
+.maths.display { display: block; margin: 6px 0; overflow-x: auto; overflow-y: hidden; }
+.katex { font-size: 1.08em; }
+code { white-space: normal; overflow-wrap: anywhere; }
+pre.lesson-code { margin: 0; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.55; padding: 12px 14px; border-radius: 8px; background: #0a0a0a; overflow-x: auto; white-space: pre; }

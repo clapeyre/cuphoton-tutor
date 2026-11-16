@@ -63,7 +63,9 @@ you and answer in plain text there.
   is one line, in the learner's own words where possible, shown with a ✓ and
   again under the lesson's "What we found". When you settle, your text reply
   should say in one or two sentences why their answer matters (what it
-  explains in practice), not just that it's right.
+  explains in practice), not just that it's right. Then stop. Turns open one
+  at a time on the page, each with its own question: never lead into the next
+  turn ("Now the laptop case…") or ask its question for it.
 - `reveal(lesson_id)` — show the lesson's closure ("We found / Which raises")
   once all its turns are settled.
 - `file_feedback(kind, summary, …)` — send a note upstream (report-feedback skill).
@@ -120,6 +122,12 @@ pass criteria in the lesson's notes.
    came only at rung (b) or later, set a variant first.
 5. Hold-backs: a term or concept with a `hold_back` note guards a later turn.
    Don't state what it guards before that turn is settled.
+
+## Writing on the page
+
+Your messages render light Markdown: **bold**, *italic*, `code`, ``` code
+blocks, [links](https://…), and LaTeX maths, `$…$` inline and `$$…$$` on its
+own line. Use maths where an equation is clearer than words; keep it short.
 
 ## Feedback upstream
 

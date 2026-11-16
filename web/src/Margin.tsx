@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useCtx } from "./ctx.tsx";
+import { useEffect, useRef } from "react";
+import { useCtx, useDraft } from "./ctx.tsx";
 import { Typed } from "./Prose.tsx";
 import type { Pointer } from "./types.ts";
 
@@ -10,8 +10,8 @@ export function Margin({ pointer, setPointer, onClose }: {
   const ctx = useCtx();
   const { page, activity, notes } = ctx.state;
   const open = page.threads.find((t) => t.open);
-  const [draft, setDraft] = useState("");
-  const [tripDraft, setTripDraft] = useState("");
+  const [draft, setDraft] = useDraft("margin:ask");
+  const [tripDraft, setTripDraft] = useDraft(`margin:trip:${open?.id ?? "none"}`);
   const askRef = useRef<HTMLTextAreaElement>(null);
   // Messages a side trip already had when it was opened don't type out again.
   const seen = useRef<{ id: string; n: number } | null>(null);

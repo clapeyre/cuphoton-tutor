@@ -8,9 +8,11 @@ terms: [gain, variance plane, error bar]
 In 0.1 the noise on a pixel that expects N counts was about √N, so its
 [variance](https://en.wikipedia.org/wiki/Variance), the square of the noise, is
 about N. Real files store *data numbers* (DN) rather than photons; the
-detector's [[gain]], recorded in the header, says how many electrons make one
-DN. Converting back and forth, the variance of a pixel in DN² is its value
-divided by the gain. (A full noise model adds the detector's read noise; for
+detector's [[gain]] $g$, recorded in the header, says how many electrons make
+one DN. Converting back and forth, the variance of a pixel in DN² is its value
+divided by the gain:
+
+$$\sigma^2_{\mathrm{DN}} = \frac{\text{value}}{g}.$$ (A full noise model adds the detector's read noise; for
 this bright synthetic sky we can leave it out.)
 
 cuPhoton never guesses the noise: every call takes it explicitly, as a

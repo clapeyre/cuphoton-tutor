@@ -7,6 +7,7 @@ import { config } from "./config.ts";
 
 export type Part =
   | { kind: "prose"; text: string }
+  | { kind: "code"; text: string; lang?: string }
   | { kind: "video"; id: string; title: string; duration: string; chapters: [number, string][]; src: string }
   | { kind: "figure"; title: string; caption: string; src: string; alt: string }
   | { kind: "slot"; id: string; title: string; caption: string }
@@ -98,6 +99,15 @@ function parseBody(body: string, lessonDir: string, videos: Course["videos"], le
   };
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    // ``` fenced code block, shown as highlighted code (e.g. a command the learner will ask for)
+    const fence = line.match(/^```\s*([\w-]*)\s*$/);
+    if (fence) {
+      flush();
+      const code: string[] = [];
+      while (++i < lines.length && !/^```\s*$/.test(lines[i])) code.push(lines[i]);
+      parts.push({ kind: "code", lang: fence[1] || undefined, text: code.join("\n") });
+      continue;
+    }
     const d = line.match(/^:::([a-z-]+)\s*(.*)$/);
     if (!d) {
       if (line.trim() === "") flush();

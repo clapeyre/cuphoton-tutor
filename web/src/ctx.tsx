@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { Course, GlossaryEntry, Lesson, Pointer, ServerState } from "./types.ts";
 
 export interface Ctx {
@@ -33,6 +33,18 @@ export function heldUntil(ctx: Pick<Ctx, "course" | "state">, e: GlossaryEntry):
   const st = ctx.state.page.lessons[e.holdUntil];
   const settled = st ? Object.values(st.turns).filter((t) => t.status === "settled").length : 0;
   return settled >= outline.turns ? null : e.holdUntil;
+}
+
+/** A text box's unsent text, kept per box in this browser (survives switching lessons, tabs or reloading). */
+export function useDraft(key: string): [string, (v: string) => void] {
+  const k = `draft:${key}`;
+  const [v, setV] = useState(() => { try { return localStorage.getItem(k) ?? ""; } catch { return ""; } });
+  useEffect(() => { try { setV(localStorage.getItem(k) ?? ""); } catch { setV(""); } }, [k]);
+  const set = useCallback((x: string) => {
+    setV(x);
+    try { if (x) localStorage.setItem(k, x); else localStorage.removeItem(k); } catch { /* storage unavailable: keep it in memory only */ }
+  }, [k]);
+  return [v, set];
 }
 
 export const fmtTime = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;

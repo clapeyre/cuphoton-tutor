@@ -1,5 +1,6 @@
 export type Part =
   | { kind: "prose"; text: string }
+  | { kind: "code"; text: string; lang?: string }
   | { kind: "video"; id: string; title: string; duration: string; chapters: [number, string][]; src: string }
   | { kind: "figure"; title: string; caption: string; src: string; alt: string }
   | { kind: "slot"; id: string; title: string; caption: string }

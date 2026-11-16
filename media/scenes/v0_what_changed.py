@@ -164,7 +164,7 @@ class V0(Scene):
 
         # ---------- s3: what a picture is
         self.next_section("s3"); t = Timed.seg(self, T, "s3")
-        img = to_image(ref, "magma", rlo, rhi, 5.4).shift(UP * 0.2)
+        img = to_image(ref, "gray", rlo, rhi, 5.4).shift(UP * 0.2)
         cap = label("a picture of the sky", 28).to_edge(DOWN, buff=0.4)
         t.play(FadeIn(img), FadeIn(cap), run_time=0.8)
         box = Square(side_length=5.4 * 9 / ref.shape[0] * 3, color=ACC, stroke_width=4).move_to(pix(img, ref.shape, sy, sx))
@@ -172,7 +172,7 @@ class V0(Scene):
         cell = 0.6; n = 9
         grid = VGroup()
         lo, hi = 90, 540
-        cmap = colormaps["magma"]
+        cmap = colormaps["gray"]
         cells = {}
         for j in range(n):
             for i in range(n):

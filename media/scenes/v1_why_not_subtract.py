@@ -16,8 +16,8 @@ class V1(Scene):
         H = 5.6
         # ---------- s1
         self.next_section("s1"); t = Timed.seg(self, T, "s1")
-        ref_img = to_image(ali, "magma", lo, hi, H).shift(UP * 0.2)
-        tgt_img = to_image(tgt, "magma", lo, hi, H).move_to(ref_img)
+        ref_img = to_image(ali, "gray", lo, hi, H).shift(UP * 0.2)
+        tgt_img = to_image(tgt, "gray", lo, hi, H).move_to(ref_img)
         cap = label("Night 1: the reference", 30).to_edge(DOWN, buff=0.35)
         t.play(FadeIn(ref_img), FadeIn(cap), run_time=1.2)
         cap2 = label("Night 2: the target", 30).move_to(cap)
@@ -32,16 +32,16 @@ class V1(Scene):
 
         # ---------- s2
         self.next_section("s2"); t = Timed.seg(self, T, "s2")
-        nimg = to_image(naive, "RdBu_r", -400, 400, H).shift(UP * 0.2)
+        nimg = to_image(naive, "gray", -400, 400, H).shift(UP * 0.2)
         cap = label("Night 2 minus night 1, no alignment", 30).to_edge(DOWN, buff=0.35)
-        a = to_image(tgt, "magma", lo, hi, H).move_to(nimg)
+        a = to_image(tgt, "gray", lo, hi, H).move_to(nimg)
         self.add(a)
         t.at("Here's what"); t.play(FadeOut(a), FadeIn(nimg), FadeIn(cap), run_time=1.0)
         # zoom on the strongest lobe pair
         sm = np.abs(naive); sm[:20] = 0; sm[-20:] = 0; sm[:, :20] = 0; sm[:, -20:] = 0
         y0, x0 = np.unravel_index(np.argmax(sm), sm.shape)
         crop = naive[y0 - 8:y0 + 9, x0 - 8:x0 + 9]
-        zoom = to_image(crop, "RdBu_r", -400, 400, 5.4).shift(UP * 0.2)
+        zoom = to_image(crop, "gray", -400, 400, 5.4).shift(UP * 0.2)
         box = Square(side_length=H * 17 / 256 * 1.0, color=ACC).move_to(pix(nimg, shape, y0, x0))
         t.at("Every star"); t.play(Create(box), run_time=0.4)
         t.play(FadeOut(nimg), FadeOut(box), FadeIn(zoom), run_time=0.6)
@@ -71,14 +71,14 @@ class V1(Scene):
         t.play(Create(g_tgt.copy().set_opacity(0.25)), Create(g_ref), FadeIn(c1), run_time=1.5)
         c2 = label("resample onto the target's grid", 28, ACC).move_to(c1)
         t.at("resample"); t.play(Transform(g_ref, g_tgt), Transform(c1, c2), run_time=2.0)
-        a1 = to_image(ali, "magma", lo, hi, 4.8).shift(LEFT * 3.7 + UP * 0.1)
-        a2 = to_image(tgt, "magma", lo, hi, 4.8).shift(RIGHT * 3.7 + UP * 0.1)
+        a1 = to_image(ali, "gray", lo, hi, 4.8).shift(LEFT * 3.7 + UP * 0.1)
+        a2 = to_image(tgt, "gray", lo, hi, 4.8).shift(RIGHT * 3.7 + UP * 0.1)
         l1 = label("Reference, aligned", 24).next_to(a1, DOWN); l2 = label("Target", 24).next_to(a2, DOWN)
         t.at("In cuPhoton")
         t.play(*[FadeOut(m) for m in self.mobjects], FadeIn(a1), FadeIn(a2), FadeIn(l1), FadeIn(l2), run_time=0.5)
         xr = label("xRep", 32, ACC).to_edge(UP, buff=0.3)
         t.at("xRep"); t.play(FadeIn(xr), run_time=0.3)
-        sub = to_image(alo, "RdBu_r", -400, 400, 5.4).shift(UP * 0.2)
+        sub = to_image(alo, "gray", -400, 400, 5.4).shift(UP * 0.2)
         l3 = label("Target minus aligned reference", 28).to_edge(DOWN, buff=0.35)
         t.at("Now subtract"); t.play(*[FadeOut(m) for m in (a1, a2, l1, l2, xr)], FadeIn(sub), FadeIn(l3), run_time=0.6)
         l4 = label("Target minus aligned reference: rings", 28).move_to(l3)
@@ -131,7 +131,7 @@ class V1(Scene):
 
         # ---------- s5
         self.next_section("s5"); t = Timed.seg(self, T, "s5")
-        zi = to_image(z, "RdBu_r", -6, 6, 6.0).shift(UP * 0.2)
+        zi = to_image(z, "gray", -6, 6, 6.0).shift(UP * 0.2)
         cap = label("Difference over its noise (z), from xPois", 28).to_edge(DOWN, buff=0.35)
         t.play(FadeIn(zi), FadeIn(cap), run_time=1.0)
         c1 = Circle(radius=0.38, color=BLACK, stroke_width=5).move_to(pix(zi, shape, *peaks[0]))

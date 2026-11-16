@@ -224,7 +224,9 @@ export class Tutor {
           this.spokeIn.add(`${t.lessonId}/${t.tid}`);
           s.save(this.lessonTurns);
           const left = t.lesson.turnIds.filter((x) => s.lesson(t.lessonId).turns[x]?.status !== "settled");
-          return text(left.length ? `Settled. Open turns left in ${t.lessonId}: ${left.join(", ")}.` : `Settled. All turns in ${t.lessonId} are settled; reveal("${t.lessonId}") when ready.`);
+          return text(left.length
+            ? `Settled. The page now opens the next turn, ${left[0]}, with its own question. Finish your reply about this one and stop: don't introduce or ask the next turn.`
+            : `Settled. All turns in ${t.lessonId} are settled; reveal("${t.lessonId}") when ready.`);
         },
       }),
       defineTool({

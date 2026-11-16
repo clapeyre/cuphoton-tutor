@@ -61,8 +61,8 @@ class V2(Scene):
 
         # ---------- s3
         self.next_section("s3"); t = Timed.seg(self, T, "s3")
-        good = to_image(d["z"], "RdBu_r", -6, 6, 4.6).shift(LEFT * 3.5 + UP * 0.3)
-        bad = to_image(d["z_bad"], "RdBu_r", -6, 6, 4.6).shift(RIGHT * 3.5 + UP * 0.3)
+        good = to_image(d["z"], "gray", -6, 6, 4.6).shift(LEFT * 3.5 + UP * 0.3)
+        bad = to_image(d["z_bad"], "gray", -6, 6, 4.6).shift(RIGHT * 3.5 + UP * 0.3)
         d1 = mono("done", 26, GREEN).next_to(good, DOWN, buff=0.3); d2 = mono("done", 26, GREEN).next_to(bad, DOWN, buff=0.3)
         t.at("Both of these"); t.play(FadeIn(good), FadeIn(bad), run_time=0.6)
         t.at("finished"); t.play(FadeIn(d1), FadeIn(d2), run_time=0.4)

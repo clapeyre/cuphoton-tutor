@@ -9,7 +9,9 @@ Every cuPhoton stage also runs from the command line, and each command-line run
 writes a timestamped run directory with its own `summary.json`. For example,
 xRep can put one image onto a standard sky grid:
 
-`cuphoton xrep reproject-image --input work/01/sample/target.fits --output-dir work/02/xrep-cli`
+```bash
+cuphoton xrep reproject-image --input work/01/sample/target.fits --output-dir work/02/xrep-cli
+```
 
 A run involves two separate choices. Reading the FITS file is done by a
 **FITS reader** (Astropy on the CPU, or cuPhoton's own reader that can load

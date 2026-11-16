@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { fmtTime, useCtx } from "./ctx.tsx";
+import { fmtTime, useCtx, useDraft } from "./ctx.tsx";
 import { Code } from "./Code.tsx";
 import { Inline, Typed } from "./Prose.tsx";
 import type { FigureOnPage, Part, RunRecord } from "./types.ts";
@@ -12,6 +12,7 @@ export function PartView({ part, idx }: { part: Part; idx: number }) {
           <p><Inline text={part.text} where={`p${idx}`} /></p>
         </div>
       );
+    case "code": return <Code text={part.text} lang={part.lang} className="lesson-code" />;
     case "video": return <Video part={part} />;
     case "figure": return <AuthoredFigure part={part} />;
     case "slot": return <Slot part={part} />;
@@ -165,8 +166,12 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
   const st = ctx.state.page.lessons[ctx.lesson.id]?.turns[part.id];
   const settled = st?.status === "settled";
   const [unrolled, setUnrolled] = useState(false);
-  const [draft, setDraft] = useState("");
+  const [draft, setDraft] = useDraft(`turn:${ctx.lesson.id}/${part.id}`);
   const log = st?.log ?? [];
+  // Turns open one at a time: this one waits while an earlier turn in the lesson is still open.
+  const lst = ctx.state.page.lessons[ctx.lesson.id];
+  const before = ctx.lesson.turnIds.slice(0, ctx.lesson.turnIds.indexOf(part.id));
+  const locked = !settled && before.some((t) => lst?.turns[t]?.status !== "settled");
   const seenAtMount = useRef(log.length); // messages already there when the page opened don't type out
   const lastLearner = [...log].reverse().findIndex((m) => m.who === "learner");
   const streaming = ctx.state.activity.drafts?.[`turn:${ctx.lesson.id}/${part.id}`];
@@ -180,16 +185,18 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
     ctx.send({ type: "say", lesson: ctx.lesson.id, turn: part.id, text: t });
     setDraft("");
   };
-  const showBody = !settled || unrolled;
+  // Stay open while the tutor is still writing here, even if it has just settled the turn.
+  const showBody = (!settled && !locked) || unrolled || working || !!streaming;
   const where = `turn:${part.id}`;
   return (
-    <section className={`turn ${settled ? "settled" : ""}`} aria-label={`Your turn: ${part.title}`} id={`turn-${part.id}`}>
+    <section className={`turn ${settled ? "settled" : ""} ${locked ? "locked" : ""}`} aria-label={`Your turn: ${part.title}`} id={`turn-${part.id}`}>
       <div className="turn-head">
         <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
           <span className="label">Your turn</span>
           <span style={{ fontWeight: 600 }}>{part.title}</span>
         </div>
-        {settled && (
+        {locked && <span className="note">Opens once you've finished the one above</span>}
+        {settled && !working && !streaming && (
           <button type="button" className="link" aria-expanded={unrolled} onClick={() => setUnrolled(!unrolled)}>
             {unrolled ? "Hide the conversation" : `Show the conversation (${exchanges} turns)`}
           </button>
@@ -231,7 +238,7 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
           </div>
         </div>
       )}
-      {settled && (
+      {settled && !working && !streaming && (
         <div className="check"><span className="tick" aria-hidden="true">✓</span><span>{st?.summary}</span></div>
       )}
     </section>

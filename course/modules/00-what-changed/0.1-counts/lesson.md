@@ -20,9 +20,13 @@ Light arrives one photon at a time, at random moments, so even a perfectly
 steady source never gives the same count twice: the counts wobble around their
 average. Counting random arrivals follows a
 [Poisson distribution](https://en.wikipedia.org/wiki/Poisson_distribution), and
-its key property is all you need here: if a pixel expects N counts, the wobble,
-the [[noise]], is about √N. A background of 100 counts wobbles by about ±10; a
-star peak of 10,000 counts by about ±100. Astronomers call this
+its key property is all you need here: if a pixel expects $N$ counts, the
+wobble, the [[noise]], is about
+
+$$\sigma \approx \sqrt{N}.$$
+
+A background of 100 counts wobbles by about ±10; a star peak of 10,000 counts by
+about ±100. Astronomers call this
 [shot noise](https://en.wikipedia.org/wiki/Shot_noise).
 
 Here is a toy sky: a flat background with a few sources on it, and that noise
@@ -40,7 +44,7 @@ prompt: If the exposure time were twice as long, what would happen to the source
 :::
 
 :::closure
-found: Doubling the exposure doubles every count, source and background alike, but the noise grows only by √2 ≈ 1.4. The signal grows faster than its noise, so the ratio between them, the [signal-to-noise ratio](https://en.wikipedia.org/wiki/Signal-to-noise_ratio_(imaging)), improves as the square root of the exposure time.
+found: Doubling the exposure doubles every count, source and background alike, but the noise grows only by √2 ≈ 1.4. The signal grows faster than its noise, so the ratio between them, the [signal-to-noise ratio](https://en.wikipedia.org/wiki/Signal-to-noise_ratio_(imaging)), improves as the square root of the exposure time: $S/N \propto \sqrt{t}$.
 matters: This is the reason astronomers chase exposure time, and the price is steep. To see a source half as bright with the same confidence, you need four times the exposure. It's why telescopes take long exposures, why surveys stack many nights, and why faint changes in the sky are hard to catch at all. Noise also sets the bar for the rest of this course. Whenever we later ask whether a leftover bump in an image is real, we'll be comparing it with this √N wobble.
 raises: Here we changed one thing on purpose. Next come two real pictures of the same sky, taken on different nights. What can differ between them?
 :::

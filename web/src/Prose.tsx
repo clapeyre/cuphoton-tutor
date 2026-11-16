@@ -1,13 +1,22 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 import { Code } from "./Code.tsx";
 import { heldUntil, lookup, useCtx } from "./ctx.tsx";
 
-/** Inline markup: [[term]] or [[term|shown text]], [text](https://…), **bold**, *italic*, `code`. */
+/** LaTeX maths with KaTeX; on a syntax error, the source is shown in red rather than breaking the page. */
+function Maths({ tex, display }: { tex: string; display: boolean }) {
+  const html = katex.renderToString(tex, { displayMode: display, throwOnError: false, output: "html" });
+  return <span className={display ? "maths display" : "maths"} dangerouslySetInnerHTML={{ __html: html }} />;
+}
+
+/** Inline markup: [[term]] or [[term|shown text]], [text](https://…), **bold**, *italic*, `code`,
+ *  $$display maths$$ and $inline maths$ (LaTeX; a $ followed by a space or digit-free text isn't maths). */
 export function Inline({ text, where }: { text: string; where: string }) {
   const ctx = useCtx();
   const out: ReactNode[] = [];
-  const re = /\[\[(.+?)\]\]|\[([^\]]+)\]\((https?:\/\/(?:[^()\s]|\([^()\s]*\))+)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`/g;
+  const re = /\[\[(.+?)\]\]|\[([^\]]+)\]\((https?:\/\/(?:[^()\s]|\([^()\s]*\))+)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\$\$(.+?)\$\$|\$(?=\S)([^$\n]+?)(?<=\S)\$(?!\d)/g;
   let i = 0, m: RegExpExecArray | null, n = 0;
   while ((m = re.exec(text))) {
     if (m.index > i) out.push(text.slice(i, m.index));
@@ -29,6 +38,8 @@ export function Inline({ text, where }: { text: string; where: string }) {
     else if (m[4]) out.push(<strong key={n++}>{m[4]}</strong>);
     else if (m[5]) out.push(<em key={n++}>{m[5]}</em>);
     else if (m[6]) out.push(<code key={n++}>{m[6]}</code>);
+    else if (m[7]) out.push(<Maths key={n++} tex={m[7]} display />);
+    else if (m[8]) out.push(<Maths key={n++} tex={m[8]} display={false} />);
     i = re.lastIndex;
   }
   if (i < text.length) out.push(text.slice(i));
