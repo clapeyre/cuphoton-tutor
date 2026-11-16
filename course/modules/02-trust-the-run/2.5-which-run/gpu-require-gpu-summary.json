@@ -1,0 +1,171 @@
+{
+  "components": [
+    "xfit",
+    "xpois",
+    "xscan",
+    "xrep",
+    "xray"
+  ],
+  "hardware": {
+    "cuphoton": "0.3.0.dev91+gff4d260",
+    "cupy": {
+      "available": true,
+      "cuda_available": true,
+      "devices": [
+        {
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER"
+        }
+      ],
+      "driver_version": 13040,
+      "runtime_version": 13020,
+      "version": "14.1.1"
+    },
+    "gpu_available": true,
+    "platform": "Linux-7.2.8-9-omarchy-x86_64-with-glibc2.44",
+    "python": "3.12.16",
+    "torch": {
+      "available": true,
+      "cuda_available": true,
+      "cuda_runtime": "13.0",
+      "devices": [
+        {
+          "compute_capability": "8.9",
+          "index": 0,
+          "name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+          "total_memory_bytes": 16781541376
+        }
+      ],
+      "version": "2.13.0+cu130"
+    }
+  },
+  "profile": "auto",
+  "require_gpu": true,
+  "results": {
+    "xfit": {
+      "artifacts": {
+        "fit_arrays": "xfit/artifacts/fit-arrays.npz",
+        "summary": "xfit/summary.json"
+      },
+      "backend": "cupy",
+      "device": "cuda:0",
+      "dtype": "float64",
+      "inputs": {
+        "dipoles": "xfit/inputs/dipoles.npz"
+      },
+      "metrics": {
+        "candidate_count": 3,
+        "converged_count": 3,
+        "finite": true,
+        "max_absolute_parameter_error": 4.49594139695364e-10,
+        "max_residual_norm": 4.096706356983563e-09
+      },
+      "requested_backend": "cupy",
+      "status": "ok"
+    },
+    "xpois": {
+      "artifacts": {
+        "kernel": "xpois/artifacts/kernel.npy",
+        "matched": "xpois/artifacts/matched.npy",
+        "residual": "xpois/artifacts/residual.npy",
+        "summary": "xpois/summary.json"
+      },
+      "backend": "cupy",
+      "device": "cuda",
+      "dtype": "float64",
+      "inputs": {
+        "reference": "xpois/inputs/reference.npy",
+        "target": "xpois/inputs/target.npy"
+      },
+      "metrics": {
+        "finite": true,
+        "finite_output_fraction": 0.5625,
+        "fit_pixel_count": 576,
+        "kernel_sum": 0.9999999999999999,
+        "residual_rms": 1.2228083090828144e-16
+      },
+      "requested_backend": "cupy",
+      "status": "ok"
+    },
+    "xray": {
+      "artifacts": {
+        "delay": "xray/artifacts/delay.npy",
+        "ratio_minus_one": "xray/artifacts/ratio_minus_one.npy",
+        "reconstruction": "xray/artifacts/reconstruction.npy",
+        "spectrum": "xray/artifacts/spectrum.npy",
+        "summary": "xray/summary.json"
+      },
+      "backend": "gpu",
+      "device": "cuda",
+      "dtype": "float64",
+      "inputs": {
+        "off_hdf5": "xray/inputs/off.h5",
+        "on_hdf5": "xray/inputs/on.h5"
+      },
+      "metrics": {
+        "chi2": 1.075960732838191e-07,
+        "finite": true,
+        "samples": 32,
+        "selected_model_order": 4
+      },
+      "status": "ok"
+    },
+    "xrep": {
+      "artifacts": {
+        "image": "xrep/runs/reproject/artifacts/reprojected.npy",
+        "mask": "xrep/runs/reproject/artifacts/mask.npy",
+        "reprojected_fits": "xrep/runs/reproject/artifacts/reprojected.fits",
+        "summary": "xrep/summary.json",
+        "workflow_summary": "xrep/runs/reproject/summary.json"
+      },
+      "backend": "cupy",
+      "device": "cuda",
+      "dtype": "float64",
+      "inputs": {
+        "fits": "xrep/inputs/image.fits"
+      },
+      "metrics": {
+        "finite": true,
+        "finite_output_fraction": 0.7320261437908496,
+        "input_shape": [
+          16,
+          16
+        ],
+        "output_shape": [
+          18,
+          17
+        ]
+      },
+      "status": "ok"
+    },
+    "xscan": {
+      "artifacts": {
+        "checkpoint": "xscan/run/checkpoint.pt",
+        "config": "xscan/run/config.yaml",
+        "history": "xscan/run/history.json",
+        "summary": "xscan/summary.json",
+        "training_summary": "xscan/run/training-summary.json"
+      },
+      "backend": "torch",
+      "device": "cuda",
+      "dtype": "float32",
+      "inputs": {
+        "labels": "xscan/dataset/labels.npy",
+        "metadata": "xscan/dataset/metadata.jsonl",
+        "search": "xscan/dataset/search.npy",
+        "split": "xscan/dataset/split.npy",
+        "template": "xscan/dataset/template.npy"
+      },
+      "metrics": {
+        "best_val_roc_auc": 1.0,
+        "epochs_completed": 1,
+        "finite": true,
+        "sample_count": 8
+      },
+      "status": "ok"
+    }
+  },
+  "schema_version": 1,
+  "seed": 20260701,
+  "status": "ok"
+}

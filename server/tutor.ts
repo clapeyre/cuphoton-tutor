@@ -153,7 +153,7 @@ export class Tutor {
     };
     return [
       defineTool({
-        name: "show_figure", label: "Show figure",
+        name: "show_figure", label: "Show figure", executionMode: "sequential",
         description: "Place an image from the learner workspace on the page: into a lesson slot (slot) or into a Your-turn conversation (turn_id, as lesson/turn). Its run record is attached automatically.",
         parameters: Type.Object({
           path: Type.String({ description: "Image path, relative to the learner workspace (e.g. work/00/0.1_toy_sky.png)" }),
@@ -164,7 +164,10 @@ export class Tutor {
         }),
         execute: async (_id, p) => {
           const abs = path.resolve(config.learnerDir, p.path);
-          if (!abs.startsWith(config.learnerDir) || !fs.existsSync(abs)) throw new Error(`no such file in the workspace: ${p.path}`);
+          if (!abs.startsWith(config.learnerDir)) throw new Error(`not in the workspace: ${p.path}`);
+          // A figure made by a bash call in the same batch may still be being written: give it a moment.
+          for (let i = 0; i < 40 && !fs.existsSync(abs); i++) await new Promise((r) => setTimeout(r, 250));
+          if (!fs.existsSync(abs)) throw new Error(`no such file in the workspace: ${p.path}`);
           if (!/\.(png|jpe?g|svg|gif|webp)$/i.test(abs)) throw new Error("show_figure takes an image (png, jpg, svg, gif, webp)");
           const rel = path.relative(config.learnerDir, abs);
           const fig: FigureOnPage = { id: `${rel}@${fs.statSync(abs).mtimeMs}`, src: `/workspace/${rel}?v=${Math.round(fs.statSync(abs).mtimeMs)}`, title: p.title ?? "", caption: p.caption ?? "", run: this.recorder.recordFor(rel) };
@@ -188,7 +191,7 @@ export class Tutor {
         },
       }),
       defineTool({
-        name: "ask", label: "Ask",
+        name: "ask", label: "Ask", executionMode: "sequential",
         description: "Post your line in a Your-turn conversation. One short message, at most one question.",
         parameters: Type.Object({
           turn_id: Type.String({ description: "lesson/turn, e.g. 0.2/what-changed" }),
@@ -206,7 +209,7 @@ export class Tutor {
         },
       }),
       defineTool({
-        name: "settle", label: "Settle",
+        name: "settle", label: "Settle", executionMode: "sequential",
         description: "Mark a Your turn passed. The summary is one line, in the learner's words where possible; the turn folds to it with a check mark.",
         parameters: Type.Object({
           turn_id: Type.String(),
@@ -225,7 +228,7 @@ export class Tutor {
         },
       }),
       defineTool({
-        name: "reveal", label: "Reveal",
+        name: "reveal", label: "Reveal", executionMode: "sequential",
         description: "Show a lesson's closure (We found / Which raises). Only once all its Your turns are settled.",
         parameters: Type.Object({ lesson_id: Type.String() }),
         execute: async (_id, p) => {
@@ -239,7 +242,7 @@ export class Tutor {
         },
       }),
       defineTool({
-        name: "file_feedback", label: "File feedback",
+        name: "file_feedback", label: "File feedback", executionMode: "sequential",
         description: "Send a short structured note to the course authors (see the report-feedback skill). The learner sees every note.",
         parameters: Type.Object({
           kind: Type.Union(["novel_misconception", "stuck_unresolved", "content_error", "tutor_error", "env_failure", "frustration", "delight"].map((k) => Type.Literal(k))),

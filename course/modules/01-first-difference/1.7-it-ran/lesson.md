@@ -23,5 +23,5 @@ prompt: Ask the tutor to run your colleague's script. Is its result right? If no
 :::closure
 found: The script ran cleanly, fit status looked healthy, and the answer was wrong. Hotspot peaks come back as (y, x), but the stamp cutter takes (x, y). Passing them unchanged cut the stamps at transposed positions, on empty sky, and the fit "succeeded" on noise. Only the evidence showed it: fluxes far from the injected ones, cutouts with nothing at their centre, fitted positions wandering off-centre.
 matters: This is the job an agent can't do for you. Code that runs is not code that's right, and the failures that matter most, such as swapped axes, a wrong variance or a silent fallback, all run cleanly. Your defence is the habit from this module: know what each stage should produce, and look before you believe.
-raises: Everything so far ran on a CPU. Next: the same pipeline on the GPU, and how to know what actually ran there.
+raises: Everything so far ran on a CPU. Before moving to the GPU: when a run finishes, how do you know what actually ran, and where?
 :::

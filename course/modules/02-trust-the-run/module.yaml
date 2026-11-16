@@ -1,0 +1,21 @@
+id: "02"
+title: Trust, but read the receipt
+question: A run finished without an error. Where did it actually run, and how would you know?
+needs: linux_cpu   # cuPhoton CPU profile; the exercise brings a GPU run as a file
+objectives: [O3, O2]
+misconceptions: [M-AUTO-GPU, M-EXPLICIT-FALLBACK, M-BACKEND-NAMES, M-OUTDIR, M-AGENT-SUCCESS, M-AUC-CERTAINTY, M-READER-IS-BACKEND]
+source: examples/run_quickstarts.py, docs/quickstarts.md, docs/guide/concepts.qmd, docs/troubleshooting.md in the pinned checkout
+time: 40–60 min
+intro: |
+  In Module 01 a script ran cleanly and its answer was wrong. This module is
+  about a quieter failure: the answer is right, but the work didn't run where
+  you think it did.
+
+  cuPhoton is built to run anywhere. Left to its defaults, it uses a GPU if it
+  can and quietly carries on without one if it can't. That is convenient, and
+  it means **"it ran" tells you nothing about where it ran**. The only evidence
+  is the record each run leaves about itself.
+
+  You'll read those records, see what makes a run succeed or fail on purpose,
+  and finish by writing the instruction you'll give every agent that runs
+  cuPhoton for you.

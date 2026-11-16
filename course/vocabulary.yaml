@@ -284,6 +284,56 @@ terms:
     bridges: ["the fit didn't crash"]
     avoid: ["success", "valid result"]
 
+  # --- Module 02 ---------------------------------------------------------------
+  - term: backend
+    definition: "The library that does a stage's arithmetic: NumPy on the CPU (called cpu in some stages, numpy in others), CuPy or PyTorch on a GPU, and a few specialised GPU options. The same stage gives the same answer on any backend; only where and how fast it runs differ."
+    source: "docs/glossary.md, 'Backend'; docs/guide/concepts.qmd, 'Backends'"
+    introduce_at: "2.1"
+    bridges: ["engine"]
+    avoid: ["device (a backend runs on a device; they're recorded separately)"]
+
+  - term: auto (backend)
+    definition: "The default backend setting. It tries the GPU backends in a fixed order and takes the first that is installed and can reach a GPU, ending on the CPU. So it always succeeds, and only the receipt says where it ran."
+    source: "docs/guide/concepts.qmd, 'Backends'; docs/quickstarts.md, 'Interpreting fallback'"
+    introduce_at: "2.3"
+    bridges: ["best available"]
+    avoid: ["GPU mode"]
+
+  - term: fallback
+    definition: "When a run ends up on a slower path than the one it tried first, typically the CPU instead of the GPU, without an error. auto falls back; a backend requested by name fails instead."
+    source: "docs/troubleshooting.md, 'A GPU run used CPU'"
+    introduce_at: "2.3"
+    bridges: ["plan B"]
+    avoid: ["failure (a fallback succeeds)"]
+
+  - term: receipt
+    definition: "The record a run leaves about itself, in cuPhoton a summary.json next to the outputs: what was requested, which backend and device actually ran, the dtype, the inputs and the hardware. It's the only evidence of where the work happened."
+    source: "docs/guide/concepts.qmd, 'Receipts'; docs/quickstarts.md, 'Output contract'"
+    introduce_at: "2.1"
+    bridges: ["log", "flight recorder"]
+    avoid: ["log (a log is free text; a receipt has fixed fields)"]
+
+  - term: artifact
+    definition: "In cuPhoton, a saved output of a run: an array, a table, a metrics file. Not a spurious detection: that's a bogus residual."
+    source: "docs/glossary.md, 'Artifact'"
+    introduce_at: "2.1"
+    bridges: ["output file"]
+    avoid: ["artifact for a spurious residual (see collisions)"]
+
+  - term: profile
+    definition: "The quickstart runner's overall request: cpu (deliberately CPU only) or auto (use a GPU if possible). Adding --require-gpu turns a missing GPU into an error instead of a fallback."
+    source: "docs/quickstarts.md"
+    introduce_at: "2.1"
+    bridges: []
+    avoid: []
+
+  - term: device
+    definition: "The hardware a backend actually ran on: cpu, or cuda (with an index, cuda:0, for a particular GPU). Recorded in the receipt beside the backend."
+    source: "docs/guide/concepts.qmd"
+    introduce_at: "2.1"
+    bridges: []
+    avoid: ["backend"]
+
 confusables:
   - words: ["PSF width (psf_sigma, sigma_x, sigma_y)", "variance plane", "error bar / covariance / standard_errors", "noise"]
     rule: "Four kinds of spread with similar names. Say which one each time, with its units: a PSF width is in pixels; a variance plane is in squared data units per pixel; an error bar is in the measured quantity's units; noise is the random wobble the variance plane describes. See M-SIGMA-VARIANCE."

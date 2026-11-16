@@ -169,3 +169,4 @@ a.ext::after { content: " ↗"; font-size: 0.85em; }
 .hl .hljs-params { color: var(--text-color-primary); }
 .hl .hljs-meta, .hl .hljs-variable, .hl .hljs-attr { color: #ffcb6b; }
 .hl .hljs-operator, .hl .hljs-punctuation { color: #89ddff; }
+.hl .hljs-attr { color: #82aaff; }
