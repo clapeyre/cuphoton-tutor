@@ -1,0 +1,71 @@
+1
+00:00:00,300 --> 00:00:05,513
+In Module 04, you ran the chain one call at a time, on one pair of images.
+
+2
+00:00:05,513 --> 00:00:08,512
+A survey has thousands of pairs every night.
+
+3
+00:00:08,512 --> 00:00:13,550
+So cuPhoton also ships the chain as one pipeline: the transient chain.
+
+4
+00:00:14,450 --> 00:00:19,375
+One worker per GPU takes each image from its files to a table of candidates.
+
+5
+00:00:19,375 --> 00:00:29,075
+It reads the planes, puts the reference on the target's grid, matches and subtracts, finds the hotspots, cuts stamps, fits them, and builds an error bar for each.
+
+6
+00:00:29,075 --> 00:00:31,962
+The images stay on the GPU the whole way.
+
+7
+00:00:31,962 --> 00:00:34,575
+What comes back is one small download.
+
+8
+00:00:35,450 --> 00:00:36,963
+Two things come back.
+
+9
+00:00:36,963 --> 00:00:44,900
+A catalog, with one row per candidate: a position, a flux, and an error bar built from several terms, each in its own column.
+
+10
+00:00:44,900 --> 00:00:53,250
+And a summary for every image: which GPU, which reader actually ran, which error terms went in, and how long each stage took.
+
+11
+00:00:54,125 --> 00:00:57,600
+Everything it does is set in one configuration file.
+
+12
+00:00:57,600 --> 00:01:01,387
+First, where each plane of your data is and what its numbers mean.
+
+13
+00:01:01,387 --> 00:01:03,300
+Then every stage's settings.
+
+14
+00:01:03,300 --> 00:01:06,900
+It ships with values chosen for another survey's data.
+
+15
+00:01:06,900 --> 00:01:08,450
+Yours is different.
+
+16
+00:01:09,350 --> 00:01:11,300
+So, the question of this module.
+
+17
+00:01:11,300 --> 00:01:15,975
+When the shipped pipeline says it's done, can you trust what it wrote, on your data?
+
+18
+00:01:15,975 --> 00:01:18,850
+You already have every habit you need to find out.

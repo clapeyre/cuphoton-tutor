@@ -4,6 +4,11 @@
 configuration, then refuses "success" as proof and finds the missing PSF width
 in `summary.json`. Probes M-SUCCESS-COMPLETE, M-AGENT-SUCCESS.
 
+## Video `v6-one-image-through-the-chain` (opens the module)
+What the chain is, its stages on the GPU with real timings from the final
+configuration, the catalog row and summary it leaves, the configuration that
+drives it. It names no trap: don't add one when discussing it.
+
 ## Setup (once, in the first turn)
 - Working dir `work/05/`. Data: the module 04 files in
   `course/modules/04-your-own-data/data/` (absolute paths: the selections file

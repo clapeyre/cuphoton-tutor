@@ -5,6 +5,9 @@ question: What does the shipped pipeline need to know about this data, and how d
 terms: [configuration]
 ---
 
+:::video v6-one-image-through-the-chain
+:::
+
 In [4.2](#/4.2) you gave the run as one instruction to an agent. The transient
 chain takes the same decisions as a [[configuration]]: a YAML file with one
 block per stage, and a `survey` block that says where each plane of the data

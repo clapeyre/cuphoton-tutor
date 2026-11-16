@@ -28,3 +28,12 @@ v5-why-the-sum-wobbles:
     - [32.5, resampling]
     - [51.9, shared noise]
     - [70.3, the survey's images]
+v6-one-image-through-the-chain:
+  title: One image through the shipped chain
+  duration: "1:19"
+  chapters:
+    - [0, by hand]
+    - [14.2, through the GPU]
+    - [35.2, what comes back]
+    - [53.8, the configuration]
+    - [69.0, the question]

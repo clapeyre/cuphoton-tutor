@@ -1,0 +1,1322 @@
+{
+  "s1": {
+    "duration": 14.15,
+    "text": "In Module zero four, you ran the chain one call at a time, on one pair of images. A survey has thousands of pairs every night. So cuPhoton also ships the chain as one pipeline: the transient chain.",
+    "words": [
+      {
+        "w": "In",
+        "start": 0.3,
+        "end": 0.4
+      },
+      {
+        "w": "Module",
+        "start": 0.4,
+        "end": 0.75
+      },
+      {
+        "w": "zero",
+        "start": 0.75,
+        "end": 1.062
+      },
+      {
+        "w": "four",
+        "start": 1.062,
+        "end": 1.5
+      },
+      {
+        "w": ",",
+        "start": 1.5,
+        "end": 1.6
+      },
+      {
+        "w": "you",
+        "start": 1.6,
+        "end": 1.75
+      },
+      {
+        "w": "ran",
+        "start": 1.75,
+        "end": 1.988
+      },
+      {
+        "w": "the",
+        "start": 1.988,
+        "end": 2.087
+      },
+      {
+        "w": "chain",
+        "start": 2.087,
+        "end": 2.425
+      },
+      {
+        "w": "one",
+        "start": 2.425,
+        "end": 2.65
+      },
+      {
+        "w": "call",
+        "start": 2.65,
+        "end": 2.938
+      },
+      {
+        "w": "at",
+        "start": 2.938,
+        "end": 3.013
+      },
+      {
+        "w": "a",
+        "start": 3.013,
+        "end": 3.075
+      },
+      {
+        "w": "time",
+        "start": 3.075,
+        "end": 3.6
+      },
+      {
+        "w": ",",
+        "start": 3.6,
+        "end": 3.675
+      },
+      {
+        "w": "on",
+        "start": 3.675,
+        "end": 3.888
+      },
+      {
+        "w": "one",
+        "start": 3.888,
+        "end": 4.125
+      },
+      {
+        "w": "pair",
+        "start": 4.125,
+        "end": 4.362
+      },
+      {
+        "w": "of",
+        "start": 4.362,
+        "end": 4.45
+      },
+      {
+        "w": "images",
+        "start": 4.45,
+        "end": 5.375
+      },
+      {
+        "w": ".",
+        "start": 5.375,
+        "end": 5.513
+      },
+      {
+        "w": "A",
+        "start": 5.513,
+        "end": 5.638
+      },
+      {
+        "w": "survey",
+        "start": 5.638,
+        "end": 6.15
+      },
+      {
+        "w": "has",
+        "start": 6.15,
+        "end": 6.388
+      },
+      {
+        "w": "thousands",
+        "start": 6.388,
+        "end": 6.838
+      },
+      {
+        "w": "of",
+        "start": 6.838,
+        "end": 6.963
+      },
+      {
+        "w": "pairs",
+        "start": 6.963,
+        "end": 7.375
+      },
+      {
+        "w": "every",
+        "start": 7.375,
+        "end": 7.7
+      },
+      {
+        "w": "night",
+        "start": 7.7,
+        "end": 8.375
+      },
+      {
+        "w": ".",
+        "start": 8.375,
+        "end": 8.512
+      },
+      {
+        "w": "So",
+        "start": 8.512,
+        "end": 8.713
+      },
+      {
+        "w": "cuPhoton",
+        "start": 8.713,
+        "end": 9.463
+      },
+      {
+        "w": "also",
+        "start": 9.463,
+        "end": 9.875
+      },
+      {
+        "w": "ships",
+        "start": 9.875,
+        "end": 10.175
+      },
+      {
+        "w": "the",
+        "start": 10.175,
+        "end": 10.312
+      },
+      {
+        "w": "chain",
+        "start": 10.312,
+        "end": 10.7
+      },
+      {
+        "w": "as",
+        "start": 10.7,
+        "end": 10.863
+      },
+      {
+        "w": "one",
+        "start": 10.863,
+        "end": 11.1
+      },
+      {
+        "w": "pipeline",
+        "start": 11.1,
+        "end": 11.95
+      },
+      {
+        "w": ":",
+        "start": 11.95,
+        "end": 12.05
+      },
+      {
+        "w": "the",
+        "start": 12.05,
+        "end": 12.15
+      },
+      {
+        "w": "transient",
+        "start": 12.15,
+        "end": 12.613
+      },
+      {
+        "w": "chain",
+        "start": 12.613,
+        "end": 13.3
+      },
+      {
+        "w": ".",
+        "start": 13.3,
+        "end": 13.45
+      }
+    ]
+  },
+  "s2": {
+    "duration": 21.025,
+    "text": "One worker per GPU takes each image from its files to a table of candidates. It reads the planes, puts the reference on the target's grid, matches and subtracts, finds the hotspots, cuts stamps, fits them, and builds an error bar for each. The images stay on the GPU the whole way. What comes back is one small download.",
+    "words": [
+      {
+        "w": "One",
+        "start": 0.3,
+        "end": 0.525
+      },
+      {
+        "w": "worker",
+        "start": 0.525,
+        "end": 0.85
+      },
+      {
+        "w": "per",
+        "start": 0.85,
+        "end": 1.05
+      },
+      {
+        "w": "GPU",
+        "start": 1.05,
+        "end": 1.613
+      },
+      {
+        "w": "takes",
+        "start": 1.613,
+        "end": 1.938
+      },
+      {
+        "w": "each",
+        "start": 1.938,
+        "end": 2.175
+      },
+      {
+        "w": "image",
+        "start": 2.175,
+        "end": 2.55
+      },
+      {
+        "w": "from",
+        "start": 2.55,
+        "end": 2.688
+      },
+      {
+        "w": "its",
+        "start": 2.688,
+        "end": 2.875
+      },
+      {
+        "w": "files",
+        "start": 2.875,
+        "end": 3.362
+      },
+      {
+        "w": "to",
+        "start": 3.362,
+        "end": 3.462
+      },
+      {
+        "w": "a",
+        "start": 3.462,
+        "end": 3.525
+      },
+      {
+        "w": "table",
+        "start": 3.525,
+        "end": 3.888
+      },
+      {
+        "w": "of",
+        "start": 3.888,
+        "end": 3.975
+      },
+      {
+        "w": "candidates",
+        "start": 3.975,
+        "end": 5.1
+      },
+      {
+        "w": ".",
+        "start": 5.1,
+        "end": 5.225
+      },
+      {
+        "w": "It",
+        "start": 5.225,
+        "end": 5.4
+      },
+      {
+        "w": "reads",
+        "start": 5.4,
+        "end": 5.725
+      },
+      {
+        "w": "the",
+        "start": 5.725,
+        "end": 5.825
+      },
+      {
+        "w": "planes",
+        "start": 5.825,
+        "end": 6.55
+      },
+      {
+        "w": ",",
+        "start": 6.55,
+        "end": 6.625
+      },
+      {
+        "w": "puts",
+        "start": 6.625,
+        "end": 6.875
+      },
+      {
+        "w": "the",
+        "start": 6.875,
+        "end": 6.975
+      },
+      {
+        "w": "reference",
+        "start": 6.975,
+        "end": 7.388
+      },
+      {
+        "w": "on",
+        "start": 7.388,
+        "end": 7.487
+      },
+      {
+        "w": "the",
+        "start": 7.487,
+        "end": 7.575
+      },
+      {
+        "w": "target's",
+        "start": 7.575,
+        "end": 8.025
+      },
+      {
+        "w": "grid",
+        "start": 8.025,
+        "end": 8.55
+      },
+      {
+        "w": ",",
+        "start": 8.55,
+        "end": 8.662
+      },
+      {
+        "w": "matches",
+        "start": 8.662,
+        "end": 9.2
+      },
+      {
+        "w": "and",
+        "start": 9.2,
+        "end": 9.325
+      },
+      {
+        "w": "subtracts",
+        "start": 9.325,
+        "end": 10.075
+      },
+      {
+        "w": ",",
+        "start": 10.075,
+        "end": 10.15
+      },
+      {
+        "w": "finds",
+        "start": 10.15,
+        "end": 10.412
+      },
+      {
+        "w": "the",
+        "start": 10.412,
+        "end": 10.5
+      },
+      {
+        "w": "hotspots",
+        "start": 10.5,
+        "end": 11.35
+      },
+      {
+        "w": ",",
+        "start": 11.35,
+        "end": 11.45
+      },
+      {
+        "w": "cuts",
+        "start": 11.45,
+        "end": 11.725
+      },
+      {
+        "w": "stamps",
+        "start": 11.725,
+        "end": 12.25
+      },
+      {
+        "w": ",",
+        "start": 12.25,
+        "end": 12.338
+      },
+      {
+        "w": "fits",
+        "start": 12.338,
+        "end": 12.625
+      },
+      {
+        "w": "them",
+        "start": 12.625,
+        "end": 12.875
+      },
+      {
+        "w": ",",
+        "start": 12.875,
+        "end": 12.925
+      },
+      {
+        "w": "and",
+        "start": 12.925,
+        "end": 13.05
+      },
+      {
+        "w": "builds",
+        "start": 13.05,
+        "end": 13.338
+      },
+      {
+        "w": "an",
+        "start": 13.338,
+        "end": 13.463
+      },
+      {
+        "w": "error",
+        "start": 13.463,
+        "end": 13.775
+      },
+      {
+        "w": "bar",
+        "start": 13.775,
+        "end": 14.025
+      },
+      {
+        "w": "for",
+        "start": 14.025,
+        "end": 14.15
+      },
+      {
+        "w": "each",
+        "start": 14.15,
+        "end": 14.8
+      },
+      {
+        "w": ".",
+        "start": 14.8,
+        "end": 14.925
+      },
+      {
+        "w": "The",
+        "start": 14.925,
+        "end": 15.075
+      },
+      {
+        "w": "images",
+        "start": 15.075,
+        "end": 15.537
+      },
+      {
+        "w": "stay",
+        "start": 15.537,
+        "end": 15.838
+      },
+      {
+        "w": "on",
+        "start": 15.838,
+        "end": 15.938
+      },
+      {
+        "w": "the",
+        "start": 15.938,
+        "end": 16.038
+      },
+      {
+        "w": "GPU",
+        "start": 16.038,
+        "end": 16.6
+      },
+      {
+        "w": "the",
+        "start": 16.6,
+        "end": 16.7
+      },
+      {
+        "w": "whole",
+        "start": 16.7,
+        "end": 16.95
+      },
+      {
+        "w": "way",
+        "start": 16.95,
+        "end": 17.65
+      },
+      {
+        "w": ".",
+        "start": 17.65,
+        "end": 17.812
+      },
+      {
+        "w": "What",
+        "start": 17.812,
+        "end": 18.0
+      },
+      {
+        "w": "comes",
+        "start": 18.0,
+        "end": 18.25
+      },
+      {
+        "w": "back",
+        "start": 18.25,
+        "end": 18.575
+      },
+      {
+        "w": "is",
+        "start": 18.575,
+        "end": 18.738
+      },
+      {
+        "w": "one",
+        "start": 18.738,
+        "end": 18.988
+      },
+      {
+        "w": "small",
+        "start": 18.988,
+        "end": 19.375
+      },
+      {
+        "w": "download",
+        "start": 19.375,
+        "end": 20.175
+      },
+      {
+        "w": ".",
+        "start": 20.175,
+        "end": 20.325
+      }
+    ]
+  },
+  "s3": {
+    "duration": 18.675,
+    "text": "Two things come back. A catalog, with one row per candidate: a position, a flux, and an error bar built from several terms, each in its own column. And a summary for every image: which GPU, which reader actually ran, which error terms went in, and how long each stage took.",
+    "words": [
+      {
+        "w": "Two",
+        "start": 0.275,
+        "end": 0.45
+      },
+      {
+        "w": "things",
+        "start": 0.45,
+        "end": 0.775
+      },
+      {
+        "w": "come",
+        "start": 0.775,
+        "end": 0.95
+      },
+      {
+        "w": "back",
+        "start": 0.95,
+        "end": 1.65
+      },
+      {
+        "w": ".",
+        "start": 1.65,
+        "end": 1.788
+      },
+      {
+        "w": "A",
+        "start": 1.788,
+        "end": 1.9
+      },
+      {
+        "w": "catalog",
+        "start": 1.9,
+        "end": 2.475
+      },
+      {
+        "w": ",",
+        "start": 2.475,
+        "end": 2.525
+      },
+      {
+        "w": "with",
+        "start": 2.525,
+        "end": 2.712
+      },
+      {
+        "w": "one",
+        "start": 2.712,
+        "end": 2.95
+      },
+      {
+        "w": "row",
+        "start": 2.95,
+        "end": 3.175
+      },
+      {
+        "w": "per",
+        "start": 3.175,
+        "end": 3.325
+      },
+      {
+        "w": "candidate",
+        "start": 3.325,
+        "end": 4.175
+      },
+      {
+        "w": ":",
+        "start": 4.175,
+        "end": 4.275
+      },
+      {
+        "w": "a",
+        "start": 4.275,
+        "end": 4.35
+      },
+      {
+        "w": "position",
+        "start": 4.35,
+        "end": 4.975
+      },
+      {
+        "w": ",",
+        "start": 4.975,
+        "end": 5.05
+      },
+      {
+        "w": "a",
+        "start": 5.05,
+        "end": 5.175
+      },
+      {
+        "w": "flux",
+        "start": 5.175,
+        "end": 5.6
+      },
+      {
+        "w": ",",
+        "start": 5.6,
+        "end": 5.65
+      },
+      {
+        "w": "and",
+        "start": 5.65,
+        "end": 5.763
+      },
+      {
+        "w": "an",
+        "start": 5.763,
+        "end": 5.888
+      },
+      {
+        "w": "error",
+        "start": 5.888,
+        "end": 6.225
+      },
+      {
+        "w": "bar",
+        "start": 6.225,
+        "end": 6.475
+      },
+      {
+        "w": "built",
+        "start": 6.475,
+        "end": 6.725
+      },
+      {
+        "w": "from",
+        "start": 6.725,
+        "end": 6.938
+      },
+      {
+        "w": "several",
+        "start": 6.938,
+        "end": 7.275
+      },
+      {
+        "w": "terms",
+        "start": 7.275,
+        "end": 7.85
+      },
+      {
+        "w": ",",
+        "start": 7.85,
+        "end": 7.963
+      },
+      {
+        "w": "each",
+        "start": 7.963,
+        "end": 8.25
+      },
+      {
+        "w": "in",
+        "start": 8.25,
+        "end": 8.338
+      },
+      {
+        "w": "its",
+        "start": 8.338,
+        "end": 8.5
+      },
+      {
+        "w": "own",
+        "start": 8.5,
+        "end": 8.75
+      },
+      {
+        "w": "column",
+        "start": 8.75,
+        "end": 9.6
+      },
+      {
+        "w": ".",
+        "start": 9.6,
+        "end": 9.725
+      },
+      {
+        "w": "And",
+        "start": 9.725,
+        "end": 9.863
+      },
+      {
+        "w": "a",
+        "start": 9.863,
+        "end": 9.938
+      },
+      {
+        "w": "summary",
+        "start": 9.938,
+        "end": 10.4
+      },
+      {
+        "w": "for",
+        "start": 10.4,
+        "end": 10.562
+      },
+      {
+        "w": "every",
+        "start": 10.562,
+        "end": 10.9
+      },
+      {
+        "w": "image",
+        "start": 10.9,
+        "end": 11.6
+      },
+      {
+        "w": ":",
+        "start": 11.6,
+        "end": 11.738
+      },
+      {
+        "w": "which",
+        "start": 11.738,
+        "end": 12.037
+      },
+      {
+        "w": "GPU",
+        "start": 12.037,
+        "end": 12.775
+      },
+      {
+        "w": ",",
+        "start": 12.775,
+        "end": 12.85
+      },
+      {
+        "w": "which",
+        "start": 12.85,
+        "end": 13.075
+      },
+      {
+        "w": "reader",
+        "start": 13.075,
+        "end": 13.412
+      },
+      {
+        "w": "actually",
+        "start": 13.412,
+        "end": 13.85
+      },
+      {
+        "w": "ran",
+        "start": 13.85,
+        "end": 14.35
+      },
+      {
+        "w": ",",
+        "start": 14.35,
+        "end": 14.425
+      },
+      {
+        "w": "which",
+        "start": 14.425,
+        "end": 14.662
+      },
+      {
+        "w": "error",
+        "start": 14.662,
+        "end": 14.975
+      },
+      {
+        "w": "terms",
+        "start": 14.975,
+        "end": 15.3
+      },
+      {
+        "w": "went",
+        "start": 15.3,
+        "end": 15.475
+      },
+      {
+        "w": "in",
+        "start": 15.475,
+        "end": 15.825
+      },
+      {
+        "w": ",",
+        "start": 15.825,
+        "end": 15.9
+      },
+      {
+        "w": "and",
+        "start": 15.9,
+        "end": 16.038
+      },
+      {
+        "w": "how",
+        "start": 16.038,
+        "end": 16.288
+      },
+      {
+        "w": "long",
+        "start": 16.288,
+        "end": 16.6
+      },
+      {
+        "w": "each",
+        "start": 16.6,
+        "end": 16.825
+      },
+      {
+        "w": "stage",
+        "start": 16.825,
+        "end": 17.212
+      },
+      {
+        "w": "took",
+        "start": 17.212,
+        "end": 17.8
+      },
+      {
+        "w": ".",
+        "start": 17.8,
+        "end": 17.975
+      }
+    ]
+  },
+  "s4": {
+    "duration": 15.2,
+    "text": "Everything it does is set in one configuration file. First, where each plane of your data is and what its numbers mean. Then every stage's settings. It ships with values chosen for another survey's data. Yours is different.",
+    "words": [
+      {
+        "w": "Everything",
+        "start": 0.275,
+        "end": 0.725
+      },
+      {
+        "w": "it",
+        "start": 0.725,
+        "end": 0.825
+      },
+      {
+        "w": "does",
+        "start": 0.825,
+        "end": 1.15
+      },
+      {
+        "w": "is",
+        "start": 1.15,
+        "end": 1.288
+      },
+      {
+        "w": "set",
+        "start": 1.288,
+        "end": 1.575
+      },
+      {
+        "w": "in",
+        "start": 1.575,
+        "end": 1.738
+      },
+      {
+        "w": "one",
+        "start": 1.738,
+        "end": 2.025
+      },
+      {
+        "w": "configuration",
+        "start": 2.025,
+        "end": 2.862
+      },
+      {
+        "w": "file",
+        "start": 2.862,
+        "end": 3.6
+      },
+      {
+        "w": ".",
+        "start": 3.6,
+        "end": 3.75
+      },
+      {
+        "w": "First",
+        "start": 3.75,
+        "end": 4.275
+      },
+      {
+        "w": ",",
+        "start": 4.275,
+        "end": 4.35
+      },
+      {
+        "w": "where",
+        "start": 4.35,
+        "end": 4.537
+      },
+      {
+        "w": "each",
+        "start": 4.537,
+        "end": 4.787
+      },
+      {
+        "w": "plane",
+        "start": 4.787,
+        "end": 5.062
+      },
+      {
+        "w": "of",
+        "start": 5.062,
+        "end": 5.138
+      },
+      {
+        "w": "your",
+        "start": 5.138,
+        "end": 5.25
+      },
+      {
+        "w": "data",
+        "start": 5.25,
+        "end": 5.625
+      },
+      {
+        "w": "is",
+        "start": 5.625,
+        "end": 5.987
+      },
+      {
+        "w": "and",
+        "start": 5.987,
+        "end": 6.125
+      },
+      {
+        "w": "what",
+        "start": 6.125,
+        "end": 6.263
+      },
+      {
+        "w": "its",
+        "start": 6.263,
+        "end": 6.425
+      },
+      {
+        "w": "numbers",
+        "start": 6.425,
+        "end": 6.775
+      },
+      {
+        "w": "mean",
+        "start": 6.775,
+        "end": 7.425
+      },
+      {
+        "w": ".",
+        "start": 7.425,
+        "end": 7.537
+      },
+      {
+        "w": "Then",
+        "start": 7.537,
+        "end": 7.812
+      },
+      {
+        "w": "every",
+        "start": 7.812,
+        "end": 8.125
+      },
+      {
+        "w": "stage's",
+        "start": 8.125,
+        "end": 8.575
+      },
+      {
+        "w": "settings",
+        "start": 8.575,
+        "end": 9.35
+      },
+      {
+        "w": ".",
+        "start": 9.35,
+        "end": 9.45
+      },
+      {
+        "w": "It",
+        "start": 9.45,
+        "end": 9.675
+      },
+      {
+        "w": "ships",
+        "start": 9.675,
+        "end": 9.988
+      },
+      {
+        "w": "with",
+        "start": 9.988,
+        "end": 10.15
+      },
+      {
+        "w": "values",
+        "start": 10.15,
+        "end": 10.662
+      },
+      {
+        "w": "chosen",
+        "start": 10.662,
+        "end": 11.15
+      },
+      {
+        "w": "for",
+        "start": 11.15,
+        "end": 11.275
+      },
+      {
+        "w": "another",
+        "start": 11.275,
+        "end": 11.662
+      },
+      {
+        "w": "survey's",
+        "start": 11.662,
+        "end": 12.15
+      },
+      {
+        "w": "data",
+        "start": 12.15,
+        "end": 12.85
+      },
+      {
+        "w": ".",
+        "start": 12.85,
+        "end": 13.05
+      },
+      {
+        "w": "Yours",
+        "start": 13.05,
+        "end": 13.5
+      },
+      {
+        "w": "is",
+        "start": 13.5,
+        "end": 13.65
+      },
+      {
+        "w": "different",
+        "start": 13.65,
+        "end": 14.35
+      },
+      {
+        "w": ".",
+        "start": 14.35,
+        "end": 14.5
+      }
+    ]
+  },
+  "s5": {
+    "duration": 10.4,
+    "text": "So, the question of this module. When the shipped pipeline says it's done, can you trust what it wrote, on your data? You already have every habit you need to find out.",
+    "words": [
+      {
+        "w": "So",
+        "start": 0.3,
+        "end": 0.525
+      },
+      {
+        "w": ",",
+        "start": 0.525,
+        "end": 0.562
+      },
+      {
+        "w": "the",
+        "start": 0.562,
+        "end": 0.65
+      },
+      {
+        "w": "question",
+        "start": 0.65,
+        "end": 1.087
+      },
+      {
+        "w": "of",
+        "start": 1.087,
+        "end": 1.163
+      },
+      {
+        "w": "this",
+        "start": 1.163,
+        "end": 1.35
+      },
+      {
+        "w": "module",
+        "start": 1.35,
+        "end": 2.15
+      },
+      {
+        "w": ".",
+        "start": 2.15,
+        "end": 2.25
+      },
+      {
+        "w": "When",
+        "start": 2.25,
+        "end": 2.388
+      },
+      {
+        "w": "the",
+        "start": 2.388,
+        "end": 2.5
+      },
+      {
+        "w": "shipped",
+        "start": 2.5,
+        "end": 2.825
+      },
+      {
+        "w": "pipeline",
+        "start": 2.825,
+        "end": 3.4
+      },
+      {
+        "w": "says",
+        "start": 3.4,
+        "end": 3.6
+      },
+      {
+        "w": "it's",
+        "start": 3.6,
+        "end": 3.8
+      },
+      {
+        "w": "done",
+        "start": 3.8,
+        "end": 4.325
+      },
+      {
+        "w": ",",
+        "start": 4.325,
+        "end": 4.425
+      },
+      {
+        "w": "can",
+        "start": 4.425,
+        "end": 4.6
+      },
+      {
+        "w": "you",
+        "start": 4.6,
+        "end": 4.737
+      },
+      {
+        "w": "trust",
+        "start": 4.737,
+        "end": 5.088
+      },
+      {
+        "w": "what",
+        "start": 5.088,
+        "end": 5.213
+      },
+      {
+        "w": "it",
+        "start": 5.213,
+        "end": 5.3
+      },
+      {
+        "w": "wrote",
+        "start": 5.3,
+        "end": 5.675
+      },
+      {
+        "w": ",",
+        "start": 5.675,
+        "end": 5.75
+      },
+      {
+        "w": "on",
+        "start": 5.75,
+        "end": 5.912
+      },
+      {
+        "w": "your",
+        "start": 5.912,
+        "end": 6.025
+      },
+      {
+        "w": "data",
+        "start": 6.025,
+        "end": 6.75
+      },
+      {
+        "w": "?",
+        "start": 6.75,
+        "end": 6.925
+      },
+      {
+        "w": "You",
+        "start": 6.925,
+        "end": 7.075
+      },
+      {
+        "w": "already",
+        "start": 7.075,
+        "end": 7.45
+      },
+      {
+        "w": "have",
+        "start": 7.45,
+        "end": 7.662
+      },
+      {
+        "w": "every",
+        "start": 7.662,
+        "end": 7.975
+      },
+      {
+        "w": "habit",
+        "start": 7.975,
+        "end": 8.325
+      },
+      {
+        "w": "you",
+        "start": 8.325,
+        "end": 8.45
+      },
+      {
+        "w": "need",
+        "start": 8.45,
+        "end": 8.65
+      },
+      {
+        "w": "to",
+        "start": 8.65,
+        "end": 8.75
+      },
+      {
+        "w": "find",
+        "start": 8.75,
+        "end": 9.012
+      },
+      {
+        "w": "out",
+        "start": 9.012,
+        "end": 9.55
+      },
+      {
+        "w": ".",
+        "start": 9.55,
+        "end": 9.7
+      }
+    ]
+  }
+}
