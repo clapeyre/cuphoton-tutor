@@ -19,3 +19,12 @@ v2-it-ran:
   duration: "1:21"
   chapters:
     - [0, start]
+v5-why-the-sum-wobbles:
+  title: Why the sum wobbles
+  duration: "1:31"
+  chapters:
+    - [0, the puzzle]
+    - [13.3, adding noise]
+    - [32.5, resampling]
+    - [51.9, shared noise]
+    - [70.3, the survey's images]

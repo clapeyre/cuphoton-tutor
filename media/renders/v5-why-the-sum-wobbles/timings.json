@@ -1,0 +1,1512 @@
+{
+  "s1": {
+    "duration": 13.35,
+    "text": "In lesson four point four, the fake stars told you the error bars were too small. Yet one pixel at a time, the survey's variance map was right. How can every pixel be right, and their sum be wrong?",
+    "words": [
+      {
+        "w": "In",
+        "start": 0.3,
+        "end": 0.4
+      },
+      {
+        "w": "lesson",
+        "start": 0.4,
+        "end": 0.8
+      },
+      {
+        "w": "four",
+        "start": 0.8,
+        "end": 1.075
+      },
+      {
+        "w": "point",
+        "start": 1.075,
+        "end": 1.363
+      },
+      {
+        "w": "four",
+        "start": 1.363,
+        "end": 1.825
+      },
+      {
+        "w": ",",
+        "start": 1.825,
+        "end": 1.9
+      },
+      {
+        "w": "the",
+        "start": 1.9,
+        "end": 2.038
+      },
+      {
+        "w": "fake",
+        "start": 2.038,
+        "end": 2.35
+      },
+      {
+        "w": "stars",
+        "start": 2.35,
+        "end": 2.8
+      },
+      {
+        "w": "told",
+        "start": 2.8,
+        "end": 3.05
+      },
+      {
+        "w": "you",
+        "start": 3.05,
+        "end": 3.138
+      },
+      {
+        "w": "the",
+        "start": 3.138,
+        "end": 3.288
+      },
+      {
+        "w": "error",
+        "start": 3.288,
+        "end": 3.6
+      },
+      {
+        "w": "bars",
+        "start": 3.6,
+        "end": 3.962
+      },
+      {
+        "w": "were",
+        "start": 3.962,
+        "end": 4.112
+      },
+      {
+        "w": "too",
+        "start": 4.112,
+        "end": 4.338
+      },
+      {
+        "w": "small",
+        "start": 4.338,
+        "end": 5.125
+      },
+      {
+        "w": ".",
+        "start": 5.125,
+        "end": 5.263
+      },
+      {
+        "w": "Yet",
+        "start": 5.263,
+        "end": 5.5
+      },
+      {
+        "w": "one",
+        "start": 5.5,
+        "end": 5.725
+      },
+      {
+        "w": "pixel",
+        "start": 5.725,
+        "end": 6.125
+      },
+      {
+        "w": "at",
+        "start": 6.125,
+        "end": 6.213
+      },
+      {
+        "w": "a",
+        "start": 6.213,
+        "end": 6.275
+      },
+      {
+        "w": "time",
+        "start": 6.275,
+        "end": 6.825
+      },
+      {
+        "w": ",",
+        "start": 6.825,
+        "end": 6.925
+      },
+      {
+        "w": "the",
+        "start": 6.925,
+        "end": 7.062
+      },
+      {
+        "w": "survey's",
+        "start": 7.062,
+        "end": 7.612
+      },
+      {
+        "w": "variance",
+        "start": 7.612,
+        "end": 8.1
+      },
+      {
+        "w": "map",
+        "start": 8.1,
+        "end": 8.363
+      },
+      {
+        "w": "was",
+        "start": 8.363,
+        "end": 8.525
+      },
+      {
+        "w": "right",
+        "start": 8.525,
+        "end": 9.25
+      },
+      {
+        "w": ".",
+        "start": 9.25,
+        "end": 9.387
+      },
+      {
+        "w": "How",
+        "start": 9.387,
+        "end": 9.6
+      },
+      {
+        "w": "can",
+        "start": 9.6,
+        "end": 9.762
+      },
+      {
+        "w": "every",
+        "start": 9.762,
+        "end": 10.075
+      },
+      {
+        "w": "pixel",
+        "start": 10.075,
+        "end": 10.463
+      },
+      {
+        "w": "be",
+        "start": 10.463,
+        "end": 10.6
+      },
+      {
+        "w": "right",
+        "start": 10.6,
+        "end": 11.05
+      },
+      {
+        "w": ",",
+        "start": 11.05,
+        "end": 11.125
+      },
+      {
+        "w": "and",
+        "start": 11.125,
+        "end": 11.238
+      },
+      {
+        "w": "their",
+        "start": 11.238,
+        "end": 11.412
+      },
+      {
+        "w": "sum",
+        "start": 11.412,
+        "end": 11.675
+      },
+      {
+        "w": "be",
+        "start": 11.675,
+        "end": 11.838
+      },
+      {
+        "w": "wrong",
+        "start": 11.838,
+        "end": 12.5
+      },
+      {
+        "w": "?",
+        "start": 12.5,
+        "end": 12.65
+      }
+    ]
+  },
+  "s2": {
+    "duration": 19.1,
+    "text": "Start with nine pixels, each with noise of one unit, independent of each other. A flux measurement adds them up. Their wobbles partly cancel, so the sum wobbles by three units: the square root of nine, not nine. That's the rule an error bar uses. Add the variances, then take the square root.",
+    "words": [
+      {
+        "w": "Start",
+        "start": 0.275,
+        "end": 0.537
+      },
+      {
+        "w": "with",
+        "start": 0.537,
+        "end": 0.7
+      },
+      {
+        "w": "nine",
+        "start": 0.7,
+        "end": 0.975
+      },
+      {
+        "w": "pixels",
+        "start": 0.975,
+        "end": 1.675
+      },
+      {
+        "w": ",",
+        "start": 1.675,
+        "end": 1.775
+      },
+      {
+        "w": "each",
+        "start": 1.775,
+        "end": 2.013
+      },
+      {
+        "w": "with",
+        "start": 2.013,
+        "end": 2.175
+      },
+      {
+        "w": "noise",
+        "start": 2.175,
+        "end": 2.538
+      },
+      {
+        "w": "of",
+        "start": 2.538,
+        "end": 2.65
+      },
+      {
+        "w": "one",
+        "start": 2.65,
+        "end": 2.875
+      },
+      {
+        "w": "unit",
+        "start": 2.875,
+        "end": 3.325
+      },
+      {
+        "w": ",",
+        "start": 3.325,
+        "end": 3.425
+      },
+      {
+        "w": "independent",
+        "start": 3.425,
+        "end": 4.037
+      },
+      {
+        "w": "of",
+        "start": 4.037,
+        "end": 4.112
+      },
+      {
+        "w": "each",
+        "start": 4.112,
+        "end": 4.312
+      },
+      {
+        "w": "other",
+        "start": 4.312,
+        "end": 5.05
+      },
+      {
+        "w": ".",
+        "start": 5.05,
+        "end": 5.213
+      },
+      {
+        "w": "A",
+        "start": 5.213,
+        "end": 5.35
+      },
+      {
+        "w": "flux",
+        "start": 5.35,
+        "end": 5.7
+      },
+      {
+        "w": "measurement",
+        "start": 5.7,
+        "end": 6.188
+      },
+      {
+        "w": "adds",
+        "start": 6.188,
+        "end": 6.463
+      },
+      {
+        "w": "them",
+        "start": 6.463,
+        "end": 6.588
+      },
+      {
+        "w": "up",
+        "start": 6.588,
+        "end": 7.125
+      },
+      {
+        "w": ".",
+        "start": 7.125,
+        "end": 7.263
+      },
+      {
+        "w": "Their",
+        "start": 7.263,
+        "end": 7.45
+      },
+      {
+        "w": "wobbles",
+        "start": 7.45,
+        "end": 7.85
+      },
+      {
+        "w": "partly",
+        "start": 7.85,
+        "end": 8.225
+      },
+      {
+        "w": "cancel",
+        "start": 8.225,
+        "end": 8.8
+      },
+      {
+        "w": ",",
+        "start": 8.8,
+        "end": 8.875
+      },
+      {
+        "w": "so",
+        "start": 8.875,
+        "end": 9.05
+      },
+      {
+        "w": "the",
+        "start": 9.05,
+        "end": 9.188
+      },
+      {
+        "w": "sum",
+        "start": 9.188,
+        "end": 9.45
+      },
+      {
+        "w": "wobbles",
+        "start": 9.45,
+        "end": 9.85
+      },
+      {
+        "w": "by",
+        "start": 9.85,
+        "end": 10.062
+      },
+      {
+        "w": "three",
+        "start": 10.062,
+        "end": 10.3
+      },
+      {
+        "w": "units",
+        "start": 10.3,
+        "end": 10.9
+      },
+      {
+        "w": ":",
+        "start": 10.9,
+        "end": 10.975
+      },
+      {
+        "w": "the",
+        "start": 10.975,
+        "end": 11.075
+      },
+      {
+        "w": "square",
+        "start": 11.075,
+        "end": 11.425
+      },
+      {
+        "w": "root",
+        "start": 11.425,
+        "end": 11.613
+      },
+      {
+        "w": "of",
+        "start": 11.613,
+        "end": 11.725
+      },
+      {
+        "w": "nine",
+        "start": 11.725,
+        "end": 12.125
+      },
+      {
+        "w": ",",
+        "start": 12.125,
+        "end": 12.2
+      },
+      {
+        "w": "not",
+        "start": 12.2,
+        "end": 12.425
+      },
+      {
+        "w": "nine",
+        "start": 12.425,
+        "end": 13.1
+      },
+      {
+        "w": ".",
+        "start": 13.1,
+        "end": 13.213
+      },
+      {
+        "w": "That's",
+        "start": 13.213,
+        "end": 13.525
+      },
+      {
+        "w": "the",
+        "start": 13.525,
+        "end": 13.662
+      },
+      {
+        "w": "rule",
+        "start": 13.662,
+        "end": 14.025
+      },
+      {
+        "w": "an",
+        "start": 14.025,
+        "end": 14.188
+      },
+      {
+        "w": "error",
+        "start": 14.188,
+        "end": 14.5
+      },
+      {
+        "w": "bar",
+        "start": 14.5,
+        "end": 14.75
+      },
+      {
+        "w": "uses",
+        "start": 14.75,
+        "end": 15.575
+      },
+      {
+        "w": ".",
+        "start": 15.575,
+        "end": 15.713
+      },
+      {
+        "w": "Add",
+        "start": 15.713,
+        "end": 15.912
+      },
+      {
+        "w": "the",
+        "start": 15.912,
+        "end": 16.0
+      },
+      {
+        "w": "variances",
+        "start": 16.0,
+        "end": 16.725
+      },
+      {
+        "w": ",",
+        "start": 16.725,
+        "end": 16.8
+      },
+      {
+        "w": "then",
+        "start": 16.8,
+        "end": 17.025
+      },
+      {
+        "w": "take",
+        "start": 17.025,
+        "end": 17.25
+      },
+      {
+        "w": "the",
+        "start": 17.25,
+        "end": 17.35
+      },
+      {
+        "w": "square",
+        "start": 17.35,
+        "end": 17.675
+      },
+      {
+        "w": "root",
+        "start": 17.675,
+        "end": 18.25
+      },
+      {
+        "w": ".",
+        "start": 18.25,
+        "end": 18.4
+      }
+    ]
+  },
+  "s3": {
+    "duration": 19.425,
+    "text": "Now resample, the way a survey puts every exposure onto its sky grid. Here xRep shifts pure noise by half a pixel. Each output pixel is a weighted blend of a few input pixels. So one input pixel's noise lands in several output pixels, and two neighbours share part of the same noise.",
+    "words": [
+      {
+        "w": "Now",
+        "start": 0.3,
+        "end": 0.45
+      },
+      {
+        "w": "resample",
+        "start": 0.45,
+        "end": 1.175
+      },
+      {
+        "w": ",",
+        "start": 1.175,
+        "end": 1.275
+      },
+      {
+        "w": "the",
+        "start": 1.275,
+        "end": 1.4
+      },
+      {
+        "w": "way",
+        "start": 1.4,
+        "end": 1.6
+      },
+      {
+        "w": "a",
+        "start": 1.6,
+        "end": 1.712
+      },
+      {
+        "w": "survey",
+        "start": 1.712,
+        "end": 2.15
+      },
+      {
+        "w": "puts",
+        "start": 2.15,
+        "end": 2.375
+      },
+      {
+        "w": "every",
+        "start": 2.375,
+        "end": 2.675
+      },
+      {
+        "w": "exposure",
+        "start": 2.675,
+        "end": 3.275
+      },
+      {
+        "w": "onto",
+        "start": 3.275,
+        "end": 3.575
+      },
+      {
+        "w": "its",
+        "start": 3.575,
+        "end": 3.725
+      },
+      {
+        "w": "sky",
+        "start": 3.725,
+        "end": 4.0
+      },
+      {
+        "w": "grid",
+        "start": 4.0,
+        "end": 4.675
+      },
+      {
+        "w": ".",
+        "start": 4.675,
+        "end": 4.812
+      },
+      {
+        "w": "Here",
+        "start": 4.812,
+        "end": 5.088
+      },
+      {
+        "w": "xRep",
+        "start": 5.088,
+        "end": 5.612
+      },
+      {
+        "w": "shifts",
+        "start": 5.612,
+        "end": 5.963
+      },
+      {
+        "w": "pure",
+        "start": 5.963,
+        "end": 6.25
+      },
+      {
+        "w": "noise",
+        "start": 6.25,
+        "end": 6.7
+      },
+      {
+        "w": "by",
+        "start": 6.7,
+        "end": 6.875
+      },
+      {
+        "w": "half",
+        "start": 6.875,
+        "end": 7.088
+      },
+      {
+        "w": "a",
+        "start": 7.088,
+        "end": 7.15
+      },
+      {
+        "w": "pixel",
+        "start": 7.15,
+        "end": 8.025
+      },
+      {
+        "w": ".",
+        "start": 8.025,
+        "end": 8.188
+      },
+      {
+        "w": "Each",
+        "start": 8.188,
+        "end": 8.488
+      },
+      {
+        "w": "output",
+        "start": 8.488,
+        "end": 8.925
+      },
+      {
+        "w": "pixel",
+        "start": 8.925,
+        "end": 9.463
+      },
+      {
+        "w": "is",
+        "start": 9.463,
+        "end": 9.6
+      },
+      {
+        "w": "a",
+        "start": 9.6,
+        "end": 9.713
+      },
+      {
+        "w": "weighted",
+        "start": 9.713,
+        "end": 10.1
+      },
+      {
+        "w": "blend",
+        "start": 10.1,
+        "end": 10.412
+      },
+      {
+        "w": "of",
+        "start": 10.412,
+        "end": 10.488
+      },
+      {
+        "w": "a",
+        "start": 10.488,
+        "end": 10.562
+      },
+      {
+        "w": "few",
+        "start": 10.562,
+        "end": 10.825
+      },
+      {
+        "w": "input",
+        "start": 10.825,
+        "end": 11.175
+      },
+      {
+        "w": "pixels",
+        "start": 11.175,
+        "end": 12.125
+      },
+      {
+        "w": ".",
+        "start": 12.125,
+        "end": 12.238
+      },
+      {
+        "w": "So",
+        "start": 12.238,
+        "end": 12.438
+      },
+      {
+        "w": "one",
+        "start": 12.438,
+        "end": 12.675
+      },
+      {
+        "w": "input",
+        "start": 12.675,
+        "end": 13.025
+      },
+      {
+        "w": "pixel's",
+        "start": 13.025,
+        "end": 13.588
+      },
+      {
+        "w": "noise",
+        "start": 13.588,
+        "end": 13.9
+      },
+      {
+        "w": "lands",
+        "start": 13.9,
+        "end": 14.3
+      },
+      {
+        "w": "in",
+        "start": 14.3,
+        "end": 14.463
+      },
+      {
+        "w": "several",
+        "start": 14.463,
+        "end": 14.85
+      },
+      {
+        "w": "output",
+        "start": 14.85,
+        "end": 15.175
+      },
+      {
+        "w": "pixels",
+        "start": 15.175,
+        "end": 16.0
+      },
+      {
+        "w": ",",
+        "start": 16.0,
+        "end": 16.1
+      },
+      {
+        "w": "and",
+        "start": 16.1,
+        "end": 16.238
+      },
+      {
+        "w": "two",
+        "start": 16.238,
+        "end": 16.45
+      },
+      {
+        "w": "neighbours",
+        "start": 16.45,
+        "end": 16.925
+      },
+      {
+        "w": "share",
+        "start": 16.925,
+        "end": 17.2
+      },
+      {
+        "w": "part",
+        "start": 17.2,
+        "end": 17.438
+      },
+      {
+        "w": "of",
+        "start": 17.438,
+        "end": 17.512
+      },
+      {
+        "w": "the",
+        "start": 17.512,
+        "end": 17.6
+      },
+      {
+        "w": "same",
+        "start": 17.6,
+        "end": 17.85
+      },
+      {
+        "w": "noise",
+        "start": 17.85,
+        "end": 18.575
+      },
+      {
+        "w": ".",
+        "start": 18.575,
+        "end": 18.725
+      }
+    ]
+  },
+  "s4": {
+    "duration": 18.4,
+    "text": "xRep carries the variance along, and pixel by pixel it is exactly right. But when you add up neighbours, the shared parts don't cancel. They move together. So the sum wobbles more than the variances add up to: here, twenty-two percent more, with nothing wrong in any single pixel.",
+    "words": [
+      {
+        "w": "xRep",
+        "start": 0.3,
+        "end": 0.75
+      },
+      {
+        "w": "carries",
+        "start": 0.75,
+        "end": 1.125
+      },
+      {
+        "w": "the",
+        "start": 1.125,
+        "end": 1.225
+      },
+      {
+        "w": "variance",
+        "start": 1.225,
+        "end": 1.7
+      },
+      {
+        "w": "along",
+        "start": 1.7,
+        "end": 2.275
+      },
+      {
+        "w": ",",
+        "start": 2.275,
+        "end": 2.375
+      },
+      {
+        "w": "and",
+        "start": 2.375,
+        "end": 2.513
+      },
+      {
+        "w": "pixel",
+        "start": 2.513,
+        "end": 2.925
+      },
+      {
+        "w": "by",
+        "start": 2.925,
+        "end": 3.112
+      },
+      {
+        "w": "pixel",
+        "start": 3.112,
+        "end": 3.638
+      },
+      {
+        "w": "it",
+        "start": 3.638,
+        "end": 3.75
+      },
+      {
+        "w": "is",
+        "start": 3.75,
+        "end": 3.875
+      },
+      {
+        "w": "exactly",
+        "start": 3.875,
+        "end": 4.425
+      },
+      {
+        "w": "right",
+        "start": 4.425,
+        "end": 5.175
+      },
+      {
+        "w": ".",
+        "start": 5.175,
+        "end": 5.275
+      },
+      {
+        "w": "But",
+        "start": 5.275,
+        "end": 5.412
+      },
+      {
+        "w": "when",
+        "start": 5.412,
+        "end": 5.537
+      },
+      {
+        "w": "you",
+        "start": 5.537,
+        "end": 5.662
+      },
+      {
+        "w": "add",
+        "start": 5.662,
+        "end": 5.862
+      },
+      {
+        "w": "up",
+        "start": 5.862,
+        "end": 6.025
+      },
+      {
+        "w": "neighbours",
+        "start": 6.025,
+        "end": 6.65
+      },
+      {
+        "w": ",",
+        "start": 6.65,
+        "end": 6.725
+      },
+      {
+        "w": "the",
+        "start": 6.725,
+        "end": 6.875
+      },
+      {
+        "w": "shared",
+        "start": 6.875,
+        "end": 7.225
+      },
+      {
+        "w": "parts",
+        "start": 7.225,
+        "end": 7.575
+      },
+      {
+        "w": "don't",
+        "start": 7.575,
+        "end": 7.8
+      },
+      {
+        "w": "cancel",
+        "start": 7.8,
+        "end": 8.675
+      },
+      {
+        "w": ".",
+        "start": 8.675,
+        "end": 8.8
+      },
+      {
+        "w": "They",
+        "start": 8.8,
+        "end": 8.95
+      },
+      {
+        "w": "move",
+        "start": 8.95,
+        "end": 9.2
+      },
+      {
+        "w": "together",
+        "start": 9.2,
+        "end": 10.0
+      },
+      {
+        "w": ".",
+        "start": 10.0,
+        "end": 10.15
+      },
+      {
+        "w": "So",
+        "start": 10.15,
+        "end": 10.35
+      },
+      {
+        "w": "the",
+        "start": 10.35,
+        "end": 10.488
+      },
+      {
+        "w": "sum",
+        "start": 10.488,
+        "end": 10.787
+      },
+      {
+        "w": "wobbles",
+        "start": 10.787,
+        "end": 11.25
+      },
+      {
+        "w": "more",
+        "start": 11.25,
+        "end": 11.463
+      },
+      {
+        "w": "than",
+        "start": 11.463,
+        "end": 11.562
+      },
+      {
+        "w": "the",
+        "start": 11.562,
+        "end": 11.65
+      },
+      {
+        "w": "variances",
+        "start": 11.65,
+        "end": 12.375
+      },
+      {
+        "w": "add",
+        "start": 12.375,
+        "end": 12.613
+      },
+      {
+        "w": "up",
+        "start": 12.613,
+        "end": 12.787
+      },
+      {
+        "w": "to",
+        "start": 12.787,
+        "end": 12.95
+      },
+      {
+        "w": ":",
+        "start": 12.95,
+        "end": 13.037
+      },
+      {
+        "w": "here",
+        "start": 13.037,
+        "end": 13.525
+      },
+      {
+        "w": ",",
+        "start": 13.525,
+        "end": 13.662
+      },
+      {
+        "w": "twenty-two",
+        "start": 13.662,
+        "end": 14.15
+      },
+      {
+        "w": "percent",
+        "start": 14.15,
+        "end": 14.5
+      },
+      {
+        "w": "more",
+        "start": 14.5,
+        "end": 14.975
+      },
+      {
+        "w": ",",
+        "start": 14.975,
+        "end": 15.075
+      },
+      {
+        "w": "with",
+        "start": 15.075,
+        "end": 15.25
+      },
+      {
+        "w": "nothing",
+        "start": 15.25,
+        "end": 15.637
+      },
+      {
+        "w": "wrong",
+        "start": 15.637,
+        "end": 16.025
+      },
+      {
+        "w": "in",
+        "start": 16.025,
+        "end": 16.15
+      },
+      {
+        "w": "any",
+        "start": 16.15,
+        "end": 16.438
+      },
+      {
+        "w": "single",
+        "start": 16.438,
+        "end": 16.775
+      },
+      {
+        "w": "pixel",
+        "start": 16.775,
+        "end": 17.55
+      },
+      {
+        "w": ".",
+        "start": 17.55,
+        "end": 17.7
+      }
+    ]
+  },
+  "s5": {
+    "duration": 20.375,
+    "text": "The survey's images show the same thing. Each pixel shares about a fifth of its noise with the next one, and the bigger the patch you add up, the further the map falls short. A map with one number per pixel can't record how pixels move together. So you measure the factor on the image itself, and widen the error bars by it.",
+    "words": [
+      {
+        "w": "The",
+        "start": 0.275,
+        "end": 0.388
+      },
+      {
+        "w": "survey's",
+        "start": 0.388,
+        "end": 0.925
+      },
+      {
+        "w": "images",
+        "start": 0.925,
+        "end": 1.5
+      },
+      {
+        "w": "show",
+        "start": 1.5,
+        "end": 1.75
+      },
+      {
+        "w": "the",
+        "start": 1.75,
+        "end": 1.887
+      },
+      {
+        "w": "same",
+        "start": 1.887,
+        "end": 2.225
+      },
+      {
+        "w": "thing",
+        "start": 2.225,
+        "end": 2.825
+      },
+      {
+        "w": ".",
+        "start": 2.825,
+        "end": 2.987
+      },
+      {
+        "w": "Each",
+        "start": 2.987,
+        "end": 3.312
+      },
+      {
+        "w": "pixel",
+        "start": 3.312,
+        "end": 3.825
+      },
+      {
+        "w": "shares",
+        "start": 3.825,
+        "end": 4.213
+      },
+      {
+        "w": "about",
+        "start": 4.213,
+        "end": 4.438
+      },
+      {
+        "w": "a",
+        "start": 4.438,
+        "end": 4.562
+      },
+      {
+        "w": "fifth",
+        "start": 4.562,
+        "end": 4.862
+      },
+      {
+        "w": "of",
+        "start": 4.862,
+        "end": 4.938
+      },
+      {
+        "w": "its",
+        "start": 4.938,
+        "end": 5.125
+      },
+      {
+        "w": "noise",
+        "start": 5.125,
+        "end": 5.537
+      },
+      {
+        "w": "with",
+        "start": 5.537,
+        "end": 5.638
+      },
+      {
+        "w": "the",
+        "start": 5.638,
+        "end": 5.725
+      },
+      {
+        "w": "next",
+        "start": 5.725,
+        "end": 6.025
+      },
+      {
+        "w": "one",
+        "start": 6.025,
+        "end": 6.575
+      },
+      {
+        "w": ",",
+        "start": 6.575,
+        "end": 6.675
+      },
+      {
+        "w": "and",
+        "start": 6.675,
+        "end": 6.787
+      },
+      {
+        "w": "the",
+        "start": 6.787,
+        "end": 6.875
+      },
+      {
+        "w": "bigger",
+        "start": 6.875,
+        "end": 7.2
+      },
+      {
+        "w": "the",
+        "start": 7.2,
+        "end": 7.3
+      },
+      {
+        "w": "patch",
+        "start": 7.3,
+        "end": 7.625
+      },
+      {
+        "w": "you",
+        "start": 7.625,
+        "end": 7.763
+      },
+      {
+        "w": "add",
+        "start": 7.763,
+        "end": 7.987
+      },
+      {
+        "w": "up",
+        "start": 7.987,
+        "end": 8.4
+      },
+      {
+        "w": ",",
+        "start": 8.4,
+        "end": 8.5
+      },
+      {
+        "w": "the",
+        "start": 8.5,
+        "end": 8.637
+      },
+      {
+        "w": "further",
+        "start": 8.637,
+        "end": 9.0
+      },
+      {
+        "w": "the",
+        "start": 9.0,
+        "end": 9.1
+      },
+      {
+        "w": "map",
+        "start": 9.1,
+        "end": 9.412
+      },
+      {
+        "w": "falls",
+        "start": 9.412,
+        "end": 9.787
+      },
+      {
+        "w": "short",
+        "start": 9.787,
+        "end": 10.625
+      },
+      {
+        "w": ".",
+        "start": 10.625,
+        "end": 10.812
+      },
+      {
+        "w": "A",
+        "start": 10.812,
+        "end": 10.925
+      },
+      {
+        "w": "map",
+        "start": 10.925,
+        "end": 11.213
+      },
+      {
+        "w": "with",
+        "start": 11.213,
+        "end": 11.375
+      },
+      {
+        "w": "one",
+        "start": 11.375,
+        "end": 11.575
+      },
+      {
+        "w": "number",
+        "start": 11.575,
+        "end": 11.85
+      },
+      {
+        "w": "per",
+        "start": 11.85,
+        "end": 12.025
+      },
+      {
+        "w": "pixel",
+        "start": 12.025,
+        "end": 12.438
+      },
+      {
+        "w": "can't",
+        "start": 12.438,
+        "end": 12.8
+      },
+      {
+        "w": "record",
+        "start": 12.8,
+        "end": 13.3
+      },
+      {
+        "w": "how",
+        "start": 13.3,
+        "end": 13.475
+      },
+      {
+        "w": "pixels",
+        "start": 13.475,
+        "end": 13.925
+      },
+      {
+        "w": "move",
+        "start": 13.925,
+        "end": 14.15
+      },
+      {
+        "w": "together",
+        "start": 14.15,
+        "end": 14.95
+      },
+      {
+        "w": ".",
+        "start": 14.95,
+        "end": 15.1
+      },
+      {
+        "w": "So",
+        "start": 15.1,
+        "end": 15.3
+      },
+      {
+        "w": "you",
+        "start": 15.3,
+        "end": 15.463
+      },
+      {
+        "w": "measure",
+        "start": 15.463,
+        "end": 15.787
+      },
+      {
+        "w": "the",
+        "start": 15.787,
+        "end": 15.875
+      },
+      {
+        "w": "factor",
+        "start": 15.875,
+        "end": 16.262
+      },
+      {
+        "w": "on",
+        "start": 16.262,
+        "end": 16.363
+      },
+      {
+        "w": "the",
+        "start": 16.363,
+        "end": 16.475
+      },
+      {
+        "w": "image",
+        "start": 16.475,
+        "end": 16.8
+      },
+      {
+        "w": "itself",
+        "start": 16.8,
+        "end": 17.475
+      },
+      {
+        "w": ",",
+        "start": 17.475,
+        "end": 17.575
+      },
+      {
+        "w": "and",
+        "start": 17.575,
+        "end": 17.738
+      },
+      {
+        "w": "widen",
+        "start": 17.738,
+        "end": 18.087
+      },
+      {
+        "w": "the",
+        "start": 18.087,
+        "end": 18.212
+      },
+      {
+        "w": "error",
+        "start": 18.212,
+        "end": 18.525
+      },
+      {
+        "w": "bars",
+        "start": 18.525,
+        "end": 18.85
+      },
+      {
+        "w": "by",
+        "start": 18.85,
+        "end": 19.062
+      },
+      {
+        "w": "it",
+        "start": 19.062,
+        "end": 19.525
+      },
+      {
+        "w": ".",
+        "start": 19.525,
+        "end": 19.675
+      }
+    ]
+  }
+}

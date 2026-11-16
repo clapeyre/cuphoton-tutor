@@ -21,6 +21,7 @@ seconds. Accumulate rather than replace when the narration lists items quickly.
 | v2-it-ran | It ran. Is it right? | 1:21 | after 2.3 | L0/L1 | draft rendered, cued on the word |
 | v3-kernel | What the matching kernel does | 2:00 | 01 step 1.4 (optional detour) | L2 | script (unrendered) |
 | v4-where-data-lives | Where your data lives: host and device | 2:00 | after 3.1 | L0/L1 | script (unrendered) |
+| v5-why-the-sum-wobbles | Why the sum wobbles | 1:31 | start of 5.3 (after 4.4) | L1 | rendered, cued on the word; xRep data |
 
 ## Outlines
 

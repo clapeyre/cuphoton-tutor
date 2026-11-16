@@ -21,6 +21,10 @@ voice = sys.argv[sys.argv.index("--voice") + 1] if "--voice" in sys.argv else "a
 src = next(iter(sorted(glob.glob(str(root / "scripts" / f"{vid}*.md")))))
 text = Path(src).read_text()
 
+# Optional lines `Subtitle: "spoken words" -> "written form"` anywhere in the script rewrite the
+# subtitles only (the voice needs "four point four"; a reader wants "4.4").
+subs = re.findall(r'^Subtitle:\s*"(.+?)"\s*->\s*"(.+?)"\s*$', text, re.M)
+
 segs = []
 for m in re.finditer(r"^## (s\d+) — (.*?)\n(.*?)(?=^## |\Z)", text, re.S | re.M):
     sid, title, body = m.groups()
@@ -63,6 +67,8 @@ for sid, v in timings.items():
         if w["w"] in ".?!" or i == len(ws) - 1:
             end = ws[i + 1]["start"] if i + 1 < len(ws) else v["duration"] - PAD
             text_ = re.sub(r"\s+([.,;:?!])", r"\1", " ".join(sent))
+            for spoken, written in subs:
+                text_ = re.sub(re.escape(spoken), written, text_, flags=re.I)
             lines.append(f"{len(lines)+1}\n{ts(t0+start)} --> {ts(t0+end)}\n{text_}\n")
             sent, start = [], None
     t0 += v["duration"]

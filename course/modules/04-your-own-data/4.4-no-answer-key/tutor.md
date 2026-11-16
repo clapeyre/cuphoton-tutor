@@ -70,6 +70,9 @@ limit, flux bias, and whether error bars are honest. Module 04's exit (O5).
   in the turn. Left panel: the correlation with each neighbour. Right panel:
   real/predicted scatter against box size, with 1 as the line for independent
   noise. Show the script on request.
+- After the turn settles, point to the video that shows this in 1.5 minutes,
+  with xRep resampling pure noise: it opens [5.3](#/5.3) ("Why the sum
+  wobbles"). Not before: it gives the answer away.
 - **What would have to be different** (if they ask, or as the last step
   once the cause is clear): (a) measure the factor on this data, as the box
   test or the injection pulls do, and scale the error bars by it (the common

@@ -5,6 +5,9 @@ question: The chain quotes an error bar built from several terms. Is it right on
 terms: [error budget, pull]
 ---
 
+:::video v5-why-the-sum-wobbles
+:::
+
 In [4.4](#/4.4) you found the error bars of your own chain too small, because
 neighbouring pixels share noise after resampling. The transient chain has a
 term for exactly that. Each flux's error bar is an [[error budget]]: the fit's

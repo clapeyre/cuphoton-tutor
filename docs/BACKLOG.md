@@ -56,6 +56,24 @@ planned in `docs/EXPANSION-PLAN.md`. These are the larger pieces, parked:
   between our pin and 0.3.0.dev; diff its "Find your task" table against the
   course whenever `course.yaml`'s commit moves.
 
+## Coherence with the user guide
+
+- **Drift towards the guide** (https://nvidia.github.io/cuPhoton/main/, built
+  from `docs/guide/` in the checkout). Asked 16 Nov 2026: not a copy, but lean
+  towards it wherever a choice is open, so a learner who opens the guide after
+  the course finds the same shape. Concretely, when the occasion comes up:
+  - **Structure:** its chapters are task-first (read FITS, align, subtract,
+    measure, classify, the transient chain, uncertainty, then the other
+    components). Lessons could name and link "their" chapter (Module 06 already
+    does); module order already roughly follows it.
+  - **Data:** the guide's examples use its synthetic sample pair
+    (`docs/guide/_sample-pair.qmd`), which Module 01 already uses via
+    `make_sample.py`; check they stay the same pair at every re-pin. Prefer the
+    guide's examples and parameters over invented ones for new exercises.
+  - **Words:** use the guide's terms where ours differ (vocabulary.yaml cites
+    sources; add the guide chapter where it has the term).
+  - Check at every re-pin, with the coverage diff above.
+
 ## App
 
 - **Prepare-ahead looks one lesson ahead only.** Jumping ahead still waits.

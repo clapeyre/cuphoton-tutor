@@ -5,6 +5,12 @@ test, and finds that the bars are right while the values are biased, because
 of the shipped kernel-fit settings. Probes M-BUDGET-BIAS (and M-UQVALID from
 5.2). Exit of the module's science (O6).
 
+## Video `v5-why-the-sum-wobbles` (opens the lesson)
+Recaps 4.4's cause with xRep on pure noise: per-pixel scatter 1.00, neighbour
+correlation 0.25, 3×3 sums 1.22× the prediction; on the PS1 target, box sums
+0.9 → 1.7× from 1 to 11 px. It ends on "measure the factor on the image": that
+is the `corr` term, which the `budget` turn is about.
+
 ## Your turn `budget`
 - SN row (5.1's `run2`): `psf_flux_err_fit` 183.2, `_corr` 273.6, `_kfit`
   11.9, `_kmatch` 0, `_mis` 0, total 329.5 = √(183² + 274² + 12²).

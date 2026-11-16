@@ -1,0 +1,79 @@
+1
+00:00:00,300 --> 00:00:05,263
+In lesson 4.4, the fake stars told you the error bars were too small.
+
+2
+00:00:05,263 --> 00:00:09,387
+Yet one pixel at a time, the survey's variance map was right.
+
+3
+00:00:09,387 --> 00:00:12,750
+How can every pixel be right, and their sum be wrong?
+
+4
+00:00:13,625 --> 00:00:18,563
+Start with nine pixels, each with noise of one unit, independent of each other.
+
+5
+00:00:18,563 --> 00:00:20,613
+A flux measurement adds them up.
+
+6
+00:00:20,613 --> 00:00:26,563
+Their wobbles partly cancel, so the sum wobbles by three units: the square root of nine, not nine.
+
+7
+00:00:26,563 --> 00:00:29,063
+That's the rule an error bar uses.
+
+8
+00:00:29,063 --> 00:00:31,850
+Add the variances, then take the square root.
+
+9
+00:00:32,750 --> 00:00:37,262
+Now resample, the way a survey puts every exposure onto its sky grid.
+
+10
+00:00:37,262 --> 00:00:40,638
+Here xRep shifts pure noise by half a pixel.
+
+11
+00:00:40,638 --> 00:00:44,688
+Each output pixel is a weighted blend of a few input pixels.
+
+12
+00:00:44,688 --> 00:00:51,275
+So one input pixel's noise lands in several output pixels, and two neighbours share part of the same noise.
+
+13
+00:00:52,175 --> 00:00:57,150
+xRep carries the variance along, and pixel by pixel it is exactly right.
+
+14
+00:00:57,150 --> 00:01:00,675
+But when you add up neighbours, the shared parts don't cancel.
+
+15
+00:01:00,675 --> 00:01:02,025
+They move together.
+
+16
+00:01:02,025 --> 00:01:09,675
+So the sum wobbles more than the variances add up to: here, twenty-two percent more, with nothing wrong in any single pixel.
+
+17
+00:01:10,550 --> 00:01:13,262
+The survey's images show the same thing.
+
+18
+00:01:13,262 --> 00:01:21,087
+Each pixel shares about a fifth of its noise with the next one, and the bigger the patch you add up, the further the map falls short.
+
+19
+00:01:21,087 --> 00:01:25,375
+A map with one number per pixel can't record how pixels move together.
+
+20
+00:01:25,375 --> 00:01:30,050
+So you measure the factor on the image itself, and widen the error bars by it.
