@@ -1,0 +1,67 @@
+1
+00:00:00,275 --> 00:00:02,775
+A GPU machine has two memories.
+
+2
+00:00:02,775 --> 00:00:08,850
+The computer's own, which GPU programmers call the host, and the GPU's, called the device.
+
+3
+00:00:08,850 --> 00:00:10,787
+A narrow bridge joins them.
+
+4
+00:00:10,787 --> 00:00:18,025
+Anything the GPU works on has to cross it first, and the result has to cross back before ordinary code can use it.
+
+5
+00:00:18,900 --> 00:00:23,412
+Here is one real image, 2048 pixels on a side.
+
+6
+00:00:23,412 --> 00:00:26,088
+Copying it up takes under three milliseconds.
+
+7
+00:00:26,088 --> 00:00:29,662
+xRep then aligns it on the GPU in about twenty-two.
+
+8
+00:00:29,662 --> 00:00:32,037
+Copying the result back takes four.
+
+9
+00:00:32,037 --> 00:00:35,462
+Against the CPU's nine seconds the copies are nothing.
+
+10
+00:00:35,462 --> 00:00:38,225
+Against the GPU's own work, they're not.
+
+11
+00:00:39,100 --> 00:00:41,825
+So it matters how often the data crosses.
+
+12
+00:00:41,825 --> 00:00:49,600
+If every stage sends its result home and the next one sends it back up, a four-stage chain pays the round trip four times.
+
+13
+00:00:49,600 --> 00:00:54,475
+If the data stays on the device from the first stage to the last, it pays once.
+
+14
+00:00:55,350 --> 00:01:01,338
+Every cuPhoton call decides where its result lands, and the choice differs from call to call.
+
+15
+00:01:01,338 --> 00:01:05,212
+Your agent writes the code, and the code runs either way.
+
+16
+00:01:05,212 --> 00:01:11,000
+Only knowing where each result lives tells you whether the data crossed once, or at every step.
+
+17
+00:01:11,875 --> 00:01:14,475
+So ask your agent where each result lives.

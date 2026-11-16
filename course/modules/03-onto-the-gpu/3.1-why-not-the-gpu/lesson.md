@@ -5,6 +5,9 @@ question: This machine has a GPU. Why did every run so far use the CPU?
 terms: [fallback]
 ---
 
+:::video v4-where-data-lives
+:::
+
 In Module 02 every receipt said `gpu_available: false`, and `auto` ran
 everything on the CPU. Yet this machine has an NVIDIA GPU.
 

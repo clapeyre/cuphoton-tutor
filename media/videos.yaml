@@ -37,3 +37,12 @@ v6-one-image-through-the-chain:
     - [35.2, what comes back]
     - [53.8, the configuration]
     - [69.0, the question]
+v4-where-data-lives:
+  title: Where your data lives
+  duration: "1:15"
+  chapters:
+    - [0, two memories]
+    - [18.6, what a copy costs]
+    - [38.8, once or every stage]
+    - [55.1, where results land]
+    - [71.6, ask]

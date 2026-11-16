@@ -8,6 +8,12 @@ Two environments (paths in your system prompt): `python` on the PATH is the
 CPU-only one; the GPU one is called by full path. Use the GPU one from here on
 for anything meant for the GPU, and say which one you're using.
 
+## Video `v4-where-data-lives` (opens the module)
+Host and device memory, real copy and xRep times for a 2048² image on this GPU
+(up 2.6 ms, xRep 21.6 ms, back 4.0 ms; CPU xRep 8.8 s), crossing once vs at
+every stage. It deliberately doesn't say which calls return NumPy or CuPy (3.2's
+prediction) or mention queuing (3.4): don't fill those in when discussing it.
+
 ## Your turn `what-was-missing`
 - Hand over the evidence they ask for, nothing more. Likely requests:
   - `nvidia-smi`: an NVIDIA GeForce RTX 4070 Ti SUPER, 16 GB, driver 615.78.

@@ -20,7 +20,7 @@ seconds. Accumulate rather than replace when the narration lists items quickly.
 | v1-why-not-subtract | Why you can't just subtract two pictures of the sky | 1:34 | after checkpoint 0.3; after checkpoint 1.4 | L0 | draft rendered, cued on the word |
 | v2-it-ran | It ran. Is it right? | 1:21 | after 2.3 | L0/L1 | draft rendered, cued on the word |
 | v3-kernel | What the matching kernel does | 2:00 | 01 step 1.4 (optional detour) | L2 | script (unrendered) |
-| v4-where-data-lives | Where your data lives: host and device | 2:00 | after 3.1 | L0/L1 | script (unrendered) |
+| v4-where-data-lives | Where your data lives: host and device | 1:15 | start of 3.1 (opens Module 03) | L0/L1 | rendered, cued on the word; real GPU timings |
 | v6-one-image-through-the-chain | One image through the shipped chain | 1:19 | start of 5.1 (opens Module 05) | L0/L1 | rendered, cued on the word; real chain run |
 | v5-why-the-sum-wobbles | Why the sum wobbles | 1:31 | start of 5.3 (after 4.4) | L1 | rendered, cued on the word; xRep data |
 
