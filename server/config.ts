@@ -29,6 +29,9 @@ export const config = {
   cuphotonDir: abs(env("CUPHOTON_DIR", path.join(process.env.HOME ?? "", "cuphoton-overnight/cuPhoton"))),
   // Python for the learner workspace: NumPy, SciPy, Matplotlib and cuPhoton.
   pythonBin: env("LEARNER_PYTHON_BIN", ""), // a venv's bin/ dir; default: <cuphotonDir>/.venv/bin
+  // The same with cuPhoton's gpu extra (CuPy, CUDA PyTorch), for Module 03 on. Modules 00–02 rely on the
+  // default environment having no usable GPU (Module 02 teaches the silent fallback). tools/setup-gpu-env.sh makes it.
+  gpuPythonBin: abs(env("LEARNER_GPU_PYTHON_BIN", ".envs/cuphoton-gpu/bin")),
   // Inference: any OpenAI- or Anthropic-style endpoint. Provider + model are
   // looked up in tutor/pi-agent/models.json (add a provider there for a new site).
   provider: env("TUTOR_PROVIDER", "nvidia"),

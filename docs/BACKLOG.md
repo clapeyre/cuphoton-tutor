@@ -29,8 +29,14 @@ anything parked from them is copied here with a pointer back.
 - **"Ask about" for prose:** selecting text to ask was removed (walkthrough 2,
   1.7: it stole the cursor). A deliberate affordance on paragraphs could come
   back later.
-- **Tutor latency:** most of the wait before the first word is the model
-  thinking. Lower `TUTOR_THINKING` trades speed for tutoring quality; untested.
+- **Tutor latency:** about 2 s before the first word, even though thinking is
+  already off (`TUTOR_THINKING=off`): it's the endpoint's time to first token on
+  a long, mostly cached context. Worth measuring per model in the comparison.
+- **Building xDR** (cuPhoton's GPU FITS decoder) isn't part of the GPU
+  environment; 3.3 teaches the fallback instead. A later lesson could build it.
+- **Cold GPU start isn't reproducible here:** the first GPU quickstart took
+  28 s (CuPy compiling kernels), later runs 3 s, because the compiled code is
+  cached in `~/.cupy/kernel_cache`. 3.4 can only quote it.
 
 ## Upstream (cuPhoton)
 

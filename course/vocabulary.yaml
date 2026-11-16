@@ -334,6 +334,42 @@ terms:
     bridges: []
     avoid: ["backend"]
 
+  # --- Module 03 ---------------------------------------------------------------
+  - term: host memory, device memory
+    definition: "A GPU machine has two memories: the computer's main memory (the host) and the graphics card's own (the device). Data must be copied between them. NumPy arrays live on the host; CuPy arrays live on the device."
+    source: "docs/guide/concepts.qmd, 'Dtype and device'"
+    introduce_at: "3.2"
+    bridges: ["two desks, and a courier between them"]
+    avoid: ["device (on its own, it means the hardware a backend ran on)"]
+
+  - term: FITS reader
+    definition: "The code that turns a FITS file into an array: Astropy, on the CPU, or cuPhoton's xDR, which can decode straight into GPU memory. It's a separate choice from the compute backend, recorded separately in the receipt."
+    source: "docs/guide/read-fits.qmd; docs/troubleshooting.md, 'FITS reading used Astropy or could not load xDR'"
+    introduce_at: "2.4 (named), 3.3"
+    bridges: []
+    avoid: ["backend"]
+
+  - term: synchronize
+    definition: "Wait until the GPU has finished the work it was given. A GPU call returns as soon as the work is queued, so a timer stopped without synchronizing measures the queuing, not the work."
+    source: "course/concepts.yaml, honest-timing; docs/adapting-workflows.md, 'For performance claims'"
+    introduce_at: "3.4"
+    bridges: ["waiting for the oven, not just for the order to be taken"]
+    avoid: []
+
+  - term: warm-up
+    definition: "The first call to a GPU function is slow: it starts the GPU and compiles code, which is cached for later. Honest timings run it once first and don't count it."
+    source: "course/concepts.yaml, honest-timing"
+    introduce_at: "3.4"
+    bridges: []
+    avoid: []
+
+  - term: speedup
+    definition: "How many times faster one run is than another, for the same work. Only meaningful when both timings measure the same thing: the same input, the same boundaries (loading, one stage, or the whole pipeline), and the work actually finished."
+    source: "course/concepts.yaml, honest-timing"
+    introduce_at: "3.4"
+    bridges: []
+    avoid: []
+
 confusables:
   - words: ["PSF width (psf_sigma, sigma_x, sigma_y)", "variance plane", "error bar / covariance / standard_errors", "noise"]
     rule: "Four kinds of spread with similar names. Say which one each time, with its units: a PSF width is in pixels; a variance plane is in squared data units per pixel; an error bar is in the measured quantity's units; noise is the random wobble the variance plane describes. See M-SIGMA-VARIANCE."

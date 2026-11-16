@@ -26,6 +26,7 @@ modules:
   - 00-what-changed
   - 01-first-difference
   - 02-trust-the-run
+  - 03-onto-the-gpu
 
 # The stage chain drawn by :::chain. `does` is the box text; `definition`
 # opens beneath the box when the learner clicks it.

@@ -65,6 +65,8 @@ export class Tutor {
       `- Learner workspace (your cwd): ${config.learnerDir}`,
       `- Course files (read-only): ${config.courseDir} — vocabulary.yaml, concepts.yaml, misconceptions.md, modules/*/<lesson>/lesson.md and tutor.md`,
       `- cuPhoton checkout, pinned at ${this.course.commit}: ${config.cuphotonDir}`,
+      `- Python environments: \`python\` on your PATH is cuPhoton's CPU-only environment (no CuPy, CPU PyTorch), used for Modules 00–02.`,
+      `  The GPU environment, with cuPhoton's gpu extra, is ${config.gpuPythonBin}: call ${path.join(config.gpuPythonBin, "python")} (and ${path.join(config.gpuPythonBin, "cuphoton")}) by full path for GPU work, from Module 03 on.`,
       "", "## The course", outline,
     ].join("\n");
     const margin = kind === "margin" ? "\n\n" + [

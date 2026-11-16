@@ -21,3 +21,4 @@ media/renders/*/*.mp4
 media/renders/*/*.srt
 media/renders/*/*.png
 media/**/__pycache__/
+.envs/

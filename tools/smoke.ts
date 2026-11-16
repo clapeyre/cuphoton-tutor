@@ -48,8 +48,12 @@ else {
 // 3. GPU: nvidia-smi, and CuPy can allocate and synchronize (GPU lessons need it; Module 00 doesn't).
 const smi = spawnSync("nvidia-smi", ["--query-gpu=name,memory.total", "--format=csv,noheader"], { encoding: "utf8" });
 smi.status === 0 ? ok("gpu", smi.stdout.trim()) : bad("gpu", "nvidia-smi failed");
-const cupy = spawnSync(py, ["-c", "import cupy as cp; a=cp.arange(10); cp.cuda.Device().synchronize(); print(int(a.sum()))"], { encoding: "utf8" });
-cupy.status === 0 && cupy.stdout.trim() === "45" ? ok("cupy") : console.log(`  warn  cupy  not usable from ${py} (fine for Module 00–02 on CPU)`);
+// Modules 00–02 expect the default environment to have no usable GPU; Module 03 on uses the GPU environment.
+const cupyCpuEnv = spawnSync(py, ["-c", "import cupy"], { encoding: "utf8" });
+cupyCpuEnv.status === 0 ? console.log(`  warn  default env  ${py} has CuPy: Module 02's fallback lessons assume it doesn't`) : ok("default env", "CPU only, as Modules 00–02 expect");
+const gpy = path.join(config.gpuPythonBin, "python");
+const cupy = spawnSync(gpy, ["-c", "import cupy as cp, cuphoton; a=cp.arange(10); cp.cuda.Device().synchronize(); print(int(a.sum()))"], { encoding: "utf8" });
+cupy.status === 0 && cupy.stdout.trim().endsWith("45") ? ok("gpu env", `${gpy} · CuPy runs on the GPU`) : bad("gpu env", `not usable (${gpy}); run tools/setup-gpu-env.sh. Needed from Module 03.`);
 
 // 4. Endpoint: the configured model answers a tool call.
 try {

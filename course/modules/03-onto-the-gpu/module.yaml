@@ -1,0 +1,21 @@
+id: "03"
+title: Onto the GPU
+question: How do you move the pipeline onto the GPU, prove it's there, and say honestly how much faster it is?
+needs: linux_gpu   # the GPU environment, .envs/cuphoton-gpu (tools/setup-gpu-env.sh)
+objectives: [O4, O3, O2]
+misconceptions: [M-AUTO-GPU, M-HOST-DEVICE, M-READER-IS-BACKEND, M-XDR-INSTALLED, M-SPEEDUP]
+source: docs/guide/first-difference.qmd ('Run it on a GPU'), docs/guide/concepts.qmd ('Dtype and device'), docs/guide/read-fits.qmd, docs/troubleshooting.md, docs/adapting-workflows.md ('For performance claims') in the pinned checkout
+time: 45–60 min
+intro: |
+  Everything so far ran on a CPU, and Module 02 showed why: the environment
+  could see no usable GPU, so cuPhoton quietly used the CPU. Now we use the GPU
+  this machine actually has.
+
+  Moving to the GPU isn't one switch. You'll find out what was missing, run
+  the Module 01 chain on the GPU and prove from evidence that it ran there,
+  learn where each result ends up (the GPU has its own memory), and read a file
+  straight onto the GPU.
+
+  The module ends on the question everyone asks: how much faster is it? GPU
+  timings are easy to get wrong, and the exercise shows a careful-looking
+  script that's off by a factor of thirty.
