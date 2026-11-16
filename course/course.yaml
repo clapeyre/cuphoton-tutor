@@ -20,6 +20,8 @@ objectives:
     text: Direct an agent to move a CPU workflow to the GPU and confirm what actually ran there.
   - id: O5
     text: Adapt the workflow to new data, including an honest noise model.
+  - id: O7
+    text: Map your own data to the cuPhoton component that takes it, and name the first evidence you would check on its first run.
 
 # Modules, in order. Each module directory holds module.yaml and one directory per lesson.
 modules:
@@ -28,6 +30,7 @@ modules:
   - 02-trust-the-run
   - 03-onto-the-gpu
   - 04-your-own-data
+  - 06-where-next
 
 # The stage chain drawn by :::chain. `does` is the box text; `definition`
 # opens beneath the box when the learner clicks it.

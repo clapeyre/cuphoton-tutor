@@ -32,6 +32,30 @@ anything parked from them is copied here with a pointer back.
   lessons ask the right questions, but a "bring your own pair" path (the tutor
   adapting the notes to unknown headers) is untested.
 
+## Coverage (cuPhoton beyond the optical chain)
+
+From the 16 Nov coverage review. The low-hanging fruit (re-pin, a map
+lesson, Module 05 on the shipped transient chain, error budget and xLens) is
+planned in `docs/EXPANSION-PLAN.md`. These are the larger pieces, parked:
+
+- **Component tracks for non-optical labs.** xRay (X-ray detector traces,
+  guide ch. 12), xBeam (signal correlation and the VLBI correlator, ch. 13 and
+  the 13 Nov blog post), xImage (multi-frame reconstruction, ch. 11). Each
+  would be a short optional module: one synthetic run, its receipt, its one
+  silent-error trap, then "your data". Until then the map lesson (plan item 1)
+  is the only mention.
+- **Scale-out.** MPI and Dragon executors, Slurm/SSH launches, the persistent
+  `DeviceWorkerContext` pipeline (guide ch. 14, `docs/distributed-execution.md`).
+  It's the headline of both blog posts and what HPC centres will ask about
+  first. Needs a multi-GPU node to teach honestly; the 3.4 timing lessons
+  carry over (per-stage vs end-to-end, synchronize, warm-up rounds).
+- **Inputs beyond FITS.** HDF5 via Legate (`hdf5` extra, not on Python 3.14),
+  VDIF for xBeam. Nothing in the course shows them, so non-FITS labs may assume
+  cuPhoton is FITS-only. Could ride on the component tracks.
+- **Re-check coverage at every re-pin.** The guide grew from 4 to 15 chapters
+  between our pin and 0.3.0.dev; diff its "Find your task" table against the
+  course whenever `course.yaml`'s commit moves.
+
 ## App
 
 - **Prepare-ahead looks one lesson ahead only.** Jumping ahead still waits.
@@ -43,6 +67,8 @@ anything parked from them is copied here with a pointer back.
   a long, mostly cached context. Worth measuring per model in the comparison.
 - **Building xDR** (cuPhoton's GPU FITS decoder) isn't part of the GPU
   environment; 3.3 teaches the fallback instead. A later lesson could build it.
+  The coverage review rates this "likely missed": the blog's first next step
+  is building xDR, and GDS/nvCOMP is where the 14,900x I/O figure comes from.
 - **Cold GPU start isn't reproducible here:** the first GPU quickstart took
   28 s (CuPy compiling kernels), later runs 3 s, because the compiled code is
   cached in `~/.cupy/kernel_cache`. 3.4 can only quote it.

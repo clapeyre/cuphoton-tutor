@@ -16,6 +16,12 @@ intro: |
   the method **difference imaging**. Modern sky surveys run it on every image,
   every night.
 
+  The same library does more than this one job: it reconstructs sharp images
+  from many frames, analyses X-ray detector traces, correlates radio
+  recordings, scales work across many GPUs and monitors long runs. If that's
+  closer to your lab's work, the habits this course builds still apply, and
+  the last lesson maps each part of cuPhoton to the data it takes.
+
   You'll work the way you will later use the library: with an AI agent that
   writes and runs the code. The tutor behind this page does the typing, on a
   real GPU. Your job is the part an agent can't do for you: knowing what each
