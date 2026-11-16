@@ -27,6 +27,6 @@ if missing).
   or `gpu` extra (docs/troubleshooting.md; docs/components/xdr.md, "Install").
   Building it is out of scope here; say so.
 - **Pass:** for the auto read, they say from the receipt that Astropy read it
-  and it was then put on the device, and cite `fallback_reason`; and they link
+  and it was then put on the device, and that the receipt says why; and they link
   it to the Module 02 rule (auto falls back quietly, a named reader fails).
 - Settle, then `reveal("3.3")`.

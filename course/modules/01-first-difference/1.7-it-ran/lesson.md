@@ -12,8 +12,8 @@ the fact, from someone (or something) else.
 
 You have the same tools as before: you can ask the tutor for any evidence you
 like, such as plots, cutouts, positions, fluxes, fit status or comparisons
-with what was injected. You can't read the script until you've made up your
-mind.
+with what was injected. Start from the evidence: once you've found something
+wrong in it, you can ask to see the part of the script that's involved.
 
 :::your-turn swapped
 title: Is it right?

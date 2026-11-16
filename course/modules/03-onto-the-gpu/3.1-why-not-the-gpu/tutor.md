@@ -27,6 +27,8 @@ for anything meant for the GPU, and say which one you're using.
   (`~/.cupy/kernel_cache`); 3.4 comes back to this. Don't open the timing topic
   yourself.
 - **Pass:** (a) hardware present, software missing (no CuPy / CPU PyTorch in
-  the default environment); (b) proof from the new receipt (`device` cuda,
-  `gpu_available` true), ideally with `--require-gpu` named as the guard.
+  the default environment); (b) they looked at the new receipt and it shows the
+  GPU was used. Settle as soon as both are there: no extra "say it in one
+  sentence", no field names. Mention `--require-gpu` as the guard yourself if
+  they didn't.
 - Settle, then `reveal("3.1")`.

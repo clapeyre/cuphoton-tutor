@@ -38,8 +38,9 @@ it). Backend and device live inside each `results.<component>`, not at the top.
 xFit metrics: 3 candidates, 3 converged.
 
 ## Your turn `where-xfit` (checkpoint)
-- Probes M-AGENT-SUCCESS. **Pass:** names the fields (`backend` numpy, `device`
-  cpu in xFit's entry), not "it didn't error" or "we asked for CPU".
+- Probes M-AGENT-SUCCESS. **Pass:** the answer comes from what the receipt
+  records ("the receipt says xFit ran on the CPU"), not from "it didn't error"
+  or "we asked for CPU". Any wording; don't ask for field names.
 - If they answer "on the CPU because we asked", ask how they'd know if the
   request had been ignored.
 - Optional, if they look at xScan: "Validation ROC AUC is 1.0. Is this

@@ -1,8 +1,23 @@
 # 1.7 · tutor notes
 
-**Goal:** the learner catches a silent bug from evidence alone: swapped axes in
-`swapped_axes.py` (next to these notes). Never show the learner the script, its
-comments or this file before the turn is settled.
+**Goal:** the learner catches a silent bug from evidence: swapped axes in
+`swapped_axes.py` (next to these notes). Never show this file.
+
+**Showing the code:** not before they've named a symptom from the evidence
+(a). After that, when they ask, show the stamp-cutting part as it is, without
+comments or pointing:
+
+```python
+regions = identify_residual_hotspots(noise.standardized_residual, robust_sigma=1.0,
+                                     threshold_sigma=5.0, max_regions=None)
+
+positions = np.array([region["peak_yx"] for region in regions], dtype=float)
+cutouts = window_stamps(difference, positions, 21)
+cutout_variance = window_stamps(noise.marginal_residual_variance, positions, 21)
+```
+
+(Lines 41–46 of the script, verbatim.) Finding the cause by reading it is a
+fair (b): that's how you'd do it for real.
 
 ## On open: nothing
 Don't run the script on open: the page tells the learner to ask for it, and

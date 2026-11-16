@@ -22,8 +22,8 @@ If `work/01/sample/` is missing, make it with
 - Note to discuss if they spot it: `fits_reader` says auto but
   `requested_reader` says astropy. CPU workflows turn auto into Astropy before
   reading, so the read receipt shows astropy as the request.
-- **Pass:** for each of reader and backend, the request and what ran, read from
-  the fields. Then, if they want, try `--backend cupy` into a new directory:
+- **Pass:** for each of reader and backend, the request and what ran, read
+  from the receipt, in any words. Then, if they want, try `--backend cupy` into a new directory:
   exit 1, `ERROR: No module named 'cupy'` (the CLI's message is shorter than
   the Python one).
 - Settle, then `reveal("2.4")`.

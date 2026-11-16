@@ -15,7 +15,7 @@ else. You can ask the tutor for any field or comparison you like.
 
 :::your-turn which-run
 title: Which one?
-prompt: Ask the tutor for the receipts. Which run was meant for the GPU and didn't use it? Give (a) which run, (b) the fields that show it, and (c) what request would have turned this silent fallback into an error.
+prompt: Ask the tutor for the receipts. Which run was meant for the GPU and didn't use it? Give (a) which run, (b) what in the receipts shows it, and (c) what request would have turned this silent fallback into an error.
 :::
 
 :::closure

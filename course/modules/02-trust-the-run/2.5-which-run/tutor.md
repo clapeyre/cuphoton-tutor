@@ -1,7 +1,7 @@
 # 2.5 · tutor notes
 
 **Goal:** the learner identifies a silent GPU→CPU fallback from receipts alone,
-cites the fields, and names `--require-gpu`.
+says what in the receipts shows it, and names `--require-gpu`.
 
 ## On open: nothing visible
 Don't put anything on the page. Prepare the three receipts quietly in
@@ -24,9 +24,10 @@ files after their origin).
 - Hand over what they ask for: a whole receipt in a code block, chosen fields
   side by side, or a comparison table figure. Don't offer a list of fields to
   look at. Don't point at the deciding field.
-- **Pass:** all three: (a) B's label; (b) its `results.*.backend`/`device` (cpu)
-  and `hardware.gpu_available` false, with `profile auto` showing it wanted a
-  GPU if possible; (c) `--require-gpu`.
+- **Pass:** all three: (a) B's label; (b) the evidence, in any words: it ran
+  on the CPU, found no usable GPU, and had asked for the best available
+  (auto) rather than the CPU; (c) requiring the GPU (`--require-gpu`, or
+  "make it fail if there's no GPU"). Don't ask for field names.
 - Common wrong answers: A ("its status looks the same": check devices);
   C (right symptom, but it asked for the CPU); "compare the metrics" (they
   match to ~1e-9 across devices: `max_absolute_parameter_error` 4.4959e-10 in

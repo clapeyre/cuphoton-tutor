@@ -25,7 +25,7 @@ M-EXPLICIT-FALLBACK, M-BACKEND-NAMES.
 
 ## Your turn `laptop` (checkpoint)
 - **Pass:** cupy fails loudly (an error naming the missing package); auto
-  succeeds on the CPU and says so only in the receipt (`backend`/`device`).
+  succeeds on the CPU, and only the receipt tells you so.
   Bonus, not required: auto never picks `cutile` or `native`; the CPU backend
   is `numpy` in xFit and xBeam and `cpu` in xRep and xPois.
 - If they say auto "warns": it doesn't; ask where they'd look.

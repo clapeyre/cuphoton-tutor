@@ -13,7 +13,8 @@ finished when the clock stopped.
 A colleague wrote a short script to answer "how much faster is xRep on the
 GPU?" for a 2048 × 2048 image. It looks careful: it does a [[warm-up]] call
 first, then times ten runs and takes the median. It reports a speedup of
-more than ten thousand.
+more than ten thousand. You can ask to see the script: the tutor will show
+you the part that does the timing.
 
 :::your-turn the-claim
 title: Ten thousand times?
