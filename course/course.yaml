@@ -20,6 +20,8 @@ objectives:
     text: Direct an agent to move a CPU workflow to the GPU and confirm what actually ran there.
   - id: O5
     text: Adapt the workflow to new data, including an honest noise model.
+  - id: O6
+    text: Run a shipped pipeline on new data, read its catalog and error budget, and check them against your own test.
   - id: O7
     text: Map your own data to the cuPhoton component that takes it, and name the first evidence you would check on its first run.
 
@@ -30,6 +32,7 @@ modules:
   - 02-trust-the-run
   - 03-onto-the-gpu
   - 04-your-own-data
+  - 05-the-shipped-chain
   - 06-where-next
 
 # The stage chain drawn by :::chain. `does` is the box text; `definition`

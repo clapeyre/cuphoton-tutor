@@ -140,6 +140,34 @@ learners; prefer them. Harvest more with `.claude/commands/harvest-misconception
 - **Docs:** NVIDIA tech blog, "Faster Scientific Image Analysis with NVIDIA cuPhoton".
 - **Modules:** 03
 
+### M-SUCCESS-COMPLETE: "The pipeline reported success, so every column and term was computed."
+- **Truth:** A shipped pipeline leaves out what it lacks inputs for and still
+  succeeds: without a PSF width the transient chain writes NaN fluxes and a
+  fit-only error budget, and says why only in `summary.json` (`uq.excluded`,
+  `psf_sigma_source`).
+- **Docs:** docs/guide/uncertainty.qmd ("A term without its inputs is left out");
+  examples/transient-chain/README.md, "Catalog columns" (`psf_flux`).
+- **Modules:** 05
+
+### M-UQVALID: "`uq_valid` tells me whether a row's error bars are right."
+- **Truth:** It says every computed error bar in the row is *defined* (enough
+  usable pixels, a defined correlation factor). False often means one quantity,
+  such as a dipole's centre, is undefined while the flux error is fine. True
+  doesn't test the bars against anything; with `uq.enabled=false` it is
+  always true.
+- **Docs:** examples/transient-chain/transient_chain/catalog.py (`uq_valid`);
+  docs/guide/transient-chain.qmd.
+- **Modules:** 05
+
+### M-BUDGET-BIAS: "The error budget covers every way a flux can be wrong."
+- **Truth:** It adds up noise terms: how much the value would scatter. A bias,
+  such as a poor kernel fit making every flux a few percent low, moves the
+  values without widening the bars. Only a test with a known answer (an
+  injection test) shows it.
+- **Docs:** docs/guide/uncertainty.qmd (injection and repeat tests: "A bias that
+  every exposure shares passes the test unseen").
+- **Modules:** 05
+
 ## Working through an agent
 
 ### M-AGENT-SUCCESS: "The agent ran it without errors, so the result is right."

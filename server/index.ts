@@ -19,7 +19,7 @@ const MIME: Record<string, string> = {
   ".mp4": "video/mp4", ".vtt": "text/vtt", ".srt": "text/plain; charset=utf-8", ".woff2": "font/woff2", ".ico": "image/x-icon",
 };
 
-function sendFile(req: http.IncomingMessage, res: http.ServerResponse, file: string) {
+function sendFile(req: http.IncomingMessage, res: http.ServerResponse, file: string, extra: http.OutgoingHttpHeaders = {}) {
   let st: fs.Stats;
   try { st = fs.statSync(file); if (!st.isFile()) throw 0; } catch { res.writeHead(404).end(); return; }
   const type = MIME[path.extname(file).toLowerCase()] ?? "application/octet-stream";
@@ -31,7 +31,7 @@ function sendFile(req: http.IncomingMessage, res: http.ServerResponse, file: str
     fs.createReadStream(file, { start, end }).pipe(res);
     return;
   }
-  res.writeHead(200, { "content-type": type, "content-length": st.size, "accept-ranges": "bytes", "cache-control": "no-cache" });
+  res.writeHead(200, { "content-type": type, "content-length": st.size, "accept-ranges": "bytes", "cache-control": "no-cache", ...extra });
   fs.createReadStream(file).pipe(res);
 }
 
@@ -82,7 +82,14 @@ const server = http.createServer((req, res) => {
     return f ? sendFile(req, res, f) : json({ error: "not found" }, 404);
   }
   if (p.startsWith("/workspace/")) {
-    const f = under(path.join(config.learnerDir, "work"), p.slice("/workspace/work/".length), IMG);
+    const rel = p.slice("/workspace/work/".length);
+    // Exported reports (e.g. an xLens dashboard) open in their own tab, sandboxed: an opaque origin with
+    // no access to this app, and no network.
+    if (/\.html$/i.test(rel)) {
+      const f = under(path.join(config.learnerDir, "work"), rel, /\.html$/i);
+      return f ? sendFile(req, res, f, { "content-security-policy": "sandbox allow-scripts; connect-src 'none'" }) : json({ error: "not found" }, 404);
+    }
+    const f = under(path.join(config.learnerDir, "work"), rel, IMG);
     return f ? sendFile(req, res, f) : json({ error: "not found" }, 404);
   }
   // the built page

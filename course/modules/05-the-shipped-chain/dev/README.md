@@ -1,6 +1,7 @@
-# Module 05 groundwork: the shipped transient chain on the PS1 pair
+# Module 05 author notes: the shipped transient chain on the PS1 pair
 
-Not a module yet (no `module.yaml`, not in `course.yaml`). Runs from 16 Nov 2026,
+The scripts now live next to the lessons that use them (5.1 config, 5.2 catalog figure,
+5.3 injection and figure, 5.4 xLens watch). Runs from 16 Nov 2026,
 cuPhoton `ff4d260`, `.envs/cuphoton-chain` (gpu + catalog extras + `examples/transient-chain`),
 one local GPU.
 
@@ -37,8 +38,11 @@ Run: `launch.py --executor local --selections ... --config config-ps1.yaml
   1.70 → 0.96–1.01. A bad kernel widens the difference's effective PSF.
 - Measured correlation factor (variance, psf_flux) 3.2–4.3 with auto stamps, 3.7 with
   the whole image; the closed form says 1.54–1.66. `undefined_factor` 2 of 12.
-- Pull distributions have heavy tails (std 3–10 against MAD ~1): a few fakes far
-  off. Not yet explained; look before writing 5.3.
+- Heavy tails in the first injection runs (std 3–10 against MAD ~1) were the design:
+  fakes ~28 px apart, so a 51-px stamp often held two and the fit measured the
+  neighbour. With SPACING=60 (10 seeds × 30 fakes) they're gone; ~5 of 300 outliers
+  remain, fakes next to a bright star's residue (blending). The 5.3 tutor notes hold
+  the final table.
 - Warm time per 800×800 item: 3–7 s, most of it `uq` and `xfit`; the first item
   of a run pays ~30 s of start-up.
-- No xScan checkpoint ships in the repo; 5.4 takes the plan's fallback.
+- No xScan checkpoint ships in the repo; the plan's scoring lesson was dropped (5.4 is xLens).

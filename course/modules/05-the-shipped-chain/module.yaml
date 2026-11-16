@@ -1,0 +1,21 @@
+id: "05"
+title: The shipped chain
+question: cuPhoton ships the whole chain as one pipeline. On your M101 pair, can you trust what it writes?
+needs: linux_gpu   # the GPU environment with the catalog extra and examples/transient-chain installed (tools/setup-gpu-env.sh)
+objectives: [O6, O3, O5]
+misconceptions: [M-SUCCESS-COMPLETE, M-UQVALID, M-BUDGET-BIAS, M-AGENT-SUCCESS]
+source: examples/transient-chain/README.md, docs/guide/transient-chain.qmd, docs/guide/uncertainty.qmd, docs/guide/monitor.qmd in the pinned checkout
+time: 60–90 min
+intro: |
+  In Module 04 you built the chain by hand for the M101 pair and tested it
+  with fake stars. cuPhoton also ships that chain as one pipeline, the
+  **transient chain**: a configuration file in, a catalog of candidates out,
+  with an error bar for every flux built from several separate terms. It's
+  what a survey would run every night.
+
+  A shipped pipeline is not an answer key. Its defaults were tuned on someone
+  else's data, and it reports success whenever it finishes, whatever it had
+  to leave out on the way. In this module you configure it for the M101 pair,
+  read what it writes, and test it the way you tested your own chain. You'll
+  finish by setting up a watch that would catch, on every image of a long
+  run, the problems you found by hand.

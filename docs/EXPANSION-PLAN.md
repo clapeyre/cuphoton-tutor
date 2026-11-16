@@ -92,7 +92,13 @@ next** (or a one-lesson Module 05 if 4.x should stay about the M101 pair).
 
 No GPU runs needed; text and tutor notes only.
 
-### 2. Module 05: the shipped chain on the M101 pair
+### 2. Module 05: the shipped chain on the M101 pair *(built 16 Nov: 5.1–5.4)*
+
+*Built as 5.1 configure (the PSF-width trap), 5.2 read the catalog (rows aren't
+objects, `uq_valid`), 5.3 the error budget (corr vs 4.4; injection test finds the
+auto-stamp kernel bias), 5.4 watch the run (xLens over the module's 22 items). Scoring
+(5.4 of the draft) dropped: no checkpoint ships. Tutor's GPU env now has the `catalog`
+extra and the example; the page links exported reports (`/workspace/…html`, sandboxed).*
 
 Module 04 ran the chain by hand and found, by injection, that error bars were
 1.2–1.5× too small because of correlated noise. The shipped chain has a term

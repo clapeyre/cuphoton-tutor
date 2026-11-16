@@ -103,7 +103,7 @@ and command was checked against `src/cuphoton/` on 16 Nov 2026.
   success. Set `xfit.psf_sigma_px`. And the default `auto_stamp_mask: true`
   fits the kernel on 5 stamps; on this galaxy field chi2/dof was about 15 and
   injected fluxes came back 4–9% low; `auto_stamp_mask: false` gave 1.55 and
-  unbiased fluxes. Module 05 is being built on this.
+  unbiased fluxes. Module 05 teaches both; the learner has been through them.
 
 ### Uncertainty (`G/uncertainty.qmd`)
 - **For:** follows per-pixel noise through align → subtract → measure, corrects error bars for noise made correlated by resampling and convolution, and checks the bars with injected sources or repeat exposures.

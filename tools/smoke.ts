@@ -54,6 +54,8 @@ cupyCpuEnv.status === 0 ? console.log(`  warn  default env  ${py} has CuPy: Modu
 const gpy = path.join(config.gpuPythonBin, "python");
 const cupy = spawnSync(gpy, ["-c", "import cupy as cp, cuphoton; a=cp.arange(10); cp.cuda.Device().synchronize(); print(int(a.sum()))"], { encoding: "utf8" });
 cupy.status === 0 && cupy.stdout.trim().endsWith("45") ? ok("gpu env", `${gpy} · CuPy runs on the GPU`) : bad("gpu env", `not usable (${gpy}); run tools/setup-gpu-env.sh. Needed from Module 03.`);
+const chain = spawnSync(gpy, ["-c", "import transient_chain, pandas, pyarrow, cuphoton.xlens"], { encoding: "utf8" });
+chain.status === 0 ? ok("chain", "transient chain, catalog extra and xLens in the GPU env") : bad("chain", `missing in ${gpy}; rerun tools/setup-gpu-env.sh. Needed for Module 05.`);
 
 // 4. Endpoint: the configured model answers a tool call.
 try {

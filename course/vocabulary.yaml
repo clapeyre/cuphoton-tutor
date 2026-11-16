@@ -370,6 +370,42 @@ terms:
     bridges: []
     avoid: []
 
+  # --- Module 05 ---------------------------------------------------------------
+  - term: configuration
+    definition: "The file that tells a shipped pipeline everything about one kind of data and every stage's settings: where each plane is, what its numbers mean, which mask bits are bad, how to fit and measure. The transient chain reads it once and checks every key."
+    source: "examples/transient-chain/config-generic.yaml; docs/guide/transient-chain.qmd"
+    introduce_at: "5.1"
+    bridges: ["the standing instruction from 2.6, written so a program can check it"]
+    avoid: []
+
+  - term: catalog
+    definition: "The table a pipeline writes: one row per candidate, with its position, its fluxes and their error bars, quality flags and, with a classifier, a score. The transient chain writes catalog.parquet, plus a summary.json per image saying how it was made."
+    source: "examples/transient-chain/README.md, 'Catalog columns'"
+    introduce_at: "5.2"
+    bridges: []
+    avoid: ["catalogue (fine in prose, but the files and columns say catalog)"]
+
+  - term: quality flags
+    definition: "Bits set on a row by xFit when the fit has a known problem: a lobe outside the stamp, a lobe the data don't support, overlapping lobes, an invalid uncertainty. 0 means none was raised, not that the row is right."
+    source: "src/cuphoton/xfit/quality.py (DipoleQualityFlag)"
+    introduce_at: "5.2"
+    bridges: []
+    avoid: []
+
+  - term: error budget
+    definition: "The list of reasons a measured value could scatter, each as its own error term, added in quadrature into the error bar to quote. The transient chain's terms: fit (xFit's own), corr (noise correlated by resampling and convolution), kfit (the kernel fit's uncertainty), kmatch (kernel mismatch on stars), mis (residual misalignment)."
+    source: "examples/transient-chain/README.md, 'How the error bar is built'; docs/guide/uncertainty.qmd"
+    introduce_at: "5.3"
+    bridges: ["4.4's 'the map is right pixel by pixel, the sum isn't', written down term by term"]
+    avoid: ["uncertainty budget (fine), 'error' on its own for a bias"]
+
+  - term: pull
+    definition: "For an injected source: (measured − planted) divided by the quoted error bar. If the error bars are honest, pulls scatter by about 1 around 0. A scatter above 1 means the bars are too small; a mean away from 0 means a bias the bars don't cover."
+    source: "course; docs/guide/uncertainty.qmd (injection test)"
+    introduce_at: "5.3"
+    bridges: ["4.4's 'scatter in units of quoted error'"]
+    avoid: []
+
 confusables:
   - words: ["PSF width (psf_sigma, sigma_x, sigma_y)", "variance plane", "error bar / covariance / standard_errors", "noise"]
     rule: "Four kinds of spread with similar names. Say which one each time, with its units: a PSF width is in pixels; a variance plane is in squared data units per pixel; an error bar is in the measured quantity's units; noise is the random wobble the variance plane describes. See M-SIGMA-VARIANCE."

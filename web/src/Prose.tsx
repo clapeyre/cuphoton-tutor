@@ -16,7 +16,7 @@ function Maths({ tex, display }: { tex: string; display: boolean }) {
 export function Inline({ text, where }: { text: string; where: string }) {
   const ctx = useCtx();
   const out: ReactNode[] = [];
-  const re = /\[\[(.+?)\]\]|\[([^\]]+)\]\((https?:\/\/(?:[^()\s]|\([^()\s]*\))+|#\/[\w.-]+)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\$\$(.+?)\$\$|\$(?=\S)([^$\n]+?)(?<=\S)\$(?!\d)/g;
+  const re = /\[\[(.+?)\]\]|\[([^\]]+)\]\((https?:\/\/(?:[^()\s]|\([^()\s]*\))+|#\/[\w.-]+|\/workspace\/[\w./-]+\.html)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\$\$(.+?)\$\$|\$(?=\S)([^$\n]+?)(?<=\S)\$(?!\d)/g;
   let i = 0, m: RegExpExecArray | null, n = 0;
   while ((m = re.exec(text))) {
     if (m.index > i) out.push(text.slice(i, m.index));
