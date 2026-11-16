@@ -5,6 +5,9 @@ question: How do we make the reference look like the target, so that subtracting
 terms: [kernel, kernel mismatch, chi2/dof]
 ---
 
+:::video v3-kernel
+:::
+
 :::chain hi=xPois
 caption: The heart of the pipeline.
 :::

@@ -1,0 +1,1377 @@
+{
+  "s1": {
+    "duration": 16.375,
+    "text": "Blurring twice is just blurring once, more. Take a narrow bump and smear it with a small Gaussian, and you get a wider bump. The widths don't add, their squares do. So to turn a sharp star into a blurrier one, there is always a small smearing shape that does it.",
+    "words": [
+      {
+        "w": "Blurring",
+        "start": 0.275,
+        "end": 0.65
+      },
+      {
+        "w": "twice",
+        "start": 0.65,
+        "end": 1.05
+      },
+      {
+        "w": "is",
+        "start": 1.05,
+        "end": 1.2
+      },
+      {
+        "w": "just",
+        "start": 1.2,
+        "end": 1.462
+      },
+      {
+        "w": "blurring",
+        "start": 1.462,
+        "end": 1.875
+      },
+      {
+        "w": "once",
+        "start": 1.875,
+        "end": 2.15
+      },
+      {
+        "w": ",",
+        "start": 2.15,
+        "end": 2.2
+      },
+      {
+        "w": "more",
+        "start": 2.2,
+        "end": 2.85
+      },
+      {
+        "w": ".",
+        "start": 2.85,
+        "end": 2.987
+      },
+      {
+        "w": "Take",
+        "start": 2.987,
+        "end": 3.188
+      },
+      {
+        "w": "a",
+        "start": 3.188,
+        "end": 3.275
+      },
+      {
+        "w": "narrow",
+        "start": 3.275,
+        "end": 3.6
+      },
+      {
+        "w": "bump",
+        "start": 3.6,
+        "end": 3.875
+      },
+      {
+        "w": "and",
+        "start": 3.875,
+        "end": 4.025
+      },
+      {
+        "w": "smear",
+        "start": 4.025,
+        "end": 4.375
+      },
+      {
+        "w": "it",
+        "start": 4.375,
+        "end": 4.487
+      },
+      {
+        "w": "with",
+        "start": 4.487,
+        "end": 4.612
+      },
+      {
+        "w": "a",
+        "start": 4.612,
+        "end": 4.713
+      },
+      {
+        "w": "small",
+        "start": 4.713,
+        "end": 5.075
+      },
+      {
+        "w": "Gaussian",
+        "start": 5.075,
+        "end": 5.775
+      },
+      {
+        "w": ",",
+        "start": 5.775,
+        "end": 5.875
+      },
+      {
+        "w": "and",
+        "start": 5.875,
+        "end": 6.0
+      },
+      {
+        "w": "you",
+        "start": 6.0,
+        "end": 6.1
+      },
+      {
+        "w": "get",
+        "start": 6.1,
+        "end": 6.237
+      },
+      {
+        "w": "a",
+        "start": 6.237,
+        "end": 6.338
+      },
+      {
+        "w": "wider",
+        "start": 6.338,
+        "end": 6.725
+      },
+      {
+        "w": "bump",
+        "start": 6.725,
+        "end": 7.375
+      },
+      {
+        "w": ".",
+        "start": 7.375,
+        "end": 7.513
+      },
+      {
+        "w": "The",
+        "start": 7.513,
+        "end": 7.662
+      },
+      {
+        "w": "widths",
+        "start": 7.662,
+        "end": 8.037
+      },
+      {
+        "w": "don't",
+        "start": 8.037,
+        "end": 8.338
+      },
+      {
+        "w": "add",
+        "start": 8.338,
+        "end": 8.775
+      },
+      {
+        "w": ",",
+        "start": 8.775,
+        "end": 8.85
+      },
+      {
+        "w": "their",
+        "start": 8.85,
+        "end": 9.025
+      },
+      {
+        "w": "squares",
+        "start": 9.025,
+        "end": 9.45
+      },
+      {
+        "w": "do",
+        "start": 9.45,
+        "end": 9.975
+      },
+      {
+        "w": ".",
+        "start": 9.975,
+        "end": 10.137
+      },
+      {
+        "w": "So",
+        "start": 10.137,
+        "end": 10.3
+      },
+      {
+        "w": "to",
+        "start": 10.3,
+        "end": 10.4
+      },
+      {
+        "w": "turn",
+        "start": 10.4,
+        "end": 10.613
+      },
+      {
+        "w": "a",
+        "start": 10.613,
+        "end": 10.713
+      },
+      {
+        "w": "sharp",
+        "start": 10.713,
+        "end": 11.025
+      },
+      {
+        "w": "star",
+        "start": 11.025,
+        "end": 11.363
+      },
+      {
+        "w": "into",
+        "start": 11.363,
+        "end": 11.575
+      },
+      {
+        "w": "a",
+        "start": 11.575,
+        "end": 11.65
+      },
+      {
+        "w": "blurrier",
+        "start": 11.65,
+        "end": 12.1
+      },
+      {
+        "w": "one",
+        "start": 12.1,
+        "end": 12.525
+      },
+      {
+        "w": ",",
+        "start": 12.525,
+        "end": 12.6
+      },
+      {
+        "w": "there",
+        "start": 12.6,
+        "end": 12.75
+      },
+      {
+        "w": "is",
+        "start": 12.75,
+        "end": 12.912
+      },
+      {
+        "w": "always",
+        "start": 12.912,
+        "end": 13.325
+      },
+      {
+        "w": "a",
+        "start": 13.325,
+        "end": 13.45
+      },
+      {
+        "w": "small",
+        "start": 13.45,
+        "end": 13.875
+      },
+      {
+        "w": "smearing",
+        "start": 13.875,
+        "end": 14.363
+      },
+      {
+        "w": "shape",
+        "start": 14.363,
+        "end": 14.675
+      },
+      {
+        "w": "that",
+        "start": 14.675,
+        "end": 14.825
+      },
+      {
+        "w": "does",
+        "start": 14.825,
+        "end": 15.062
+      },
+      {
+        "w": "it",
+        "start": 15.062,
+        "end": 15.525
+      },
+      {
+        "w": ".",
+        "start": 15.525,
+        "end": 15.675
+      }
+    ]
+  },
+  "s2": {
+    "duration": 15.95,
+    "text": "In two dimensions the smearing shape is a small image, the matching kernel. Convolve the sharper picture with it and every star takes on the other night's blur. We don't know the kernel in advance, so xPois has to find it from the pictures themselves.",
+    "words": [
+      {
+        "w": "In",
+        "start": 0.3,
+        "end": 0.438
+      },
+      {
+        "w": "two",
+        "start": 0.438,
+        "end": 0.65
+      },
+      {
+        "w": "dimensions",
+        "start": 0.65,
+        "end": 1.275
+      },
+      {
+        "w": "the",
+        "start": 1.275,
+        "end": 1.413
+      },
+      {
+        "w": "smearing",
+        "start": 1.413,
+        "end": 1.887
+      },
+      {
+        "w": "shape",
+        "start": 1.887,
+        "end": 2.25
+      },
+      {
+        "w": "is",
+        "start": 2.25,
+        "end": 2.375
+      },
+      {
+        "w": "a",
+        "start": 2.375,
+        "end": 2.513
+      },
+      {
+        "w": "small",
+        "start": 2.513,
+        "end": 2.938
+      },
+      {
+        "w": "image",
+        "start": 2.938,
+        "end": 3.575
+      },
+      {
+        "w": ",",
+        "start": 3.575,
+        "end": 3.675
+      },
+      {
+        "w": "the",
+        "start": 3.675,
+        "end": 3.8
+      },
+      {
+        "w": "matching",
+        "start": 3.8,
+        "end": 4.225
+      },
+      {
+        "w": "kernel",
+        "start": 4.225,
+        "end": 5.05
+      },
+      {
+        "w": ".",
+        "start": 5.05,
+        "end": 5.213
+      },
+      {
+        "w": "Convolve",
+        "start": 5.213,
+        "end": 5.75
+      },
+      {
+        "w": "the",
+        "start": 5.75,
+        "end": 5.888
+      },
+      {
+        "w": "sharper",
+        "start": 5.888,
+        "end": 6.275
+      },
+      {
+        "w": "picture",
+        "start": 6.275,
+        "end": 6.638
+      },
+      {
+        "w": "with",
+        "start": 6.638,
+        "end": 6.812
+      },
+      {
+        "w": "it",
+        "start": 6.812,
+        "end": 7.175
+      },
+      {
+        "w": "and",
+        "start": 7.175,
+        "end": 7.362
+      },
+      {
+        "w": "every",
+        "start": 7.362,
+        "end": 7.713
+      },
+      {
+        "w": "star",
+        "start": 7.713,
+        "end": 8.088
+      },
+      {
+        "w": "takes",
+        "start": 8.088,
+        "end": 8.412
+      },
+      {
+        "w": "on",
+        "start": 8.412,
+        "end": 8.512
+      },
+      {
+        "w": "the",
+        "start": 8.512,
+        "end": 8.6
+      },
+      {
+        "w": "other",
+        "start": 8.6,
+        "end": 8.85
+      },
+      {
+        "w": "night's",
+        "start": 8.85,
+        "end": 9.188
+      },
+      {
+        "w": "blur",
+        "start": 9.188,
+        "end": 9.925
+      },
+      {
+        "w": ".",
+        "start": 9.925,
+        "end": 10.1
+      },
+      {
+        "w": "We",
+        "start": 10.1,
+        "end": 10.213
+      },
+      {
+        "w": "don't",
+        "start": 10.213,
+        "end": 10.387
+      },
+      {
+        "w": "know",
+        "start": 10.387,
+        "end": 10.537
+      },
+      {
+        "w": "the",
+        "start": 10.537,
+        "end": 10.625
+      },
+      {
+        "w": "kernel",
+        "start": 10.625,
+        "end": 11.0
+      },
+      {
+        "w": "in",
+        "start": 11.0,
+        "end": 11.088
+      },
+      {
+        "w": "advance",
+        "start": 11.088,
+        "end": 11.8
+      },
+      {
+        "w": ",",
+        "start": 11.8,
+        "end": 11.912
+      },
+      {
+        "w": "so",
+        "start": 11.912,
+        "end": 12.162
+      },
+      {
+        "w": "xPois",
+        "start": 12.162,
+        "end": 12.775
+      },
+      {
+        "w": "has",
+        "start": 12.775,
+        "end": 13.0
+      },
+      {
+        "w": "to",
+        "start": 13.0,
+        "end": 13.125
+      },
+      {
+        "w": "find",
+        "start": 13.125,
+        "end": 13.387
+      },
+      {
+        "w": "it",
+        "start": 13.387,
+        "end": 13.475
+      },
+      {
+        "w": "from",
+        "start": 13.475,
+        "end": 13.613
+      },
+      {
+        "w": "the",
+        "start": 13.613,
+        "end": 13.7
+      },
+      {
+        "w": "pictures",
+        "start": 13.7,
+        "end": 14.175
+      },
+      {
+        "w": "themselves",
+        "start": 14.175,
+        "end": 15.1
+      },
+      {
+        "w": ".",
+        "start": 15.1,
+        "end": 15.25
+      }
+    ]
+  },
+  "s3": {
+    "duration": 19.325,
+    "text": "xPois builds the kernel from a few Gaussian shapes of different widths, each with some simple variations. It then fits the weights by least squares, so that the blurred reference matches the target as closely as the noise allows. What you get back is one small image: the kernel xPois actually found.",
+    "words": [
+      {
+        "w": "xPois",
+        "start": 0.3,
+        "end": 0.887
+      },
+      {
+        "w": "builds",
+        "start": 0.887,
+        "end": 1.225
+      },
+      {
+        "w": "the",
+        "start": 1.225,
+        "end": 1.325
+      },
+      {
+        "w": "kernel",
+        "start": 1.325,
+        "end": 1.725
+      },
+      {
+        "w": "from",
+        "start": 1.725,
+        "end": 1.863
+      },
+      {
+        "w": "a",
+        "start": 1.863,
+        "end": 1.938
+      },
+      {
+        "w": "few",
+        "start": 1.938,
+        "end": 2.175
+      },
+      {
+        "w": "Gaussian",
+        "start": 2.175,
+        "end": 2.612
+      },
+      {
+        "w": "shapes",
+        "start": 2.612,
+        "end": 2.962
+      },
+      {
+        "w": "of",
+        "start": 2.962,
+        "end": 3.05
+      },
+      {
+        "w": "different",
+        "start": 3.05,
+        "end": 3.375
+      },
+      {
+        "w": "widths",
+        "start": 3.375,
+        "end": 4.05
+      },
+      {
+        "w": ",",
+        "start": 4.05,
+        "end": 4.188
+      },
+      {
+        "w": "each",
+        "start": 4.188,
+        "end": 4.525
+      },
+      {
+        "w": "with",
+        "start": 4.525,
+        "end": 4.7
+      },
+      {
+        "w": "some",
+        "start": 4.7,
+        "end": 4.963
+      },
+      {
+        "w": "simple",
+        "start": 4.963,
+        "end": 5.35
+      },
+      {
+        "w": "variations",
+        "start": 5.35,
+        "end": 6.6
+      },
+      {
+        "w": ".",
+        "start": 6.6,
+        "end": 6.725
+      },
+      {
+        "w": "It",
+        "start": 6.725,
+        "end": 6.875
+      },
+      {
+        "w": "then",
+        "start": 6.875,
+        "end": 7.125
+      },
+      {
+        "w": "fits",
+        "start": 7.125,
+        "end": 7.425
+      },
+      {
+        "w": "the",
+        "start": 7.425,
+        "end": 7.525
+      },
+      {
+        "w": "weights",
+        "start": 7.525,
+        "end": 7.85
+      },
+      {
+        "w": "by",
+        "start": 7.85,
+        "end": 8.062
+      },
+      {
+        "w": "least",
+        "start": 8.062,
+        "end": 8.375
+      },
+      {
+        "w": "squares",
+        "start": 8.375,
+        "end": 9.075
+      },
+      {
+        "w": ",",
+        "start": 9.075,
+        "end": 9.175
+      },
+      {
+        "w": "so",
+        "start": 9.175,
+        "end": 9.312
+      },
+      {
+        "w": "that",
+        "start": 9.312,
+        "end": 9.438
+      },
+      {
+        "w": "the",
+        "start": 9.438,
+        "end": 9.537
+      },
+      {
+        "w": "blurred",
+        "start": 9.537,
+        "end": 9.9
+      },
+      {
+        "w": "reference",
+        "start": 9.9,
+        "end": 10.4
+      },
+      {
+        "w": "matches",
+        "start": 10.4,
+        "end": 10.85
+      },
+      {
+        "w": "the",
+        "start": 10.85,
+        "end": 10.95
+      },
+      {
+        "w": "target",
+        "start": 10.95,
+        "end": 11.412
+      },
+      {
+        "w": "as",
+        "start": 11.412,
+        "end": 11.588
+      },
+      {
+        "w": "closely",
+        "start": 11.588,
+        "end": 12.125
+      },
+      {
+        "w": "as",
+        "start": 12.125,
+        "end": 12.275
+      },
+      {
+        "w": "the",
+        "start": 12.275,
+        "end": 12.375
+      },
+      {
+        "w": "noise",
+        "start": 12.375,
+        "end": 12.75
+      },
+      {
+        "w": "allows",
+        "start": 12.75,
+        "end": 13.7
+      },
+      {
+        "w": ".",
+        "start": 13.7,
+        "end": 13.8
+      },
+      {
+        "w": "What",
+        "start": 13.8,
+        "end": 13.938
+      },
+      {
+        "w": "you",
+        "start": 13.938,
+        "end": 14.025
+      },
+      {
+        "w": "get",
+        "start": 14.025,
+        "end": 14.2
+      },
+      {
+        "w": "back",
+        "start": 14.2,
+        "end": 14.525
+      },
+      {
+        "w": "is",
+        "start": 14.525,
+        "end": 14.688
+      },
+      {
+        "w": "one",
+        "start": 14.688,
+        "end": 14.975
+      },
+      {
+        "w": "small",
+        "start": 14.975,
+        "end": 15.375
+      },
+      {
+        "w": "image",
+        "start": 15.375,
+        "end": 16.075
+      },
+      {
+        "w": ":",
+        "start": 16.075,
+        "end": 16.2
+      },
+      {
+        "w": "the",
+        "start": 16.2,
+        "end": 16.3
+      },
+      {
+        "w": "kernel",
+        "start": 16.3,
+        "end": 16.675
+      },
+      {
+        "w": "xPois",
+        "start": 16.675,
+        "end": 17.3
+      },
+      {
+        "w": "actually",
+        "start": 17.3,
+        "end": 17.762
+      },
+      {
+        "w": "found",
+        "start": 17.762,
+        "end": 18.475
+      },
+      {
+        "w": ".",
+        "start": 18.475,
+        "end": 18.625
+      }
+    ]
+  },
+  "s4": {
+    "duration": 24.025,
+    "text": "Two things to look at. First, it's a compact blob with no strange structure, so the blur was matched with a smooth shape. Second, the numbers add up to about one. That sum is the flux scale between the two nights: near one means the brightness agreed. If the target were the sharper image, you would blur the target instead, never sharpen. For this pair, the reference is the sharper one.",
+    "words": [
+      {
+        "w": "Two",
+        "start": 0.275,
+        "end": 0.487
+      },
+      {
+        "w": "things",
+        "start": 0.487,
+        "end": 0.825
+      },
+      {
+        "w": "to",
+        "start": 0.825,
+        "end": 0.925
+      },
+      {
+        "w": "look",
+        "start": 0.925,
+        "end": 1.15
+      },
+      {
+        "w": "at",
+        "start": 1.15,
+        "end": 1.675
+      },
+      {
+        "w": ".",
+        "start": 1.675,
+        "end": 1.8
+      },
+      {
+        "w": "First",
+        "start": 1.8,
+        "end": 2.2
+      },
+      {
+        "w": ",",
+        "start": 2.2,
+        "end": 2.25
+      },
+      {
+        "w": "it's",
+        "start": 2.25,
+        "end": 2.362
+      },
+      {
+        "w": "a",
+        "start": 2.362,
+        "end": 2.462
+      },
+      {
+        "w": "compact",
+        "start": 2.462,
+        "end": 3.05
+      },
+      {
+        "w": "blob",
+        "start": 3.05,
+        "end": 3.45
+      },
+      {
+        "w": "with",
+        "start": 3.45,
+        "end": 3.625
+      },
+      {
+        "w": "no",
+        "start": 3.625,
+        "end": 3.825
+      },
+      {
+        "w": "strange",
+        "start": 3.825,
+        "end": 4.225
+      },
+      {
+        "w": "structure",
+        "start": 4.225,
+        "end": 4.9
+      },
+      {
+        "w": ",",
+        "start": 4.9,
+        "end": 5.0
+      },
+      {
+        "w": "so",
+        "start": 5.0,
+        "end": 5.112
+      },
+      {
+        "w": "the",
+        "start": 5.112,
+        "end": 5.2
+      },
+      {
+        "w": "blur",
+        "start": 5.2,
+        "end": 5.5
+      },
+      {
+        "w": "was",
+        "start": 5.5,
+        "end": 5.675
+      },
+      {
+        "w": "matched",
+        "start": 5.675,
+        "end": 6.088
+      },
+      {
+        "w": "with",
+        "start": 6.088,
+        "end": 6.213
+      },
+      {
+        "w": "a",
+        "start": 6.213,
+        "end": 6.312
+      },
+      {
+        "w": "smooth",
+        "start": 6.312,
+        "end": 6.713
+      },
+      {
+        "w": "shape",
+        "start": 6.713,
+        "end": 7.45
+      },
+      {
+        "w": ".",
+        "start": 7.45,
+        "end": 7.625
+      },
+      {
+        "w": "Second",
+        "start": 7.625,
+        "end": 8.075
+      },
+      {
+        "w": ",",
+        "start": 8.075,
+        "end": 8.125
+      },
+      {
+        "w": "the",
+        "start": 8.125,
+        "end": 8.225
+      },
+      {
+        "w": "numbers",
+        "start": 8.225,
+        "end": 8.662
+      },
+      {
+        "w": "add",
+        "start": 8.662,
+        "end": 8.887
+      },
+      {
+        "w": "up",
+        "start": 8.887,
+        "end": 9.075
+      },
+      {
+        "w": "to",
+        "start": 9.075,
+        "end": 9.225
+      },
+      {
+        "w": "about",
+        "start": 9.225,
+        "end": 9.525
+      },
+      {
+        "w": "one",
+        "start": 9.525,
+        "end": 10.2
+      },
+      {
+        "w": ".",
+        "start": 10.2,
+        "end": 10.35
+      },
+      {
+        "w": "That",
+        "start": 10.35,
+        "end": 10.637
+      },
+      {
+        "w": "sum",
+        "start": 10.637,
+        "end": 10.95
+      },
+      {
+        "w": "is",
+        "start": 10.95,
+        "end": 11.1
+      },
+      {
+        "w": "the",
+        "start": 11.1,
+        "end": 11.225
+      },
+      {
+        "w": "flux",
+        "start": 11.225,
+        "end": 11.562
+      },
+      {
+        "w": "scale",
+        "start": 11.562,
+        "end": 12.0
+      },
+      {
+        "w": "between",
+        "start": 12.0,
+        "end": 12.312
+      },
+      {
+        "w": "the",
+        "start": 12.312,
+        "end": 12.4
+      },
+      {
+        "w": "two",
+        "start": 12.4,
+        "end": 12.6
+      },
+      {
+        "w": "nights",
+        "start": 12.6,
+        "end": 13.175
+      },
+      {
+        "w": ":",
+        "start": 13.175,
+        "end": 13.287
+      },
+      {
+        "w": "near",
+        "start": 13.287,
+        "end": 13.55
+      },
+      {
+        "w": "one",
+        "start": 13.55,
+        "end": 13.775
+      },
+      {
+        "w": "means",
+        "start": 13.775,
+        "end": 14.088
+      },
+      {
+        "w": "the",
+        "start": 14.088,
+        "end": 14.175
+      },
+      {
+        "w": "brightness",
+        "start": 14.175,
+        "end": 14.6
+      },
+      {
+        "w": "agreed",
+        "start": 14.6,
+        "end": 15.375
+      },
+      {
+        "w": ".",
+        "start": 15.375,
+        "end": 15.5
+      },
+      {
+        "w": "If",
+        "start": 15.5,
+        "end": 15.662
+      },
+      {
+        "w": "the",
+        "start": 15.662,
+        "end": 15.75
+      },
+      {
+        "w": "target",
+        "start": 15.75,
+        "end": 16.137
+      },
+      {
+        "w": "were",
+        "start": 16.137,
+        "end": 16.238
+      },
+      {
+        "w": "the",
+        "start": 16.238,
+        "end": 16.363
+      },
+      {
+        "w": "sharper",
+        "start": 16.363,
+        "end": 16.75
+      },
+      {
+        "w": "image",
+        "start": 16.75,
+        "end": 17.225
+      },
+      {
+        "w": ",",
+        "start": 17.225,
+        "end": 17.3
+      },
+      {
+        "w": "you",
+        "start": 17.3,
+        "end": 17.387
+      },
+      {
+        "w": "would",
+        "start": 17.387,
+        "end": 17.538
+      },
+      {
+        "w": "blur",
+        "start": 17.538,
+        "end": 17.812
+      },
+      {
+        "w": "the",
+        "start": 17.812,
+        "end": 17.9
+      },
+      {
+        "w": "target",
+        "start": 17.9,
+        "end": 18.3
+      },
+      {
+        "w": "instead",
+        "start": 18.3,
+        "end": 18.975
+      },
+      {
+        "w": ",",
+        "start": 18.975,
+        "end": 19.087
+      },
+      {
+        "w": "never",
+        "start": 19.087,
+        "end": 19.413
+      },
+      {
+        "w": "sharpen",
+        "start": 19.413,
+        "end": 20.275
+      },
+      {
+        "w": ".",
+        "start": 20.275,
+        "end": 20.413
+      },
+      {
+        "w": "For",
+        "start": 20.413,
+        "end": 20.575
+      },
+      {
+        "w": "this",
+        "start": 20.575,
+        "end": 20.812
+      },
+      {
+        "w": "pair",
+        "start": 20.812,
+        "end": 21.225
+      },
+      {
+        "w": ",",
+        "start": 21.225,
+        "end": 21.3
+      },
+      {
+        "w": "the",
+        "start": 21.3,
+        "end": 21.425
+      },
+      {
+        "w": "reference",
+        "start": 21.425,
+        "end": 21.95
+      },
+      {
+        "w": "is",
+        "start": 21.95,
+        "end": 22.1
+      },
+      {
+        "w": "the",
+        "start": 22.1,
+        "end": 22.238
+      },
+      {
+        "w": "sharper",
+        "start": 22.238,
+        "end": 22.65
+      },
+      {
+        "w": "one",
+        "start": 22.65,
+        "end": 23.175
+      },
+      {
+        "w": ".",
+        "start": 23.175,
+        "end": 23.325
+      }
+    ]
+  },
+  "s5": {
+    "duration": 5.725,
+    "text": "So whenever your agent matches two images, ask to see the kernel, and its sum.",
+    "words": [
+      {
+        "w": "So",
+        "start": 0.3,
+        "end": 0.475
+      },
+      {
+        "w": "whenever",
+        "start": 0.475,
+        "end": 0.85
+      },
+      {
+        "w": "your",
+        "start": 0.85,
+        "end": 1.0
+      },
+      {
+        "w": "agent",
+        "start": 1.0,
+        "end": 1.325
+      },
+      {
+        "w": "matches",
+        "start": 1.325,
+        "end": 1.762
+      },
+      {
+        "w": "two",
+        "start": 1.762,
+        "end": 1.975
+      },
+      {
+        "w": "images",
+        "start": 1.975,
+        "end": 2.725
+      },
+      {
+        "w": ",",
+        "start": 2.725,
+        "end": 2.862
+      },
+      {
+        "w": "ask",
+        "start": 2.862,
+        "end": 3.125
+      },
+      {
+        "w": "to",
+        "start": 3.125,
+        "end": 3.225
+      },
+      {
+        "w": "see",
+        "start": 3.225,
+        "end": 3.388
+      },
+      {
+        "w": "the",
+        "start": 3.388,
+        "end": 3.475
+      },
+      {
+        "w": "kernel",
+        "start": 3.475,
+        "end": 3.925
+      },
+      {
+        "w": ",",
+        "start": 3.925,
+        "end": 4.0
+      },
+      {
+        "w": "and",
+        "start": 4.0,
+        "end": 4.112
+      },
+      {
+        "w": "its",
+        "start": 4.112,
+        "end": 4.287
+      },
+      {
+        "w": "sum",
+        "start": 4.287,
+        "end": 4.875
+      },
+      {
+        "w": ".",
+        "start": 4.875,
+        "end": 5.025
+      }
+    ]
+  }
+}

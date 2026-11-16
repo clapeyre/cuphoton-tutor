@@ -1,7 +1,8 @@
 # v3 — What the matching kernel does
 
-Draft script, not yet narrated or rendered. Target about 1:50. Optional detour at
-01 step 1.4 (L2 layer). No checkpoint or exercise content. Data to generate:
+Opens 1.4 (L2 layer). Must not give away 1.4's turns: it never states the
+kernel's size or footprint (`nan-edge`: why the 9-px frame) and never says what a
+wrong kernel leaves (`perfect-kernel`: rings). Real data throughout. Data to generate:
 media/scenes/data_v3.py (real kernel, basis images, 27 fitted weights).
 
 Facts checked against a real CPU run on the sample pair (overnight run): the
@@ -16,7 +17,7 @@ terms (degrees 4, 2, 2): 27 fitted weights in total, not three. The video says
 **Visual (1D toy, but with the real widths):** a narrow Gaussian (sigma 1.2) and a
 small Gaussian (sigma 1.38) side by side; the convolution animation slides one
 across the other; the result is a wide Gaussian (sigma 1.8). Labels show
-1.16² + 1.38² ≈ 1.8² (rounded).
+1.2² + 1.38² ≈ 1.8² (rounded).
 **Narration:** Blurring twice is just blurring once, more. Take a narrow bump and
 smear it with a small Gaussian, and you get a wider bump. The widths don't add,
 their squares do. So to turn a sharp star into a blurrier one, there is always a
@@ -25,7 +26,7 @@ small smearing shape that does it.
 ## s2 — That shape is the kernel (≈25 s)
 **Visual:** reference star and target star as 2D images (real stamps, from the
 aligned reference and target around an unchanged star); an arrow labeled "kernel"
-from the first to the second; the real 19 by 19 kernel image shown between them.
+from the first to the second; the real kernel image shown between them (no size stated).
 **Narration:** In two dimensions the smearing shape is a small image, the matching
 kernel. Convolve the sharper picture with it and every star takes on the other
 night's blur. We don't know the kernel in advance, so xPois has to find it from
@@ -43,9 +44,8 @@ allows. What you get back is one small image: the kernel xPois actually found.
 
 ## s4 — Read the kernel (≈25 s)
 **Visual:** the real kernel as a heat map with a profile through the middle; a
-counter "sum = 1.013"; caption "flux scale". Then a one-line card: "If the target
-were the sharper image, you would blur the target instead, never sharpen." (no
-second animation).
+counter "sum = 1.013"; caption "flux scale". Then a one-line card: "the sharper
+image is the one you blur, never sharpen the other" (no second animation).
 **Narration:** Two things to look at. First, it's a compact blob with no strange
 structure, so the blur was matched with a smooth shape. Second, the numbers add up
 to about one. That sum is the flux scale between the two nights: near one means the
@@ -53,4 +53,5 @@ brightness agreed. If the target were the sharper image, you would blur the targ
 
 ## s5 — What to ask your agent (≈10 s)
 **Visual:** prompt card: "Show me the kernel and its sum."
-**Narration:** When a difference image has rings, look at the kernel first.
+**Narration:** So whenever your agent matches two images, ask to see the kernel,
+and its sum.

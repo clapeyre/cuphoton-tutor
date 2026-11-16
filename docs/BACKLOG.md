@@ -20,9 +20,6 @@ anything parked from them is copied here with a pointer back.
   e.g. "I'm colour-blind" or "less maths, please". The tutor honours this in
   conversation today, but there is no persisted preferences store that every
   later figure and lesson reads. Would make prepare-ahead regenerate on change.
-- **Videos v3 (kernel) and v4 (host/device memory)** have scripts but no
-  scenes; v4 belongs in Module 03.
-
 - **Module 04 data source:** IRSA's ZTF image services were down on 16 Nov
   2026 (HTTP 502 from IRSA), so the module uses Pan-STARRS1 instead. Its
   nights are pre-aligned to a sky grid, so xRep has nothing to do there. A

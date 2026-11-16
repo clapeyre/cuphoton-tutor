@@ -1,0 +1,67 @@
+1
+00:00:00,275 --> 00:00:02,987
+Blurring twice is just blurring once, more.
+
+2
+00:00:02,987 --> 00:00:07,513
+Take a narrow bump and smear it with a small Gaussian, and you get a wider bump.
+
+3
+00:00:07,513 --> 00:00:10,137
+The widths don't add, their squares do.
+
+4
+00:00:10,137 --> 00:00:15,775
+So to turn a sharp star into a blurrier one, there is always a small smearing shape that does it.
+
+5
+00:00:16,675 --> 00:00:21,588
+In two dimensions the smearing shape is a small image, the matching kernel.
+
+6
+00:00:21,588 --> 00:00:26,475
+Convolve the sharper picture with it and every star takes on the other night's blur.
+
+7
+00:00:26,475 --> 00:00:31,725
+We don't know the kernel in advance, so xPois has to find it from the pictures themselves.
+
+8
+00:00:32,625 --> 00:00:39,050
+xPois builds the kernel from a few Gaussian shapes of different widths, each with some simple variations.
+
+9
+00:00:39,050 --> 00:00:46,125
+It then fits the weights by least squares, so that the blurred reference matches the target as closely as the noise allows.
+
+10
+00:00:46,125 --> 00:00:51,050
+What you get back is one small image: the kernel xPois actually found.
+
+11
+00:00:51,925 --> 00:00:53,450
+Two things to look at.
+
+12
+00:00:53,450 --> 00:00:59,275
+First, it's a compact blob with no strange structure, so the blur was matched with a smooth shape.
+
+13
+00:00:59,275 --> 00:01:02,000
+Second, the numbers add up to about one.
+
+14
+00:01:02,000 --> 00:01:07,150
+That sum is the flux scale between the two nights: near one means the brightness agreed.
+
+15
+00:01:07,150 --> 00:01:12,063
+If the target were the sharper image, you would blur the target instead, never sharpen.
+
+16
+00:01:12,063 --> 00:01:15,075
+For this pair, the reference is the sharper one.
+
+17
+00:01:15,975 --> 00:01:20,800
+So whenever your agent matches two images, ask to see the kernel, and its sum.

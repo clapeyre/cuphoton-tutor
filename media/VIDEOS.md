@@ -14,12 +14,23 @@ with `Timed.at("phrase")` (media/scenes/common.py), which uses the word
 timestamps narrate.py writes to timings.json. Don't place them by estimated
 seconds. Accumulate rather than replace when the narration lists items quickly.
 
+**When to make one** (agreed 16 Nov 2026). About one short video (1–2 min) per
+module, but only for something a still figure can't show: a mechanism that moves
+or builds up (blur adding up, data crossing a bridge, noise shared between
+pixels, an image going through a pipeline). Never a recap of the lesson text.
+Place it where the mechanism first matters, often as the module's opener. Skip
+a module when nothing in it needs motion (Module 06 is a conversation). Before
+placing one, list the module's checkpoints and cut anything that answers one;
+if the mechanism *is* a checkpoint's answer, place the video after that lesson
+(v5 opens 5.3, not 4.4). Use real numbers from a run on this machine, made by
+a `data_vN.py` the pipeline can rerun.
+
 | id | title | length | used at | layer | status |
 | --- | --- | --- | --- | --- | --- |
 | v0-what-changed | What changed in the sky? | 2:28 | start of module 00, before 0.1 | L0 + vocabulary | draft rendered |
 | v1-why-not-subtract | Why you can't just subtract two pictures of the sky | 1:34 | after checkpoint 0.3; after checkpoint 1.4 | L0 | draft rendered, cued on the word |
 | v2-it-ran | It ran. Is it right? | 1:21 | after 2.3 | L0/L1 | draft rendered, cued on the word |
-| v3-kernel | What the matching kernel does | 2:00 | 01 step 1.4 (optional detour) | L2 | script (unrendered) |
+| v3-kernel | What the matching kernel does | 1:21 | start of 1.4 | L2 | rendered, cued on the word; real kernel fit |
 | v4-where-data-lives | Where your data lives: host and device | 1:15 | start of 3.1 (opens Module 03) | L0/L1 | rendered, cued on the word; real GPU timings |
 | v6-one-image-through-the-chain | One image through the shipped chain | 1:19 | start of 5.1 (opens Module 05) | L0/L1 | rendered, cued on the word; real chain run |
 | v5-why-the-sum-wobbles | Why the sum wobbles | 1:31 | start of 5.3 (after 4.4) | L1 | rendered, cued on the word; xRep data |

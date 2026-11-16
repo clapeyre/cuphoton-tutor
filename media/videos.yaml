@@ -46,3 +46,12 @@ v4-where-data-lives:
     - [38.8, once or every stage]
     - [55.1, where results land]
     - [71.6, ask]
+v3-kernel:
+  title: What the matching kernel does
+  duration: "1:21"
+  chapters:
+    - [0, blur adds]
+    - [16.4, the kernel]
+    - [32.3, built from shapes]
+    - [51.7, read the kernel]
+    - [75.7, ask]

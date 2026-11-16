@@ -3,6 +3,12 @@
 **Goal:** the learner predicts what matching leaves, sees the difference image,
 names kernel mismatch, explains the NaN edge, and doesn't take chi2/dof as proof.
 
+## Video `v3-kernel` (opens the lesson)
+Blur adds in quadrature (1.16² + 1.38² = 1.80²), the real kernel between a
+reference and a target star, the 27-weight basis, kernel sum 1.013 = flux
+scale. It deliberately states no kernel size (`nan-edge`) and says nothing of
+what a wrong kernel leaves (`perfect-kernel`): don't fill those in early.
+
 ## Your turn `perfect-kernel` (prediction)
 - **Pass (prediction):** perfect kernel → only noise at an unchanged star;
   slightly off → a small ring or dipole-like leftover (they saw rings in 0.3).
