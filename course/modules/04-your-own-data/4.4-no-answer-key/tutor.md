@@ -43,7 +43,50 @@ limit, flux bias, and whether error bars are honest. Module 04's exit (O5).
   approximations too); and (d) one limit of the test: it only checks sources
   like the ones planted (point sources, these positions, this pair), not other
   kinds of change or other nights.
-- Module exit, after settling: ask them to write the instruction they'd give an
-  agent for the next night of this survey, in a few lines (data checks, noise
-  model, masks, run, evidence, an injection test with the error-bar check).
-  Compare with their 2.6 list in one or two sentences. Then `reveal("4.4")`.
+
+- **Explaining the too-small error bars.** Walkthrough 5: the learner saw
+  the variance map but "couldn't explain back the logical sequence". Don't
+  lead with resampling vocabulary. Go one step per message, each checked
+  against the pixels, and offer the figure early:
+  1. Each pixel's variance in the map is right: on blank sky,
+     pixel/√variance scatters by 0.9 (1.07 on the reference), close to 1.
+  2. A flux is not one pixel: it's a weighted sum over the source's pixels
+     (a 5×5 to 9×9 patch here).
+  3. The error bar on a sum adds the pixels' variances. That is only right
+     if each pixel's noise is independent of its neighbours'.
+  4. Here it isn't. The survey resampled each exposure onto the sky grid,
+     so each output pixel is a blend of a few input pixels, and neighbours
+     share some of the same input noise. Measured on blank sky: correlation
+     0.17 with the pixel to the side, 0.22 above and below, about 0 two
+     pixels away.
+  5. Shared noise doesn't average out in a sum. Blank-sky boxes scatter
+     more than the map predicts: 1.08× (2×2), 1.29× (5×5), 1.60× (9×9),
+     1.74× (11×11). That is the 1.2–1.5× (1.3–2 in some runs) seen in the
+     injection pulls.
+  The figure: `correlated_noise.py`, next to these notes. Copy it to
+  `work/04/` and run it with the GPU environment's python, as
+  `python correlated_noise.py data 4.4_correlated.png` from `work/04/`
+  (only numpy, scipy and astropy; it prints the numbers above), then `show_figure`
+  in the turn. Left panel: the correlation with each neighbour. Right panel:
+  real/predicted scatter against box size, with 1 as the line for independent
+  noise. Show the script on request.
+- **What would have to be different** (if they ask, or as the last step
+  once the cause is clear): (a) measure the factor on this data, as the box
+  test or the injection pulls do, and scale the error bars by it (the common
+  survey practice); (b) carry the correlation into the noise model, as a
+  covariance or a per-scale correction, which a one-number-per-pixel map
+  can't hold; (c) work on unresampled exposures, which needs alignment
+  ([1.3](#/1.3)) back in the chain. It's not "smooth the variance map":
+  the map's values are fine; what's missing is how pixels relate.
+
+## Your turn `next-night` (module exit)
+- Their instruction for an agent processing the next night of this survey.
+  Look for: data checks (grid/WCS, sky-subtracted or not, units, header
+  values not trusted blindly, e.g. the zero point), the noise model (survey
+  variance map, masked variances excluded, not set to 0), masks (which bits),
+  the run (whole chain, GPU, receipts), the evidence back (overview figure,
+  candidate stamps, z, fluxes with errors, the receipt) and an injection test
+  with the pull-scatter check and the error-bar correction it implies.
+- One question at most for a missing piece that matters; don't make them
+  polish wording. Then compare with their 2.6 list in one or two sentences:
+  what real data added. Settle, then `reveal("4.4")`.

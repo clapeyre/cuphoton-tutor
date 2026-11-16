@@ -183,3 +183,18 @@ pre.hl { border: 1px solid var(--border-color-interaction-base); border-left: 3p
 .katex { font-size: 1.08em; }
 code { white-space: normal; overflow-wrap: anywhere; }
 pre.lesson-code { margin: 0; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.55; padding: 12px 14px; border-radius: 8px; background: #0a0a0a; overflow-x: auto; white-space: pre; }
+
+/* click-to-zoom image viewer */
+img.zoomable { cursor: zoom-in; }
+img.zoomable:focus-visible { outline: 2px solid var(--accent, #333); outline-offset: 2px; }
+.viewer { position: fixed; inset: 0; z-index: 1000; background: rgba(20, 20, 20, 0.88); display: flex; flex-direction: column; }
+.viewer-bar { background: #111; display: flex; align-items: center; gap: 8px; padding: 10px 16px; color: #eee; font-size: 14px; }
+.viewer-bar .btn { min-width: 36px; }
+.viewer-cap { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.viewer-z { min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; }
+.viewer-box { flex: 1; min-height: 0; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 8px; touch-action: none; }
+.viewer-box.zoomed { display: block; cursor: grab; }
+.viewer-box.zoomed:active { cursor: grabbing; }
+.viewer-box img { max-width: 100%; max-height: 100%; background: #fff; border-radius: 4px; cursor: zoom-in; user-select: none; }
+.viewer-box.zoomed img { display: block; margin: 0 auto; cursor: inherit; }
+.viewer-box:not(.zoomed) img { max-width: none; max-height: none; }

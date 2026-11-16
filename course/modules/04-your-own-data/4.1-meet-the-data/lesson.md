@@ -19,12 +19,12 @@ done to it, and which of your recipes still hold.
 
 :::your-turn what-differs
 title: What's different?
-prompt: Ask the tutor about the files: headers, pixel values, masks, anything. Compared with the Module 01 pair, what was already done to these images, and what does each difference change in how we run the chain?
+prompt: Ask the tutor about the files: headers, pixel values, masks, anything. Compared with the Module 01 pair ([1.1](#/1.1)), what was already done to these images, and what does each difference change in how we run the chain?
 :::
 
 :::your-turn noise-model
 title: An honest noise model
-prompt: In Module 01 we made the variance as pixel value divided by gain. What would that give here, and what will you use instead? How would you check that your choice is right?
+prompt: In Module 01 ([1.2](#/1.2)) we made the variance as pixel value divided by gain. What would that give here, and what will you use instead? How would you check that your choice is right?
 :::
 
 :::closure

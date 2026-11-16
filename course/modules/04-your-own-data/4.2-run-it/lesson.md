@@ -7,7 +7,14 @@ terms: [difference image, hotspot]
 
 You've decided how to handle the grid, the noise and the masks. Now direct
 the run: the whole chain, on the GPU, in one instruction, the way you would
-hand it to an agent. Your standing instruction from 2.6 applies.
+hand it to an agent. Your standing instruction from [2.6](#/2.6) applies.
+
+You don't need to remember every stage by heart. Each was built in Module 01,
+and you can hop back and return: alignment in [1.3](#/1.3) (and masks on the
+way in), matching and subtracting in [1.4](#/1.4), finding hotspots in
+[1.5](#/1.5), measuring them in [1.6](#/1.6). The GPU version of the whole
+chain is in [3.2](#/3.2), and what you decided about this data is in
+[4.1](#/4.1).
 
 :::your-turn direct-run
 title: Your instruction

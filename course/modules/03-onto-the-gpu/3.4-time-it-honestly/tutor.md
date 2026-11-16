@@ -66,6 +66,10 @@ When you discuss a fix, show the changed lines.
   ``` If they
   ask about the 14,900× figure: it's image loading per operation against a CPU
   baseline (NVIDIA tech blog), not an end-to-end pipeline speedup.
-- Module exit: ask once for the module question in two sentences ("how do you
-  move it, prove it's there, and say honestly how much faster?"), then
-  `reveal("3.4")`.
+
+## Your turn `module-question` (module exit)
+The module question in two sentences: how do you move it, prove it's there,
+and say honestly how much faster? Not a checkpoint: settle on any honest
+answer that covers the three (backend choice; the receipt and the device;
+synchronized, warm timing with its boundary stated). Add at most one sentence
+connecting it to what they did. Then `reveal("3.4")`.

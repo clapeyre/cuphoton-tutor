@@ -55,7 +55,10 @@ anything you write on open is never shown. When they ask, copy it to
 - After the pass, show the script and the line, and add the rule in words:
   arrays index `[y, x]`, and each call says which order it takes.
 
-## Module exit
-After settling, ask once (a new line in your reply, not a new turn) for the
-module question in two sentences: "Does cuPhoton find the two changes, and how
-would you know its answer is right?" Then `reveal("1.7")`.
+## Your turn `module-question` (module exit)
+The module question in two sentences: "Does cuPhoton find the two changes, and
+how would you know its answer is right?" Not a checkpoint: settle on any
+honest answer that names both halves (it finds them when the run is right; you
+know by checking each stage's evidence against what it should be). Add at most
+one sentence that connects it to what they did in this module. Then
+`reveal("1.7")`.

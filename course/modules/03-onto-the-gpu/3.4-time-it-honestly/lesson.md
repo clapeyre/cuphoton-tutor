@@ -21,6 +21,11 @@ title: Ten thousand times?
 prompt: Ask the tutor to run the colleague's script. Do you believe the number? Ask for any evidence or variation you like. Then say (a) what's wrong, if anything, (b) a speedup you'd stand behind and what it measures, and (c) what you'd ask any agent that reports a GPU speedup.
 :::
 
+:::your-turn module-question
+title: The module in two sentences
+prompt: How do you move the pipeline onto the GPU, prove that's where it ran, and say honestly how much faster it is? Two sentences, in your own words.
+:::
+
 :::closure
 found: The script never waited for the GPU. A GPU call returns as soon as its work is queued, so the stopwatch timed the queuing: under a millisecond. Synchronizing before stopping the clock gives about 22 ms, a speedup of about 400 for the reprojection alone, or about 300 counting the copies to and from the GPU. The warm-up and the median were right; the missing synchronize made the number thirty times too good.
 matters: Every speedup is a ratio of two boundaries, and both must be stated: one stage or the whole pipeline, with or without loading and copying, warm or cold, how big the input. cuPhoton's often-quoted 14,900× is for image loading, one operation, not the pipeline. And small inputs can be slower on a GPU: in 3.2, xFit took longer there than on the CPU. Ask for the boundaries before you repeat the number.

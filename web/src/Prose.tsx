@@ -11,12 +11,12 @@ function Maths({ tex, display }: { tex: string; display: boolean }) {
   return <span className={display ? "maths display" : "maths"} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-/** Inline markup: [[term]] or [[term|shown text]], [text](https://…), **bold**, *italic*, `code`,
+/** Inline markup: [[term]] or [[term|shown text]], [text](https://…), [text](#/1.4) (a lesson), **bold**, *italic*, `code`,
  *  $$display maths$$ and $inline maths$ (LaTeX; a $ followed by a space or digit-free text isn't maths). */
 export function Inline({ text, where }: { text: string; where: string }) {
   const ctx = useCtx();
   const out: ReactNode[] = [];
-  const re = /\[\[(.+?)\]\]|\[([^\]]+)\]\((https?:\/\/(?:[^()\s]|\([^()\s]*\))+)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\$\$(.+?)\$\$|\$(?=\S)([^$\n]+?)(?<=\S)\$(?!\d)/g;
+  const re = /\[\[(.+?)\]\]|\[([^\]]+)\]\((https?:\/\/(?:[^()\s]|\([^()\s]*\))+|#\/[\w.-]+)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\$\$(.+?)\$\$|\$(?=\S)([^$\n]+?)(?<=\S)\$(?!\d)/g;
   let i = 0, m: RegExpExecArray | null, n = 0;
   while ((m = re.exec(text))) {
     if (m.index > i) out.push(text.slice(i, m.index));
@@ -34,7 +34,9 @@ export function Inline({ text, where }: { text: string; where: string }) {
             }}>{label}</button>,
         );
       } else out.push(label);
-    } else if (m[2]) out.push(<a key={n++} href={m[3]} target="_blank" rel="noopener noreferrer" className="ext">{m[2]}</a>);
+    } else if (m[2]) out.push(m[3].startsWith("#/")
+      ? <a key={n++} href={m[3]} className="lesson-link" title={`Go back to lesson ${m[3].slice(2)}`}>{m[2]}</a>
+      : <a key={n++} href={m[3]} target="_blank" rel="noopener noreferrer" className="ext">{m[2]}</a>);
     else if (m[4]) out.push(<strong key={n++}>{m[4]}</strong>);
     else if (m[5]) out.push(<em key={n++}>{m[5]}</em>);
     else if (m[6]) out.push(<code key={n++}>{m[6]}</code>);

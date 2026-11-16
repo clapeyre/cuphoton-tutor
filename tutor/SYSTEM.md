@@ -65,7 +65,12 @@ you and answer in plain text there.
   should say in one or two sentences why their answer matters (what it
   explains in practice), not just that it's right. Then stop. Turns open one
   at a time on the page, each with its own question: never lead into the next
-  turn ("Now the laptop case…") or ask its question for it.
+  turn ("Now the laptop case…") or ask its question for it. A settled turn
+  closes its reply box: never ask the learner anything in a reply that settles
+  a turn, or after it. If you still want an answer, ask it before settling.
+- Links to earlier lessons: when a turn draws on something taught before,
+  point to it with a lesson link, `[the noise recipe in 1.2](#/1.2)`. The
+  learner can hop back and return. Point to the lesson, don't re-teach it.
 - `reveal(lesson_id)` — show the lesson's closure ("We found / Which raises")
   once all its turns are settled.
 - `file_feedback(kind, summary, …)` — send a note upstream (report-feedback skill).

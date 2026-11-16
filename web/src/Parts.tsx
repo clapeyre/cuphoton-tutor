@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { fmtTime, useCtx, useDraft } from "./ctx.tsx";
 import { Code } from "./Code.tsx";
 import { Inline, Typed } from "./Prose.tsx";
+import { ZoomImg } from "./Zoom.tsx";
 import type { FigureOnPage, Part, RunRecord } from "./types.ts";
 
 export function PartView({ part, idx }: { part: Part; idx: number }) {
@@ -53,7 +54,7 @@ function AuthoredFigure({ part }: { part: Extract<Part, { kind: "figure" }> }) {
   const ctx = useCtx();
   return (
     <figure>
-      <img className="plot" src={part.src} alt={part.alt} />
+      <ZoomImg className="plot" src={part.src} alt={part.alt} caption={part.title} />
       <figcaption>
         <span><strong>{part.title}.</strong> {part.caption}</span>
         <span className="capline">
@@ -75,7 +76,8 @@ export function ProducedFigure({ fig, compact }: { fig: FigureOnPage; compact?: 
   const r = fig.run;
   return (
     <figure>
-      <img className="plot" src={fig.src} alt={fig.title || fig.caption} style={compact ? { maxWidth: "100%" } : undefined} />
+      <ZoomImg className="plot" src={fig.src} alt={fig.title || fig.caption} caption={fig.title ? `${fig.title}. ${fig.caption ?? ""}` : fig.caption}
+        style={compact ? { maxWidth: "100%" } : undefined} />
       <figcaption>
         {(fig.title || fig.caption) && <span>{fig.title && <strong>{fig.title}. </strong>}{fig.caption}</span>}
         <span className="capline">
@@ -206,7 +208,7 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
         <div className="turn-body">
           {part.image && (
             <figure>
-              <img src={part.image} alt={part.imageCaption ?? part.title} />
+              <ZoomImg src={part.image} alt={part.imageCaption ?? part.title} caption={part.imageCaption} />
               {part.imageCaption && <figcaption>{part.imageCaption}</figcaption>}
             </figure>
           )}
