@@ -160,7 +160,7 @@ terms:
     avoid: ["fits (lower case, for the format)"]
 
   - term: injected (sample) source
-    definition: "A change written into the synthetic pair on purpose, so its true position and flux are known and every result can be checked against it."
+    definition: "A source written into images on purpose, so its true position and flux are known and results can be checked against it: the planted changes in a synthetic pair, or fake stars planted into real images for an injection test."
     source: course (docs/guide/first-difference.qmd, "Make a sample pair")
     introduce_at: "1.1"
     bridges: ["the answer key"]

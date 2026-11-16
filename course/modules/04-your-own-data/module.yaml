@@ -1,0 +1,22 @@
+id: "04"
+title: Your own data
+question: On real data, with no answer key, how do you adapt the pipeline and know whether to trust what it finds?
+needs: linux_gpu   # the GPU environment; data/ ships with the course (Pan-STARRS1, public)
+objectives: [O5, O3]
+misconceptions: [M-MASK-POLARITY, M-VARIANCE-COSMETIC, M-Z-SIGNIFICANCE, M-AGENT-SUCCESS]
+source: docs/adapting-workflows.md, docs/guide/first-difference.qmd ('Give each image a variance plane'), docs/uncertainty-quantification.md in the pinned checkout
+time: 60–90 min
+intro: |
+  Everything so far used cuPhoton's synthetic pair, where the changes were
+  planted and the answer known. This module uses real telescope data: two
+  nights of the Pan-STARRS1 survey, a year apart, on the spiral galaxy M101.
+  Something happened there in between.
+
+  Real data comes with its own conventions, and the recipes from Module 01 may
+  not apply. You'll find out what's different about these files, build an
+  honest noise model, run the chain on the GPU, sort what it finds into real
+  and bogus, and finally test the whole thing the only way you can without an
+  answer key: by planting fake stars and seeing how many come back.
+
+  Your own instrument will differ again. The point is the
+  questions you ask of any new data, not the details of this survey.

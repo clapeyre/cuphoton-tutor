@@ -23,6 +23,15 @@ anything parked from them is copied here with a pointer back.
 - **Videos v3 (kernel) and v4 (host/device memory)** have scripts but no
   scenes; v4 belongs in Module 03.
 
+- **Module 04 data source:** IRSA's ZTF image services were down on 16 Nov
+  2026 (HTTP 502 from IRSA), so the module uses Pan-STARRS1 instead. Its
+  nights are pre-aligned to a sky grid, so xRep has nothing to do there. A
+  ZTF pair (different pixel grids, a reference coadd) would exercise
+  alignment on real data too; worth revisiting when IRSA is reachable.
+- **Module 04 at compute centres:** learners' own instruments differ; the
+  lessons ask the right questions, but a "bring your own pair" path (the tutor
+  adapting the notes to unknown headers) is untested.
+
 ## App
 
 - **Prepare-ahead looks one lesson ahead only.** Jumping ahead still waits.
