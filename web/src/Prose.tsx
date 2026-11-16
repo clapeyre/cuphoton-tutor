@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { Code } from "./Code.tsx";
 import { heldUntil, lookup, useCtx } from "./ctx.tsx";
 
 /** Inline markup: [[term]] or [[term|shown text]], [text](https://…), **bold**, *italic*, `code`. */
@@ -92,12 +93,15 @@ export function TermPopover() {
 
 /** A tutor message: paragraphs with inline markup, and ``` code blocks. */
 export function MessageText({ text, where }: { text: string; where: string }) {
-  const blocks = text.split(/```[\w-]*\n?/);
+  // Split on ``` fences. Odd blocks are code; code block i was opened by fence i-1, whose tag is langs[i - 1].
+  const blocks: string[] = [], langs: string[] = [];
+  text.split(/```([\w-]*)\n?/).forEach((b, i) => (i % 2 === 1 ? langs.push(b) : blocks.push(b)));
+  const seq: { code: boolean; text: string; lang?: string }[] = blocks.map((b, i) => ({ code: i % 2 === 1, text: b, lang: langs[i - 1] }));
   return (
     <>
-      {blocks.map((b, i) => i % 2 === 1
-        ? <pre key={i} className="msg-code">{b.replace(/\n$/, "")}</pre>
-        : b.split(/\n\s*\n/).filter((p) => p.trim()).map((p, j) => (
+      {seq.map((b, i) => b.code
+        ? <Code key={i} text={b.text.replace(/\n$/, "")} lang={b.lang || undefined} className="msg-code" />
+        : b.text.split(/\n\s*\n/).filter((p) => p.trim()).map((p, j) => (
             <p key={`${i}-${j}`} className="msg-p"><Inline text={p.trim()} where={`${where}-${i}-${j}`} /></p>
           )))}
     </>

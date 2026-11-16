@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { fmtTime, useCtx } from "./ctx.tsx";
+import { Code } from "./Code.tsx";
 import { Inline, Typed } from "./Prose.tsx";
 import type { FigureOnPage, Part, RunRecord } from "./types.ts";
 
@@ -103,12 +104,12 @@ function RunRecordView({ r }: { r: RunRecord }) {
           {code && r.code.map((c) => (
             <div key={c.path} style={{ marginTop: 8 }}>
               <div className="h">{c.path}</div>
-              <pre>{c.text}</pre>
+              <Code text={c.text} lang={c.path} />
             </div>
           ))}
         </div>
       ) : (
-        <div><div className="h">Command</div><pre>{r.commands.join("\n")}</pre></div>
+        <div><div className="h">Command</div><Code text={r.commands.join("\n")} lang="bash" /></div>
       )}
     </div>
   );
@@ -169,7 +170,9 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
   const seenAtMount = useRef(log.length); // messages already there when the page opened don't type out
   const lastLearner = [...log].reverse().findIndex((m) => m.who === "learner");
   const streaming = ctx.state.activity.drafts?.[`turn:${ctx.lesson.id}/${part.id}`];
-  const waiting = !settled && !streaming && log.length > 0 && log[log.length - 1].who === "learner" && !!ctx.state.activity.main;
+  // The tutor is still on this turn (between messages, running code, making a figure): say so until it's done.
+  const working = ctx.state.activity.turn === `${ctx.lesson.id}/${part.id}` && !streaming;
+  const doing = { Running: "running code", "Placing a figure": "placing a figure", Reading: "reading" }[ctx.state.activity.main ?? ""] ?? "thinking";
   const exchanges = log.filter((m) => m.text).length;
   const send = () => {
     const t = draft.trim();
@@ -212,7 +215,7 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
                 {m.who === "tutor" ? <Typed text={m.text} where={`${where}-m${i}`} animate={i >= seenAtMount.current} /> : m.text}
               </div>
             ))}
-            {waiting && <span className="typing">The tutor is {ctx.state.activity.main === "Running" ? "running it" : "thinking"}</span>}
+            {working && <span className="typing" aria-live="polite">The tutor is {doing}</span>}
             {!settled && (
               <>
                 <label htmlFor={`in-${part.id}`} className="note">{lastLearner < 0 ? "Your answer" : "Your reply"}</label>

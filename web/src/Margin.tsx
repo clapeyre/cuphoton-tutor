@@ -48,7 +48,7 @@ export function Margin({ pointer, setPointer, onClose }: {
             {m.who === "tutor" ? <Typed text={m.text} where={`trip-${i}`} animate={i >= (seen.current?.n ?? 0)} /> : m.text}
           </div>
         ))}
-        {busy && !activity.drafts?.[`thread:${open.id}`] && <span className="typing">The tutor is answering</span>}
+        {busy && !activity.drafts?.[`thread:${open.id}`] && <span className="typing" aria-live="polite">The tutor is {open.messages.at(-1)?.who === "tutor" ? "still working" : "answering"}</span>}
         <label htmlFor="trip-in" className="note">Ask a follow-up</label>
         <textarea id="trip-in" className="input" rows={2} value={tripDraft} onChange={(e) => setTripDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) sendTrip(); }} />

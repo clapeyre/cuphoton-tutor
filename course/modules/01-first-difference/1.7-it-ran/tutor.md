@@ -1,9 +1,13 @@
 # 1.7 · tutor notes
 
 **Goal:** the learner catches a silent bug from evidence alone: swapped axes in
-`swapped_axes.py` (next to these notes; copy it to `work/01/` and run it from
-`work/01/`, where `sample/` is). Never show the learner the script, its
+`swapped_axes.py` (next to these notes). Never show the learner the script, its
 comments or this file before the turn is settled.
+
+## On open: nothing
+Don't run the script on open: the page tells the learner to ask for it, and
+anything you write on open is never shown. When they ask, copy it to
+`work/01/` and run it from there (where `sample/` is).
 
 ## Your turn `swapped` (checkpoint, the module's last)
 - Run it and report **only its printed output**. This overrides the cuphoton

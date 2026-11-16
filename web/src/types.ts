@@ -33,6 +33,6 @@ export interface PageState { current: string | null; lessons: Record<string, Les
 export interface ServerState {
   page: PageState;
   boxes: Record<string, "empty" | "half" | "full">;
-  activity: { main: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
+  activity: { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
   notes: { ts: string; kind: string; summary: string }[];
 }

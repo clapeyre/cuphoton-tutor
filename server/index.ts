@@ -165,7 +165,7 @@ async function askThread(t: Thread, q: string) {
   store.save();
   try {
     const a = await tutor.marginAsk(t, q.trim());
-    t.messages.push({ who: "tutor", text: a, at: Date.now() });
+    if (a) t.messages.push({ who: "tutor", text: a, at: Date.now() });
   } catch (e: any) {
     console.error("[margin]", e?.message ?? e);
     t.messages.push({ who: "tutor", text: "I couldn't reach the model just now. Ask again in a moment.", at: Date.now() });

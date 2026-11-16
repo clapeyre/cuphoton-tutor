@@ -15,7 +15,8 @@ import { Recorder } from "./recorder.ts";
 import { QUEUE, Store, type FigureOnPage, type Pointer, type Thread } from "./state.ts";
 
 // drafts: text the tutor is streaming right now, keyed "turn:<lesson>/<turn>" or "thread:<id>".
-export type Activity = { main: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
+// turn: the Your turn ("lesson/turn") the main thread is answering right now, so the page can say it is still working there.
+export type Activity = { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
 
 /** Text blocks of an assistant message so far (thinking and tool calls excluded). */
 const textOf = (m: any) => (Array.isArray(m?.content) ? m.content : []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("").trim();
@@ -33,7 +34,7 @@ export class Tutor {
   private promptLesson: string | null = null; // the lesson the current main prompt is about
   private streamTurn: string | null = null; // the turn whose conversation the current main prompt's text goes to
   recorder = new Recorder();
-  activity: Activity = { main: null, threads: {}, drafts: {} };
+  activity: Activity = { main: null, turn: null, threads: {}, drafts: {} };
   onActivity: () => void = () => {};
   onNote: (n: { kind: string; summary: string }) => void = () => {};
 
@@ -281,6 +282,7 @@ export class Tutor {
     const run = async () => {
       this.promptLesson = lessonId;
       this.streamTurn = streamTurn;
+      this.activity.turn = streamTurn;
       this.setMain(label);
       this.spokeIn.clear();
       const notes = this.pendingNotes.splice(0);
@@ -297,6 +299,7 @@ export class Tutor {
         after?.("");
       } finally {
         this.streamTurn = null;
+        this.activity.turn = null;
         this.activity.drafts = Object.fromEntries(Object.entries(this.activity.drafts).filter(([k]) => !k.startsWith("turn:")));
         this.foreground--;
         this.setMain(null);
@@ -403,9 +406,16 @@ export class Tutor {
       const sm = SessionManager.inMemory(config.learnerDir, undefined, header ? [header, ...entries] as any : (entries as any));
       s = await this.makeSession(sm, "margin");
       s.subscribe((ev: any) => {
+        const key = `thread:${thread.id}`;
         if (ev.type === "message_update" && ev.assistantMessageEvent?.type === "text_delta") {
-          this.activity.drafts[`thread:${thread.id}`] = textOf(ev.message);
+          this.activity.drafts[key] = textOf(ev.message);
           this.onActivity();
+        } else if (ev.type === "message_end" && ev.message?.role === "assistant") {
+          // Each finished message goes into the thread, so text written before a tool call isn't lost.
+          const said = textOf(ev.message);
+          delete this.activity.drafts[key];
+          if (said) { thread.messages.push({ who: "tutor", text: said, at: Date.now() }); this.store.save(); }
+          else this.onActivity();
         }
       });
       this.margins.set(thread.id, s);
@@ -424,8 +434,10 @@ export class Tutor {
     const images = await this.pointerImages(thread.about, thread.messages.length <= 1);
     this.activity.threads[thread.id] = true; this.onActivity();
     try {
+      const before = thread.messages.length;
       await s.prompt(`${head}\nLearner: ${question}`, images.length ? { images } : undefined);
-      return s.getLastAssistantText()?.trim() || "…";
+      // The answer was posted message by message as it was written; return text only if nothing was.
+      return thread.messages.length > before ? "" : s.getLastAssistantText()?.trim() || "…";
     } finally {
       delete this.activity.threads[thread.id];
       delete this.activity.drafts[`thread:${thread.id}`];

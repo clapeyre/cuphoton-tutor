@@ -63,12 +63,6 @@ export function App() {
   const glossary = useMemo(() => new Map((course?.glossary ?? []).map((g) => [g.key, g])), [course]);
   const lesson = lessonId ? lessons[lessonId] : undefined;
 
-  // Selecting text in the lesson sets the margin's pointer.
-  const onMouseUp = () => {
-    const sel = window.getSelection()?.toString().trim();
-    if (sel && sel.length > 2 && sel.length < 400) setPointer({ kind: "text", label: `“${sel.length > 90 ? sel.slice(0, 90) + "…" : sel}”` });
-  };
-
   const askAbout = useCallback((p: Pointer | null, opts?: { video?: HTMLVideoElement }) => {
     const v = opts?.video;
     place.current = { y: window.scrollY, video: v, t: v?.currentTime, playing: v ? !v.paused : false };
@@ -142,7 +136,7 @@ export function App() {
 
         {ctx && lesson ? (
           <C.Provider value={ctx}>
-            <main className="lesson" onMouseUp={onMouseUp}>
+            <main className="lesson">
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <div className="crumb">Module {module?.id} · {module?.title} · Lesson {lesson.id}</div>
                 <h1>{lesson.title}</h1>
