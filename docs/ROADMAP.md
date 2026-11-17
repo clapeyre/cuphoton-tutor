@@ -24,7 +24,7 @@ pinned commit) has 15 chapters. Where the course stands:
 | 14 Scale out | 6.1 map | out of scope by decision (below) |
 | 15 Monitor (xLens) | 5.4 | taught |
 
-## 1. Module 04 changes (built 17 Nov; 4.5 and 4.6 walked 17 Nov, 3.3 not yet)
+## 1. Module 04 changes (built and walked 17 Nov)
 
 3.3 made honest (xDR built by `tools/setup-gpu-env.sh`; the compression
 trap), 4.5 (a deeper reference: stacking), 4.6 (teach a classifier: xScan;
@@ -48,21 +48,6 @@ Each follows the course's pattern: a short synthetic run with a known answer
 trap found by testing, then "your data", and a "Where next" link from 6.1.
 Prefer the guide's own examples and data. Video only if a mechanism needs
 motion (`media/VIDEOS.md`).
-
-## 3. Agent-first data processing, front and centre (before showing)
-
-The author's view after 4.6 (walkthrough 5, 17 Nov): the course's main
-message is "stop opening your editor; do in 20 minutes with your agent what
-took a week", and cuPhoton's speed is the smaller part (`WHY.md`). Today the
-course shows this without ever saying it. To decide with the author:
-
-- where it's said: the course's opening (Module 00's intro), a line in 4.6's
-  closure (one conversation took a classifier from labels to a fixed,
-  retested model), and 6.1, where the learner plans their own work;
-- how strongly: the course is NVIDIA's cuPhoton training, so the message
-  frames the library rather than replacing it;
-- what the learner does: e.g. 6.1 asks them to plan their next analysis as
-  a conversation, not a script.
 
 ## Decided out of scope
 
