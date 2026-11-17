@@ -104,6 +104,25 @@ planned in `docs/EXPANSION-PLAN.md`; coverage status is in `docs/ROADMAP.md`.
 
 ## Upstream (cuPhoton)
 
+- **xRay: the detector command is slower than a NumPy loop here** (found
+  building 7.3). `detector-artifacts` took 13–17 s for 2,048 row fits
+  (256 × 128 detector, 97 frames) and 102 s for 16,384 (512 × 512) on an
+  RTX 4070 Ti SUPER, about 6 ms per row; `linear_prediction_numpy` takes
+  about 1 ms per 95-sample trace on the CPU. The guide makes no speed
+  claim, and the course makes none. Worth profiling (HDF5 read? per-tile
+  Python?) and reporting.
+- **xRay: excluded rows still feed their neighbours.** With `--exclude-y`
+  the dead rows are skipped, but rows within `--integrate` of them still sum
+  their zeros (amplitudes 55–87% of typical in 7.3). Without it, dead rows
+  come back status 1 with their neighbours' frequency. Neither is in the
+  guide.
+- **xImage: photometry on the scene depends on when it stopped.** On the
+  M101 nights (8.3), fakes measured 1.15× planted at the default stop, 1.08×
+  at 300 steps; with a constant pedestal added to the sky-subtracted frames,
+  1.06× and 0.85×. The guide says the run returns no variance or effective
+  PSF; a note on calibrating fluxes (and on sky-subtracted inputs to a
+  nonnegative scene) would help.
+
 - **xBeam: the radio job's delay sign isn't documented** (found building
   7.2). A station's `delay_coefficients_s` is how much earlier it hears the
   wavefront than the reference (DiFX's convention, measured with a known

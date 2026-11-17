@@ -18,10 +18,10 @@ pinned commit) has 15 chapters. Where the course stands:
 | 8 Classify (xScan) | 4.6 | taught: train, evaluate, score, test unseen bogus |
 | 9 Transient chain | Module 05 | taught |
 | 10 Uncertainty | 4.4, 5.3 | taught |
-| 11 Reconstruct (xImage) | 6.1 map | **next: component track** |
-| 12 X-ray traces (xRay) | 6.1 map | **next: component track** |
-| 13 Correlate (xBeam) | Module 07 (track) | taught: time series, radio jobs, real data (GW150914) |
-| 14 Scale out | 6.1 map | out of scope by decision (below) |
+| 11 Reconstruct (xImage) | Module 08 (track) | taught: a known scene, faults validation misses, the M101 nights |
+| 12 X-ray traces (xRay) | Module 07 (track) | taught: one trace, a lost mode and uneven steps, the detector on the GPU |
+| 13 Correlate (xBeam) | Module 06 (track) | taught: time series, radio jobs, real data (GW150914) |
+| 14 Scale out | 9.1 map | out of scope by decision (below) |
 | 15 Monitor (xLens) | 5.4 | taught |
 
 ## 1. Module 04 changes (built and walked 17 Nov)
@@ -30,31 +30,24 @@ pinned commit) has 15 chapters. Where the course stands:
 trap), 4.5 (a deeper reference: stacking), 4.6 (teach a classifier: xScan;
 the module exit moved here from 4.4). Notes go in `docs/walkthrough-7.md`.
 
-## 2. Component tracks (required before showing the course)
+## 2. Component tracks (built 17 Nov; Module 06 walked)
 
-6.1 ("Where next") hasn't been walked yet: it's open-ended and will read
-better once the tracks exist, so walk it after them.
+The tracks follow the image modules in stride (walkthrough 8): Module 06
+xBeam "Two receivers, one signal" (walked 17 Nov: "good"), Module 07 xRay
+"Pump and probe", Module 08 xImage "Many frames, one scene", each with a
+video. Each follows the course's pattern: a known answer first, the
+receipt, the component's silent-error trap found by testing, then real or
+realistic data.
 
-One optional module per component, in this order:
+## 3. Walk what's left
 
-1. **xBeam**: built 17 Nov as Module 07, "Two receivers, one signal"
-   (7.1 a known delay; 7.2 three radio stations, VDIF to visibilities on the
-   GPU, a wrong clock found from the phase slopes; 7.3 GW150914 in the two
-   LIGO detectors, whitening and a background). Video v7 opens it (made
-   after the first look at the intro). Walkthrough pending
-   (`docs/walkthrough-8.md`).
-2. **xRay** (ch. 12: time-resolved X-ray detector traces).
-3. **xImage** (ch. 11: one sharp image from many frames).
-
-Each follows the course's pattern: a short synthetic run with a known answer
-(for xBeam, a known delay), its receipt, the component's own silent-error
-trap found by testing, then "your data", and a "Where next" link from 6.1.
-Prefer the guide's own examples and data. Video only if a mechanism needs
-motion (`media/VIDEOS.md`).
+- Modules 07 and 08 (`docs/walkthrough-9.md`).
+- 9.1 "Where next", now the course's last module: the full map and a
+  conversation about the learner's own work. Walk it after 07 and 08.
 
 ## Decided out of scope
 
 - **Scale-out (guide ch. 14).** Not taught (17 Nov). By the time a learner
   deploys to many GPUs they know the library well enough to work from the
-  documentation with their agent, on their own cluster. 6.1's map points to
+  documentation with their agent, on their own cluster. 9.1's map points to
   the chapter; 3.4's timing habits carry over.
