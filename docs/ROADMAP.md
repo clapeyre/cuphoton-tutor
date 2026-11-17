@@ -40,9 +40,9 @@ One optional module per component, in this order:
 1. **xBeam**: built 17 Nov as Module 07, "Two receivers, one signal"
    (7.1 a known delay; 7.2 three radio stations, VDIF to visibilities on the
    GPU, a wrong clock found from the phase slopes; 7.3 GW150914 in the two
-   LIGO detectors, whitening and a background). Walkthrough pending; no
-   video yet (candidate: one signal sliding past the other, the
-   correlation building up).
+   LIGO detectors, whitening and a background). Video v7 opens it (made
+   after the first look at the intro). Walkthrough pending
+   (`docs/walkthrough-8.md`).
 2. **xRay** (ch. 12: time-resolved X-ray detector traces).
 3. **xImage** (ch. 11: one sharp image from many frames).
 
