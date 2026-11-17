@@ -3,6 +3,7 @@ id: "6.1"
 title: A map of cuPhoton
 question: Which part of cuPhoton takes your data, and what would you check first?
 terms: []
+guide: [index]
 ---
 
 Each part of cuPhoton takes a particular kind of data. The guide's chapters

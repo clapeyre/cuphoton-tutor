@@ -23,6 +23,7 @@ export interface Lesson {
   title: string;
   question: string;
   terms: string[];
+  guide: { title: string; url: string }[]; // the user guide's pages this lesson draws on
   parts: Part[];
   closure: { found: string; matters?: string; raises: string } | null;
   intro?: string[]; // the module introduction, on the module's first lesson only
@@ -53,6 +54,7 @@ export interface GlossaryEntry {
 export interface Course {
   title: string;
   commit: string;
+  guideUrl: string;
   modules: Module[];
   lessons: Map<string, Lesson>;
   order: string[]; // lesson ids in reading order
@@ -163,6 +165,13 @@ function parseBody(body: string, lessonDir: string, videos: Course["videos"], le
   return { parts, closure };
 }
 
+// A guide page by its file name (read-fits): its title from the pinned checkout's docs/guide, and its URL.
+function guidePage(base: string, name: string) {
+  const f = path.join(config.cuphotonDir, "docs", "guide", `${name}.qmd`);
+  const t = fs.existsSync(f) ? fs.readFileSync(f, "utf8").match(/^# (.+?)(?:\s*\{#[^}]*\})?\s*$/m)?.[1] : undefined;
+  return { title: t ?? name, url: `${base}${name}.html` };
+}
+
 export function loadCourse(): Course {
   const cy = YAML.parse(fs.readFileSync(path.join(config.courseDir, "course.yaml"), "utf8"));
   const videosFile = path.join(config.mediaDir, "videos.yaml");
@@ -185,7 +194,7 @@ export function loadCourse(): Course {
       const notesFile = path.join(dir, "tutor.md");
       const lesson: Lesson = {
         id, module: module.id, slug: ld, dir, title: meta.title ?? ld, question: meta.question ?? "",
-        terms: (meta.terms ?? []).map(String), parts, closure,
+        terms: (meta.terms ?? []).map(String), guide: (meta.guide ?? []).map((g: string) => guidePage(cy.cuphoton?.guide ?? "", String(g))), parts, closure,
         turnIds: parts.flatMap((p) => (p.kind === "turn" ? [p.id] : [])),
         slotIds: parts.flatMap((p) => (p.kind === "slot" ? [p.id] : [])),
         source, tutorNotes: fs.existsSync(notesFile) ? fs.readFileSync(notesFile, "utf8") : "",
@@ -198,7 +207,7 @@ export function loadCourse(): Course {
     }
     modules.push(module);
   }
-  return { title: cy.title, commit: cy.cuphoton?.commit ?? "", modules, lessons, order, glossary: loadGlossary(), chain: cy.chain ?? [], videos };
+  return { title: cy.title, commit: cy.cuphoton?.commit ?? "", guideUrl: cy.cuphoton?.guide ?? "", modules, lessons, order, glossary: loadGlossary(), chain: cy.chain ?? [], videos };
 }
 
 // read_more: "Label | https://…" — one outside page that explains the idea in more depth.

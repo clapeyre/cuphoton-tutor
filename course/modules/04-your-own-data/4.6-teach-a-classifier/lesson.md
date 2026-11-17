@@ -3,6 +3,7 @@ id: "4.6"
 title: Teach a classifier
 question: Can a classifier you train sort the candidates for you, and how would you know what it gets wrong?
 terms: [real / bogus, classifier score, training set]
+guide: [classify]
 ---
 
 In 4.3 you sorted four candidates by looking: is there a source in the

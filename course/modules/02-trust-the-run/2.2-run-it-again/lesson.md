@@ -3,6 +3,7 @@ id: "2.2"
 title: Run it again
 question: What happens if you run exactly the same command twice?
 terms: [artifact]
+guide: [concepts]
 ---
 
 Agents rerun things all the time: after a tweak, after an interruption, or

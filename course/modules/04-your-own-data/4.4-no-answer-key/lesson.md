@@ -3,6 +3,7 @@ id: "4.4"
 title: No answer key
 question: Without an answer key, how faint a change can this pipeline find, and can you trust its error bars?
 terms: [injected source]
+guide: [uncertainty]
 ---
 
 On the synthetic pair you checked every answer against what was put in. On

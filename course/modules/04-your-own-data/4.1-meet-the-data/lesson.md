@@ -3,6 +3,7 @@ id: "4.1"
 title: Meet the data
 question: What's different about real survey data, and what does it change in the pipeline?
 terms: [mask, variance plane, PSF]
+guide: [read-fits]
 ---
 
 Our data comes from **Pan-STARRS1**, a 1.8 m survey telescope in Hawaii that

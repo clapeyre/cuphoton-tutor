@@ -3,6 +3,7 @@ id: "5.4"
 title: Watch the run
 question: How would you catch, on every image of a long run, the problems you found by hand on one?
 terms: []
+guide: [monitor]
 ---
 
 A survey runs this chain on thousands of images a night, and nobody reads

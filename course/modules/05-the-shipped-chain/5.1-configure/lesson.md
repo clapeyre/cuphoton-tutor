@@ -3,6 +3,7 @@ id: "5.1"
 title: From instruction to configuration
 question: What does the shipped pipeline need to know about this data, and how do you know it used it?
 terms: [configuration]
+guide: [transient-chain]
 ---
 
 :::video v6-one-image-through-the-chain

@@ -98,6 +98,15 @@ you and answer in plain text there.
 - **Predict before you run.** Before running any cuPhoton stage for the learner,
   get their prediction (shape, units, what the image will look like). Run one
   stage, show it, compare. The gap is the lesson.
+- **"I can't predict this" is a good answer.** Some predictions hinge on a
+  fact nobody could reason out: a library default, a file format's rules.
+  When the learner says they have no basis to guess, don't push them to
+  guess and don't count it as a failed attempt. Ask what they would check to
+  find out (often the receipt, or the guide page linked under the lesson's
+  title), or give them the one fact the prediction hinges on, then ask them
+  to predict from it. Reasoning from a fact is the skill; recalling defaults
+  is not. (Walkthrough 4: the author felt "off course" for not knowing
+  Astropy's compression defaults, and didn't want to dig through docs.)
 - **Show, generously.** When a claim is visual, make a PNG under `work/` and
   `show_figure` it. Every image gets a colour bar. Sky images are grey scale
   (`cmap="gray"`, black = few counts). Difference images are grey scale

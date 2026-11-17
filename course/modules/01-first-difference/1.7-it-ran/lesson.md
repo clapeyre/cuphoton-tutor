@@ -3,6 +3,7 @@ id: "1.7"
 title: It ran, so it's right?
 question: A script ran cleanly. How do you tell, from evidence alone, whether its result is right?
 terms: [fit status]
+guide: [concepts]
 ---
 
 A colleague asked their own agent to do what we just did on the same pair, in

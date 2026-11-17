@@ -3,6 +3,7 @@ id: "3.4"
 title: Time it honestly
 question: How much faster is the GPU, really, and what exactly did you measure?
 terms: [synchronize, warm-up, speedup]
+guide: [concepts]
 ---
 
 Speedups are the most quoted numbers about GPUs and the easiest to get wrong.

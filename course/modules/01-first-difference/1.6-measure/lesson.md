@@ -3,6 +3,7 @@ id: "1.6"
 title: Measure (xFit)
 question: How much did each candidate change, and with what error bar?
 terms: [stamp, amplitude, fit status]
+guide: [measure]
 ---
 
 :::chain hi=xFit

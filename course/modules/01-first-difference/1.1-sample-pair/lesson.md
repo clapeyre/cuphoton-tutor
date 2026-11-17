@@ -3,6 +3,7 @@ id: "1.1"
 title: The sample pair
 question: What will we test the pipeline on, and how will we know its answer is right?
 terms: [FITS file, injected source, flux]
+guide: [first-difference]
 ---
 
 To trust a pipeline, first run it on data where you already know the answer.

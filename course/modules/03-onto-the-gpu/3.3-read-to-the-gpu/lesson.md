@@ -3,6 +3,7 @@ id: "3.3"
 title: Read straight to the GPU
 question: Can a FITS file go straight onto the GPU, and how would you know if it didn't?
 terms: [FITS reader]
+guide: [read-fits]
 ---
 
 In 2.4 you saw that reading a file and computing on it are separate choices,
@@ -22,7 +23,7 @@ prompt: The tutor will read the sample target three ways: with device=True and r
 
 :::your-turn compressed
 title: The same image, compressed
-prompt: Survey archives usually store their images compressed. The tutor will save the sample target twice more, compressed with Astropy's default settings and compressed losslessly with GZIP_2, then read each with reader auto and device=True. For each, predict which reader runs, and whether the pixels come back exactly as in the original.
+prompt: Survey archives usually store their images compressed. The tutor will save the sample target twice more, compressed with Astropy's default settings and compressed losslessly with GZIP_2, then read each with reader auto and device=True. For each, predict which reader runs, and whether the pixels come back exactly as in the original. If you have nothing to go on for a file, say what you would look at to find out.
 :::
 
 :::closure

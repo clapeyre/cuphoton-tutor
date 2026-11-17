@@ -3,6 +3,7 @@ id: "3.1"
 title: Why not the GPU?
 question: This machine has a GPU. Why did every run so far use the CPU?
 terms: [fallback]
+guide: [concepts]
 ---
 
 :::video v4-where-data-lives

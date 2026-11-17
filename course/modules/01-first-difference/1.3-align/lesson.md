@@ -3,6 +3,7 @@ id: "1.3"
 title: Align (xRep)
 question: How do we put both images on one grid, and which image moves?
 terms: [WCS, reprojection, mask]
+guide: [align]
 ---
 
 :::chain hi=xRep

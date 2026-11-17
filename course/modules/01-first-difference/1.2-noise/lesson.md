@@ -3,6 +3,7 @@ id: "1.2"
 title: How noisy is each pixel?
 question: How noisy is each pixel, and how do we tell cuPhoton?
 terms: [gain, variance plane, error bar]
+guide: [concepts]
 ---
 
 In 0.1 the noise on a pixel that expects N counts was about √N, so its

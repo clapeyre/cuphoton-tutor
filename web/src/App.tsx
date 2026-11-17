@@ -133,6 +133,7 @@ export function App() {
             </div>
           ))}
         </nav>
+        {course.guideUrl && <a className="ext guide-link" href={course.guideUrl} target="_blank" rel="noopener noreferrer">cuPhoton user guide</a>}
         <button type="button" className="btn tertiary small files-btn" aria-expanded={filesOpen}
           onClick={() => filesOpen ? setFilesOpen(false) : openFile(filesDir === moduleId ? filesPath : null)}>
           Files
@@ -173,6 +174,12 @@ export function App() {
                   <div className="keyterms">
                     <span className="note">Key terms</span>
                     <Inline where="terms" text={lesson.terms.map((t) => `[[${t}${t.startsWith("@") && !t.includes("|") ? "|" + (lookup(glossary, t)?.label ?? t) : ""}]]`).join("  ")} />
+                  </div>
+                )}
+                {!!lesson.guide?.length && (
+                  <div className="keyterms">
+                    <span className="note">In the user guide</span>
+                    {lesson.guide.map((g) => <a key={g.url} className="ext" href={g.url} target="_blank" rel="noopener noreferrer">{g.title}</a>)}
                   </div>
                 )}
               </div>

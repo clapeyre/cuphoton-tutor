@@ -3,6 +3,7 @@ id: "2.3"
 title: Let it choose, or name it?
 question: What does cuPhoton do when you let it pick the backend, and when you name one it can't use?
 terms: [auto, fallback]
+guide: [concepts]
 ---
 
 Most cuPhoton calls take a `backend` argument. Its default is [[auto]]: try the

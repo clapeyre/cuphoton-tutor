@@ -3,6 +3,7 @@ id: "2.1"
 title: What did the run record?
 question: When a run finishes, what does it tell you about itself?
 terms: [backend, device, receipt, artifact, profile]
+guide: [concepts]
 ---
 
 :::video v2-it-ran

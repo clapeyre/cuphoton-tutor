@@ -3,6 +3,7 @@ id: "2.5"
 title: Which run didn't run where we meant?
 question: From receipts alone, can you tell which run quietly fell back?
 terms: [fallback, profile]
+guide: [concepts]
 ---
 
 Three runs of the same quickstarts, by three different people. One was a

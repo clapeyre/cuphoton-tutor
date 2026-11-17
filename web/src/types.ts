@@ -9,12 +9,13 @@ export type Part =
   | { kind: "ref"; text: string; label: string; video?: string; videoTitle?: string };
 
 export interface Lesson {
-  id: string; module: string; slug: string; title: string; question: string; terms: string[];
+  id: string; module: string; slug: string; title: string; question: string; terms: string[]; guide?: { title: string; url: string }[];
   parts: Part[]; closure: { found: string; matters?: string; raises: string } | null; intro?: string[]; turnIds: string[]; slotIds: string[];
 }
 export interface GlossaryEntry { key: string; label: string; definition: string; holdUntil?: string; concept?: boolean; link?: { url: string; label: string } }
 export interface Course {
   title: string;
+  guideUrl?: string;
   modules: { id: string; title: string; lessons: { id: string; title: string; turns: number }[] }[];
   chain: { id: string; does: string; definition: string }[];
   glossary: GlossaryEntry[];

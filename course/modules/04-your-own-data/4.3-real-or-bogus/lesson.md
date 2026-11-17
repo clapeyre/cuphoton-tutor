@@ -3,6 +3,7 @@ id: "4.3"
 title: Real or bogus?
 question: Which of the spots that passed the threshold are real changes in the sky?
 terms: [real / bogus, candidate, kernel mismatch]
+guide: [subtract]
 ---
 
 Every spot above the threshold is a [[candidate]]. On real data most

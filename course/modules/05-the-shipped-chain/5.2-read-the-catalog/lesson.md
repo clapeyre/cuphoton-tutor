@@ -3,6 +3,7 @@ id: "5.2"
 title: Read the catalog
 question: Does the shipped chain find what you found by hand, and what does each row really say?
 terms: [catalog, quality flags]
+guide: [transient-chain]
 ---
 
 The chain's answer is a [[catalog]]: one row per candidate, with about a

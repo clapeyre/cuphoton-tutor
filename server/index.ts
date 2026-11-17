@@ -98,7 +98,7 @@ const server = http.createServer((req, res) => {
   const p = url.pathname;
   const json = (o: unknown, code = 200) => { res.writeHead(code, { "content-type": "application/json" }).end(JSON.stringify(o)); };
   if (p === "/api/course") {
-    return json({ title: course.title, modules: courseOutline(course), chain: course.chain, glossary: [...course.glossary.values()], order: course.order, videos: course.videos });
+    return json({ title: course.title, guideUrl: course.guideUrl, modules: courseOutline(course), chain: course.chain, glossary: [...course.glossary.values()], order: course.order, videos: course.videos });
   }
   if (p.startsWith("/api/lesson/")) {
     const l = course.lessons.get(decodeURIComponent(p.slice("/api/lesson/".length)));

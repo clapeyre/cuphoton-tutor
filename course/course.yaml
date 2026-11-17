@@ -8,6 +8,8 @@ cuphoton:
   # The lessons were written against this commit. Bump deliberately, after
   # re-running every unit's runs.
   commit: ff4d26018eb4a5fed391d196ebe424736c6498e5
+  # The published user guide (docs/guide/ at that commit); lessons link pages by file name (`guide:`).
+  guide: https://nvidia.github.io/cuPhoton/main/
 
 objectives:
   - id: O1

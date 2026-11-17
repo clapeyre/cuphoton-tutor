@@ -3,6 +3,7 @@ id: "1.4"
 title: Match and subtract (xPois)
 question: How do we make the reference look like the target, so that subtracting leaves only the real changes?
 terms: [kernel, kernel mismatch, chi2/dof]
+guide: [subtract]
 ---
 
 :::video v3-kernel

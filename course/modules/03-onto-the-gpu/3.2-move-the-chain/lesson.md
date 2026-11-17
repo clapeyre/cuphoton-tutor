@@ -3,6 +3,7 @@ id: "3.2"
 title: Move the chain to the GPU
 question: What changes when the Module 01 chain runs on the GPU, and where does each result end up?
 terms: [host memory, device memory]
+guide: [concepts]
 ---
 
 A GPU has its own memory, separate from the computer's main memory. In GPU

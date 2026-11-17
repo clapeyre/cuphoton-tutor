@@ -3,6 +3,7 @@ id: "4.5"
 title: A deeper reference?
 question: Would stacking more nights into the reference let you see fainter changes?
 terms: [stack, seeing]
+guide: [align]
 ---
 
 Your reference is one 40-second exposure. Pan-STARRS1 looked at this patch of

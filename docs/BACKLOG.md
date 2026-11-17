@@ -7,6 +7,12 @@ anything parked from them is copied here with a pointer back.
 
 ## Course content
 
+- **Predictions that hinge on trivia** (walkthrough 4, 3.3, second pass).
+  Some Your-turn predictions can't be reasoned out (a library default, a
+  format's rules). The tutor now treats "I can't tell, I'd check X" as a
+  good answer, and 3.3's prompt says so. Not done: go through every
+  prediction prompt and either give the fact it hinges on in the lesson
+  text, or turn it into "what would you check?".
 - **Module 02 is tied to today's CLI behaviour** (walkthrough 3, "Overall").
   Several lessons rest on details that could change in any cuPhoton release:
   the runner refusing an existing directory, the stale summary on stdout, the

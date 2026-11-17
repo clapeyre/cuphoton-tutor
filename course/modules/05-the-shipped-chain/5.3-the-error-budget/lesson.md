@@ -3,6 +3,7 @@ id: "5.3"
 title: The error budget
 question: The chain quotes an error bar built from several terms. Is it right on this data, and is the value it's attached to?
 terms: [error budget, pull]
+guide: [uncertainty]
 ---
 
 :::video v5-why-the-sum-wobbles

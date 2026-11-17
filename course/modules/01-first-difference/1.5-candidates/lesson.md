@@ -3,6 +3,7 @@ id: "1.5"
 title: Find the candidates
 question: Which leftovers stand out from the noise?
 terms: [standardized residual, threshold, hotspot]
+guide: [subtract]
 ---
 
 :::chain hi=xPois

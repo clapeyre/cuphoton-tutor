@@ -3,6 +3,7 @@ id: "2.6"
 title: Your standing instruction
 question: What should every agent that runs cuPhoton for you check, every time?
 terms: []
+guide: [concepts]
 ---
 
 An agent will do what you ask, report "done", and move on. In this module and

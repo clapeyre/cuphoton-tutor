@@ -240,3 +240,5 @@ pre.files-code { margin: 0; flex: 1; min-width: 0; padding: 8px 10px; border-rad
 .msg.learner .who { color: var(--text-color-brand); text-align: right; }
 .msg.tutor { border-radius: 12px 12px 12px 4px; }
 .card.trip .msg.learner { max-width: 92%; }
+.guide-link { margin-left: auto; font-size: 14px; }
+.guide-link + .files-btn { margin-left: 0; }

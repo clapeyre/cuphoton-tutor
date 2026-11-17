@@ -34,7 +34,13 @@ False, use the facts under "Without xDR" and say why it's missing.
 - Settle.
 
 ## Your turn `compressed` (prediction, then reading)
-- Collect the two predictions, then run the second part.
+- Collect the two predictions, then run the second part. Most learners
+  can't know Astropy's default compression or xDR's format rules, and
+  shouldn't have to (walkthrough 4). "I don't know" plus what they'd check
+  is a full answer: the receipt's `reader` and `fallback_reason`,
+  `inspect_fits_images` before reading, and comparing pixels with the
+  original. If they have nothing, give one fact ("compression can be lossless
+  or lossy, and xDR decodes only some formats") and ask again.
 - Facts (the sample target: 267,840 bytes, sky noise 8.2 counts):
   ```
   astropy default: 77,760 bytes, RICE_1; xdr_unsupported_reason 'compression RICE_1 requires Astropy'

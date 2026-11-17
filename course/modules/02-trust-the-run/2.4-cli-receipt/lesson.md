@@ -3,6 +3,7 @@ id: "2.4"
 title: A command-line receipt
 question: What does a command-line run record, and which choices are separate?
 terms: [receipt]
+guide: [concepts]
 ---
 
 Every cuPhoton stage also runs from the command line, and each command-line run

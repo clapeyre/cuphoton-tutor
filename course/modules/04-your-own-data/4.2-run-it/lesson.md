@@ -3,6 +3,7 @@ id: "4.2"
 title: Run it
 question: Run the chain on the real pair. What comes out?
 terms: [difference image, hotspot]
+guide: [first-difference]
 ---
 
 You've decided how to handle the grid, the noise and the masks. Now direct
