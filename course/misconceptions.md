@@ -110,6 +110,15 @@ learners; prefer them. Harvest more with `.claude/commands/harvest-misconception
 - **Docs:** docs/components/xdr.md#install; docs/quickstarts.md.
 - **Modules:** 03
 
+### M-COMPRESSED-SAME: "A compressed FITS file is the same image, read the same way."
+- **Truth:** Astropy's default compression (RICE_1) rounds floating-point
+  pixels first, so the pixels change slightly, and xDR can't decode it, so
+  `reader="auto"` quietly falls back to Astropy on the CPU. Lossless GZIP_1 or
+  GZIP_2 with `quantize_level=0` keeps both.
+- **Docs:** docs/guide/read-fits.qmd, "Write files xDR can decode".
+- **Probe:** "Which reader would decode your survey's files, and how would you check before reading a pixel?"
+- **Modules:** 03
+
 ### M-OUTDIR: "Rerunning fails, so something's broken."
 - **Truth:** Runs require a fresh output directory by design, to preserve results.
 - **Docs:** docs/troubleshooting.md, "A run directory already exists".
@@ -167,6 +176,34 @@ learners; prefer them. Harvest more with `.claude/commands/harvest-misconception
 - **Docs:** docs/guide/uncertainty.qmd (injection and repeat tests: "A bias that
   every exposure shares passes the test unseen").
 - **Modules:** 05
+
+### M-STACK-DEPTH: "Stacking N references makes the difference √N deeper."
+- **Truth:** The difference's noise is the target's plus the reference's
+  blurred by the matching kernel, which averages it down. When the target is
+  the noisier image (a single night against a single night, as in 4.5, where
+  the reference supplied 5% of the variance), a deeper reference gains almost
+  nothing. Stacking can also add area and, with nights blurrier than the
+  target, mismatch residues.
+- **Docs:** docs/guide/align.qmd ("Stack several images on one grid").
+- **Probe:** "Where does the noise in the difference come from, and how much of it is the reference's?"
+- **Modules:** 04
+
+### M-TEST-SCORE-COVERS: "A perfect test score means the classifier will sort my candidates."
+- **Truth:** The test split holds the same kinds of candidates as training. A
+  kind that was never in the training set (in 4.6: cosmic rays, satellite
+  trails) gets an arbitrary score, often "real". Plant the kinds you worry
+  about and score them.
+- **Docs:** docs/guide/classify.qmd ("Evaluate on the test split", "What is survey-specific").
+- **Probe:** "What kinds of candidates were in its test split, and what kinds will the next night have?"
+- **Modules:** 04
+
+### M-SCORE-PROBABILITY: "A score of 0.99 means 99% likely to be real."
+- **Truth:** xScan's score is a sigmoid output, not calibrated. It ranks
+  candidates like the training set's real class; how many of those that pass
+  a threshold are real depends on how common real ones are on the night.
+- **Docs:** docs/guide/classify.qmd (opening paragraphs).
+- **Probe:** "If one candidate in a thousand is real, how many bogus ones pass a threshold that lets 1% of bogus through?"
+- **Modules:** 04
 
 ## Working through an agent
 

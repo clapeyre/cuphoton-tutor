@@ -1,7 +1,8 @@
 # 4.4 · tutor notes
 
 **Goal:** the learner designs and reads an injection-recovery test: detection
-limit, flux bias, and whether error bars are honest. Module 04's exit (O5).
+limit, flux bias, and whether error bars are honest. 4.5 and 4.6 reuse
+the test.
 
 ## Your turn `design`
 - Collect their design: what (point sources with the PSF), flux levels (a
@@ -81,15 +82,4 @@ limit, flux bias, and whether error bars are honest. Module 04's exit (O5).
   can't hold; (c) work on unresampled exposures, which needs alignment
   ([1.3](#/1.3)) back in the chain. It's not "smooth the variance map":
   the map's values are fine; what's missing is how pixels relate.
-
-## Your turn `next-night` (module exit)
-- Their instruction for an agent processing the next night of this survey.
-  Look for: data checks (grid/WCS, sky-subtracted or not, units, header
-  values not trusted blindly, e.g. the zero point), the noise model (survey
-  variance map, masked variances excluded, not set to 0), masks (which bits),
-  the run (whole chain, GPU, receipts), the evidence back (overview figure,
-  candidate stamps, z, fluxes with errors, the receipt) and an injection test
-  with the pull-scatter check and the error-bar correction it implies.
-- One question at most for a missing piece that matters; don't make them
-  polish wording. Then compare with their 2.6 list in one or two sentences:
-  what real data added. Settle, then `reveal("4.4")`.
+- Settle, then `reveal("4.4")`.

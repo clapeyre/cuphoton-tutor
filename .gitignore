@@ -22,3 +22,6 @@ media/renders/*/*.srt
 media/renders/*/*.png
 media/**/__pycache__/
 .envs/
+
+# cuFile (used by xDR) writes this into the working directory
+cufile.log

@@ -54,9 +54,13 @@ drives it. It names no trap: don't add one when discussing it.
   - `uq.terms: ["fit"]`; `uq.excluded`: corr, kfit, kmatch all "no PSF
     width"; mis "no misalignment model";
   - every `psf_flux`, `psf_flux_err` is NaN (catalog);
-  - `diagnostics.read.receipts`: reader `astropy`, requested `auto`, fallback
-    "xDR GPU dependencies or a CUDA device are unavailable": xDR's native
-    part isn't built here, as in 3.3. Not the problem, but a good catch.
+  - `diagnostics.read.receipts`: reader `xdr`, requested `auto`, no
+    fallback: the planes were decoded on the GPU (3.3). If xDR isn't built
+    at this centre (3.3's check), it says reader `astropy` with fallback
+    "xDR GPU dependencies or a CUDA device are unavailable": not the
+    problem, but a good catch. The read stage took 0.37 s with xDR against
+    0.12 s with Astropy before it was built: one cold run on one small
+    image, where setup dominates (3.4's warm-up lesson), not a verdict.
   - `timings_sec`: refine 0.0 s, the hint that the star step didn't run.
 - Why: with `on_target_grid: true` the template provider isn't refinable, so
   the refine stage skips itself; it's the stage that matches stars and

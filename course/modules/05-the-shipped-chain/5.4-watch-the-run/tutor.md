@@ -25,8 +25,9 @@ the module's runs in an xLens dashboard. Module exit (O6, O3).
 - Facts (verified with the module's runs, shipped rules in the script):
   every injection item under shipped kernel settings flags `kernel_fit_poor`
   (χ²/dof 15.6–15.8 on 4,743 px); the whole-image runs don't (1.29–1.31);
-  run1 flags `no_psf_width` as well; every item flags `read_fallback` (info:
-  xDR's native part isn't built here, 3.3); `uq_valid_low` (< 80%) fires on
+  run1 flags `no_psf_width` as well; `read_fallback` (info) fires on no
+  item, since xDR decodes these files on the GPU, but on every item where
+  xDR isn't built (3.3's check); `uq_valid_low` (< 80%) fires on
   most whole-image items (~73% of rows valid) because new point sources are
   fitted as dipoles with an undefined centre (5.2): a rule that needs a
   better threshold or a narrower question (e.g. the psf_flux error only).

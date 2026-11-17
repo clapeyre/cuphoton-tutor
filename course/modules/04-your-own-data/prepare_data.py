@@ -4,6 +4,10 @@
 
 Reference: 2011-04-22 (MJD 55673.44, 123 days before the explosion).
 Target:    2012-04-12 (MJD 56029.51, 233 days after).
+For stacking (4.6), the other two pre-explosion r-band warps of this sky cell
+that hold data here: reference-b, 2011-04-22, 15 minutes after the reference
+(MJD 55673.45), and reference-c, 2011-05-11 (MJD 55692.33). PS1 lists two more
+that night (55673_43868, 55673_44950); they are empty at this position.
 Both are 800 x 800 cutouts (0.25"/px) of sky cell 2381.053, from the PS1 cutout
 service at STScI (https://ps1images.stsci.edu). For each: the image (counts,
 sky-subtracted), the survey's variance map (.wt) and its bit mask (.mask).
@@ -21,7 +25,7 @@ from astropy.io import fits
 
 RA, DEC, SIZE = 210.774167, 54.273722, 800
 CELL = "/rings.v3.skycell/2381/053/rings.v3.skycell.2381.053.wrp.r"
-NIGHTS = {"reference": "55673_43927", "target": "56029_50937"}
+NIGHTS = {"reference": "55673_43927", "target": "56029_50937", "reference-b": "55673_45010", "reference-c": "55692_32730"}
 out = Path(__file__).parent / "data"
 out.mkdir(exist_ok=True)
 

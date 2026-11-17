@@ -370,6 +370,27 @@ terms:
     bridges: []
     avoid: []
 
+  - term: stack
+    definition: "Several images of the same sky put on one pixel grid and combined into one image, with its own variance and mask. xRep does the first step (reproject_stack); combining is your choice: which images, which weights, what to do where one has no data."
+    source: "docs/guide/align.qmd, 'Stack several images on one grid'"
+    introduce_at: "4.5"
+    bridges: ["co-add", "template (for a stacked reference)"]
+    avoid: []
+
+  - term: classifier score
+    definition: "xScan's output for one candidate, between 0 and 1 (named probability in its files): how much the candidate looks like the training set's real class. Not calibrated: 0.99 doesn't mean 99% likely to be real."
+    source: "docs/guide/classify.qmd"
+    introduce_at: "4.6"
+    bridges: ["real / bogus"]
+    avoid: ["probability (unless calibrated)"]
+
+  - term: training set
+    definition: "The labelled examples a classifier learns from. It only learns the kinds in it: a kind of candidate that was never there gets an arbitrary score. xScan reads it as a dataset directory (cutouts, labels, splits, metadata) and checks the labels before training."
+    source: "docs/guide/classify.qmd, 'Write the dataset', 'Check the dataset'"
+    introduce_at: "4.6"
+    bridges: ["labelled data", "train / validation / test split"]
+    avoid: []
+
   # --- Module 05 ---------------------------------------------------------------
   - term: configuration
     definition: "The file that tells a shipped pipeline everything about one kind of data and every stage's settings: where each plane is, what its numbers mean, which mask bits are bad, how to fit and measure. The transient chain reads it once and checks every key."

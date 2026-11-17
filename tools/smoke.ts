@@ -56,6 +56,10 @@ const cupy = spawnSync(gpy, ["-c", "import cupy as cp, cuphoton; a=cp.arange(10)
 cupy.status === 0 && cupy.stdout.trim().endsWith("45") ? ok("gpu env", `${gpy} · CuPy runs on the GPU`) : bad("gpu env", `not usable (${gpy}); run tools/setup-gpu-env.sh. Needed from Module 03.`);
 const chain = spawnSync(gpy, ["-c", "import transient_chain, pandas, pyarrow, cuphoton.xlens"], { encoding: "utf8" });
 chain.status === 0 ? ok("chain", "transient chain, catalog extra and xLens in the GPU env") : bad("chain", `missing in ${gpy}; rerun tools/setup-gpu-env.sh. Needed for Module 05.`);
+const xdr = spawnSync(gpy, ["-c", "from cuphoton.xdr.nvcomp_batch import cpp_helper_available as a; import torch; print(a(), torch.cuda.is_available())"], { encoding: "utf8" });
+const [xdrOk, torchGpu] = xdr.stdout.trim().split(" ");
+xdrOk === "True" ? ok("xdr", "native GPU FITS reader built") : ok("xdr", `NOT built: reads fall back to Astropy; 3.3 teaches the fallback (rerun tools/setup-gpu-env.sh, see ${gpy.replace(/bin\/python$/, "xdr-build.log")})`);
+torchGpu === "True" ? ok("xscan", "PyTorch sees the GPU (4.6 trains on it)") : bad("xscan", `PyTorch can't see a GPU in ${gpy}; needed for 4.6.`);
 
 // 4. Endpoint: the configured model answers a tool call.
 try {
