@@ -1,0 +1,26 @@
+id: "07"
+title: Two receivers, one signal
+question: When two receivers record the same source, how do you find the delay between them, and how do you know the answer is real?
+needs: linux_gpu   # the GPU environment; data/ ships with the course (LIGO GW150914 strain, public, from GWOSC)
+objectives: [O2, O3, O7]
+misconceptions: [M-PEAK-IS-SIGNAL, M-DELAY-SIGN, M-WEIGHT-MEANS-RIGHT, M-RAW-CORRELATES]
+source: docs/guide/correlate.qmd, docs/xbeam/README.md, docs/xbeam/time-series.md, docs/xbeam/data-contract.md, docs/xbeam/sidecars.md, examples/xbeam/correlate_series.py in the pinned checkout; NVIDIA Technical Blog, "Run GPU-powered black hole interferometry with NVIDIA cuPhoton" (13 Nov 2026)
+time: 75–100 min
+intro: |
+  A track on one more part of cuPhoton: **xBeam**, which correlates
+  recordings. It's independent of the difference-imaging modules, apart from
+  their habits: predict before you run, read the receipt, test against a
+  known answer.
+
+  When two receivers record the same source (two microphones, two radio
+  telescopes, two gravitational-wave detectors), each hears it at a slightly
+  different time. Correlating the two recordings finds that delay, and how
+  much of the two recordings is the shared source. Radio astronomers do this
+  between telescopes thousands of kilometres apart to see detail no single
+  dish could: the Event Horizon Telescope's images of black holes came out
+  of such a correlation, and xBeam does it on GPUs.
+
+  You'll measure a known delay, then correlate radio recordings from three
+  stations, then find the delay of a real gravitational wave between the two
+  LIGO detectors. Each time, the run will hand back a number, and the
+  question is when to believe it.

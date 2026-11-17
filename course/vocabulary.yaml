@@ -427,6 +427,77 @@ terms:
     bridges: ["4.4's 'scatter in units of quoted error'"]
     avoid: []
 
+  # --- Module 07 (track: xBeam) -----------------------------------------------
+  - term: cross-correlation
+    definition: "How alike two recordings are when one is shifted against the other by each possible lag. It peaks at the lag that lines them up. xBeam computes R(k) = Σ a[n]·conj(b[n+k]), averaged over windows, as raw sums."
+    source: "docs/guide/correlate.qmd"
+    introduce_at: "7.1"
+    bridges: ["sliding one recording past the other and counting how well they match"]
+    avoid: ["correlation coefficient (that's the normalized value)"]
+
+  - term: lag
+    definition: "The shift, in samples, between the two signals of a pair. In xBeam's time-series correlation a positive lag means the second signal arrives later. Divide by the sample rate for seconds."
+    source: "docs/guide/correlate.qmd"
+    introduce_at: "7.1"
+    bridges: ["delay", "offset"]
+    avoid: []
+
+  - term: cross-spectrum
+    definition: "The Fourier transform of one recording times the conjugate of the other's, frequency by frequency, averaged over windows. Its phase rises with frequency in proportion to the delay, so its slope reads the delay, fractions of a sample included."
+    source: "docs/guide/correlate.qmd"
+    introduce_at: "7.1"
+    bridges: ["the correlation, frequency by frequency"]
+    avoid: []
+
+  - term: VDIF
+    definition: "The VLBI Data Interchange Format: a radio telescope's recording as frames of packed voltage samples (often two bits each), each behind a header with its time, station and thread. xBeam reads file-backed, two-bit, non-legacy VDIF."
+    source: "docs/guide/correlate.qmd ('Correlate radio recordings')"
+    introduce_at: "7.2"
+    bridges: ["the raw recording from one dish"]
+    avoid: ["image (VDIF holds voltages, not pictures)"]
+
+  - term: delay model
+    definition: "For each station, when the wavefront from the source arrives there, as a polynomial in time (it changes as the Earth turns), plus the station's clock. The correlator shifts each recording by it before multiplying. In an xBeam job, a station's delay says how much earlier it hears the wavefront than the reference."
+    source: "docs/guide/correlate.qmd; docs/xbeam/data-contract.md"
+    introduce_at: "7.2"
+    bridges: ["the timetable that lines the recordings up"]
+    avoid: []
+
+  - term: baseline
+    definition: "A pair of stations whose recordings are correlated. Longer baselines see finer detail on the sky."
+    source: "docs/guide/correlate.qmd; developer blog, 13 Nov 2026"
+    introduce_at: "7.2"
+    bridges: ["a pair of dishes"]
+    avoid: []
+
+  - term: visibility
+    definition: "What a radio correlator writes for one baseline, frequency channel and stretch of time: a complex number. Its amplitude says how much the two recordings share; its phase, how well they were lined up (and, with a correct model, where the source is). Imaging builds a picture from many of them."
+    source: "docs/guide/correlate.qmd ('Correlate radio recordings')"
+    introduce_at: "7.2"
+    bridges: ["the cross-spectrum of two dishes, per channel"]
+    avoid: []
+
+  - term: strain
+    definition: "What a gravitational-wave detector measures: the relative change in length of its arms, a dimensionless number around 10⁻²¹ for GW150914."
+    source: "course (LIGO, PRL 116, 061102)"
+    introduce_at: "7.3"
+    bridges: ["how much the arms stretch, as a fraction of their length"]
+    avoid: []
+
+  - term: whitening
+    definition: "Dividing a recording, frequency by frequency, by its own noise level, so every frequency carries noise of the same size. Then the loudest noise no longer dominates a correlation."
+    source: "course"
+    introduce_at: "7.3"
+    bridges: ["turning the volume down where the noise is loud"]
+    avoid: []
+
+  - term: background estimate
+    definition: "The values the same analysis gives where there's no signal, measured on the same data (other stretches, or one recording shifted in time). A result is significant only against it."
+    source: "course"
+    introduce_at: "7.3"
+    bridges: ["what noise alone does", "in 7.3, just 'background'"]
+    avoid: ["sky background (Module 00's background: the sky's own level)"]
+
 confusables:
   - words: ["PSF width (psf_sigma, sigma_x, sigma_y)", "variance plane", "error bar / covariance / standard_errors", "noise"]
     rule: "Four kinds of spread with similar names. Say which one each time, with its units: a PSF width is in pixels; a variance plane is in squared data units per pixel; an error bar is in the measured quantity's units; noise is the random wobble the variance plane describes. See M-SIGMA-VARIANCE."
@@ -441,3 +512,9 @@ collisions:
   - word: kernel
     cuphoton_meaning: "Two meanings: the convolution weights xPois fits (module 01), and a function launched on the GPU (module 03)."
     rule: "Not used in module 00. Introduce the matching sense in module 01 and the GPU sense in module 03, and name which one each time."
+  - word: background
+    cuphoton_meaning: "In images (Module 00 on): the sky's own glow in every pixel. In 7.3: what an analysis gives without a signal (the term 'background estimate')."
+    rule: "In Module 07 say 'background' only for the noise-only comparison, and only after 7.3 introduces it; never for the sky level there."
+  - word: baseline
+    cuphoton_meaning: "In 7.2 on: a pair of correlated stations. Module 00's vocabulary avoids it as a word for the sky background."
+    rule: "Use it only for a pair of stations."

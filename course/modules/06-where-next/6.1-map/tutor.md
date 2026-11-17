@@ -62,6 +62,9 @@ and command was checked against `src/cuphoton/` on 16 Nov 2026.
 - **First run:** `correlate_series(source, spec)` (`:52`). CLI: `cuphoton xbeam correlate-series series.json --output results.h5 --backend numpy` (`:224`). Radio: `cuphoton xbeam inspect-vdif AA.vdif --json` (`:260`).
 - **Needs:** no extra on CPU. The GPU path needs `gpu` (or `io`) plus a GPU. `io_backend="cufile"` needs working GPUDirect Storage. `build-vdif-sidecar` defaults to `cufile`, so pass `--backend posix` without GDS (`:7-8`, `:199`, `:269`).
 - **Silent trap:** "The lag peak is at the wrong place. The delay can exceed the window" (`:289`). Products are raw: "xBeam applies no taper, mean removal or normalization" (`:68`). "Do not average shard outputs" (`:161`).
+- **Track:** Module 07, "Two receivers, one signal", teaches xBeam end to
+  end (a known delay, three radio stations with a wrong clock, GW150914 in
+  the two LIGO detectors). If xBeam fits their data, link [7.1](#/7.1).
 - **Evidence:** in `results.h5`, the attributes `schema` and `complete` (false after an interrupted write) and `/results/<result_index>` (`:238-247`). Per result: `lag_valid_samples`, `contributing_windows` and `valid` (`:64-65`). Radio output: `metadata.jsonl`, `spectra.c64` and `ingest-manifest.json` (`:271`).
 
 ### Core executors / scale-out (`G/scale.qmd`)

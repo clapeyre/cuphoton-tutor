@@ -104,6 +104,20 @@ planned in `docs/EXPANSION-PLAN.md`; coverage status is in `docs/ROADMAP.md`.
 
 ## Upstream (cuPhoton)
 
+- **xBeam: the radio job's delay sign isn't documented** (found building
+  7.2). A station's `delay_coefficients_s` is how much earlier it hears the
+  wavefront than the reference (DiFX's convention, measured with a known
+  delay); the guide and data contract don't say, and the time-series path
+  uses the opposite-feeling "positive lag = second signal later". A sign
+  error doubles the residual delay without any warning.
+- **xBeam: a radio job's `source_files` resolve against the working
+  directory**, not the job file's folder (`correlate-series` JSON paths are
+  relative to the JSON file, guide). Running from elsewhere fails with
+  FileNotFoundError.
+- **xBeam sample data.** The 13 Nov blog says a sample recording and job are
+  in the repository; neither the pinned commit nor `main` (db23dd9, 17 Nov)
+  has one. 7.2 makes its own (`make_recordings.py`).
+
 - **`examples/run_quickstarts.py` prints a stale summary on failure.** When the
   output directory exists, it exits 1 with the error on stderr, but prints the
   *earlier* run's summary.json (`"status": "ok"`) on stdout. An agent reading

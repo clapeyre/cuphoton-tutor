@@ -205,6 +205,51 @@ learners; prefer them. Harvest more with `.claude/commands/harvest-misconception
 - **Probe:** "If one candidate in a thousand is real, how many bogus ones pass a threshold that lets 1% of bogus through?"
 - **Modules:** 04
 
+### M-PEAK-IS-SIGNAL: "The correlation peaks at the delay."
+- **Truth:** A correlation always has a highest point, signal or not, and
+  xBeam reports products without judging them. A delay beyond the window's
+  lags gives a noise peak; circular lag mode wraps a long delay to a wrong one
+  that is consistent across results. A peak means something only against
+  the peaks noise makes in the same analysis, and within the delays the
+  geometry allows.
+- **Docs:** docs/guide/correlate.qmd (Options, `lag_mode`; Troubleshooting,
+  "The lag peak is at the wrong place").
+- **Probe:** "Two results agree on a lag of −124. Does that make it right?"
+- **Modules:** 07
+
+### M-RAW-CORRELATES: "Correlate the recordings as they are."
+- **Truth:** A correlation follows whatever is loudest in both recordings.
+  In LIGO strain that's low-frequency noise, hundreds of times the wave, so
+  raw strain put GW150914's delay at +9.5 ms (wrong, though physically
+  possible). xBeam applies no taper, mean removal, normalization or
+  whitening; choose the band and weight it by the noise yourself.
+- **Docs:** docs/guide/correlate.qmd ("Products are raw sums ...").
+- **Probe:** "What frequencies hold most of the power in each recording, and are they the ones the source is at?"
+- **Modules:** 07
+
+### M-WEIGHT-MEANS-RIGHT: "Weight 1.0 means the visibility is good."
+- **Truth:** A radio job's weights record how much valid data went into
+  each record. A wrong delay or clock leaves full weights and normal-looking
+  amplitudes per channel, with the signal turned into a phase slope across
+  the band that cancels in a band average (7.2: 0.176 → 0.001).
+- **Docs:** docs/guide/correlate.qmd ("Correlate radio recordings");
+  docs/xbeam/data-contract.md.
+- **Probe:** "Every record has weight 1.0. What would a wrong clock look like in them?"
+- **Modules:** 07
+
+### M-DELAY-SIGN: "A station that hears it later gets a positive delay."
+- **Truth:** Conventions differ, even within xBeam. In time-series
+  correlation a positive lag means the second signal of the pair arrives
+  later; in a radio job a station's delay says how much earlier it hears
+  the wavefront than the reference (DiFX's convention), and clocks add to
+  it. The user guide doesn't state the job's sign; a run with a known
+  answer does.
+- **Docs:** docs/guide/correlate.qmd ("Read the delay from the lag
+  correlation"); src/cuphoton/xbeam/adapters/radio/compute_plan.py
+  (`_delay_values`).
+- **Probe:** "BB's clock is 1.75 µs late. What number goes into the job, and how will you know you had the sign right?"
+- **Modules:** 07
+
 ## Working through an agent
 
 ### M-AGENT-SUCCESS: "The agent ran it without errors, so the result is right."

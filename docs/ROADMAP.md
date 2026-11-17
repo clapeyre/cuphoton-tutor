@@ -20,7 +20,7 @@ pinned commit) has 15 chapters. Where the course stands:
 | 10 Uncertainty | 4.4, 5.3 | taught |
 | 11 Reconstruct (xImage) | 6.1 map | **next: component track** |
 | 12 X-ray traces (xRay) | 6.1 map | **next: component track** |
-| 13 Correlate (xBeam) | 6.1 map | **next: component track, first** |
+| 13 Correlate (xBeam) | Module 07 (track) | taught: time series, radio jobs, real data (GW150914) |
 | 14 Scale out | 6.1 map | out of scope by decision (below) |
 | 15 Monitor (xLens) | 5.4 | taught |
 
@@ -37,9 +37,12 @@ better once the tracks exist, so walk it after them.
 
 One optional module per component, in this order:
 
-1. **xBeam** (guide ch. 13: correlate two sampled signals, radio recordings,
-   the VLBI correlator). First because the developer blog (13 Nov) featured
-   it, and the course doesn't touch it.
+1. **xBeam**: built 17 Nov as Module 07, "Two receivers, one signal"
+   (7.1 a known delay; 7.2 three radio stations, VDIF to visibilities on the
+   GPU, a wrong clock found from the phase slopes; 7.3 GW150914 in the two
+   LIGO detectors, whitening and a background). Walkthrough pending; no
+   video yet (candidate: one signal sliding past the other, the
+   correlation building up).
 2. **xRay** (ch. 12: time-resolved X-ray detector traces).
 3. **xImage** (ch. 11: one sharp image from many frames).
 
