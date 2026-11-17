@@ -1,11 +1,11 @@
-"""7.2: read xBeam visibility runs (xbeam-v1 output folders) and show each baseline across the band.
+"""6.2: read xBeam visibility runs (xbeam-v1 output folders) and show each baseline across the band.
 
     python visibilities.py <out.png> <run dir> [<run dir> ...]
 
 For each run and baseline, averaged over the run's integrations: the weights, the correlation
 amplitude per channel (|V| over the geometric mean of the two autocorrelations), the amplitude of
 the band average (what an image made from the whole band would see), and the residual delay read
-from the slope of the phase against frequency, as in 7.1. Figure: amplitude and phase across the
+from the slope of the phase against frequency, as in 6.1. Figure: amplitude and phase across the
 band (phase unwrapped, in turns: its slope is the residual delay), one column per run.
 """
 import sys

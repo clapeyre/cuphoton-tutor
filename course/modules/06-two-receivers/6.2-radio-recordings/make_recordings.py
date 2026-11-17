@@ -1,4 +1,4 @@
-"""7.2: three radio stations record one patch of noise-like sky; write their VDIF recordings and the job.
+"""6.2: three radio stations record one patch of noise-like sky; write their VDIF recordings and the job.
 
     python make_recordings.py <out dir> [--seconds N]
 

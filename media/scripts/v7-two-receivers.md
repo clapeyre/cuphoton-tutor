@@ -1,13 +1,13 @@
 # v7 — Two receivers, one signal
 
-Opens Module 07 (top of 7.1). The picture the module needs before any code:
+Opens Module 06 (top of 6.1). The picture the module needs before any code:
 one wave reaching two receivers at different times, what a radio telescope
 records, and how sliding one recording past the other finds the delay.
 Written after walkthrough 8 ("I'm clinging on for dear life"). Gives away no
-checkpoint: it never states a sign convention (7.1), never shows a delay
-beyond the window or a wrapped lag (7.1 `hidden`), never shows a wrong delay
-model or a phase slope (7.2), and never mentions whitening or a background
-(7.3). Data: media/scenes/data_v7.py: two synthetic recordings sharing a
+checkpoint: it never states a sign convention (6.1), never shows a delay
+beyond the window or a wrapped lag (6.1 `hidden`), never shows a wrong delay
+model or a phase slope (6.2), and never mentions whitening or a background
+(6.3). Data: media/scenes/data_v7.py: two synthetic recordings sharing a
 faint signal 23 samples apart, correlated with xBeam (NumPy backend).
 
 Subtitle: "x beam" -> "xBeam"

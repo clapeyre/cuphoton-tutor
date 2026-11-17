@@ -1,5 +1,5 @@
 ---
-id: "7.2"
+id: "6.2"
 title: Three radio stations
 question: What does a correlator need to know besides the recordings, and what happens when part of it is wrong?
 terms: [VDIF, delay model, visibility, baseline]
@@ -47,6 +47,6 @@ caption: The same three baselines with the corrected job.
 
 :::closure
 found: AA–CC came out as predicted: flat phase, amplitude 0.18. AA–BB and BB–CC had phases that climbed and fell by 14 turns across the band, a slope of 1.75 microseconds, opposite in sign because BB is the second station in one pair and the first in the other. The station they share was the problem: BB's clock stamped its samples 1.75 µs late, and the job didn't know. Per channel, the amplitude dropped only slightly, from 0.18 to 0.16; averaged over the band it fell to 0.001, because the phases cancel. Every record had weight 1.0 and the run reported nothing wrong. The fix went into BB's clock, with the job's sign: its delays say how much earlier a station hears the wavefront, so BB's clock needed −1.75 µs. Entered as +1.75 µs, it doubles the slope to 3.5 µs, again without a word.
-matters: A correlator computes exactly what the job tells it. Its weights describe data coverage, not whether the model was right, so a wrong delay comes out as good-looking records with the signal spread into a phase slope, and a band-averaged image of nothing. Correlating real arrays is mostly this: run, look at every baseline's phase, find the station whose baselines all slope, and fix its clock. The slope is the 7.1 reading again, and the sign of every convention needs checking against a run. On this machine the GPU correlated three 8-second stations in 0.7 s; the CPU path took 16 s.
+matters: A correlator computes exactly what the job tells it. Its weights describe data coverage, not whether the model was right, so a wrong delay comes out as good-looking records with the signal spread into a phase slope, and a band-averaged image of nothing. Correlating real arrays is mostly this: run, look at every baseline's phase, find the station whose baselines all slope, and fix its clock. The slope is the 6.1 reading again, and the sign of every convention needs checking against a run. On this machine the GPU correlated three 8-second stations in 0.7 s; the CPU path took 16 s.
 raises: Synthetic recordings had a known answer. On real data with a weak signal and loud noise, how do you find the delay, and how do you know it's not a fluke?
 :::

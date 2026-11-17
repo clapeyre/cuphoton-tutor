@@ -60,6 +60,8 @@ const xdr = spawnSync(gpy, ["-c", "from cuphoton.xdr.nvcomp_batch import cpp_hel
 const [xdrOk, torchGpu] = xdr.stdout.trim().split(" ");
 xdrOk === "True" ? ok("xdr", "native GPU FITS reader built") : ok("xdr", `NOT built: reads fall back to Astropy; 3.3 teaches the fallback (rerun tools/setup-gpu-env.sh, see ${gpy.replace(/bin\/python$/, "xdr-build.log")})`);
 torchGpu === "True" ? ok("xscan", "PyTorch sees the GPU (4.6 trains on it)") : bad("xscan", `PyTorch can't see a GPU in ${gpy}; needed for 4.6.`);
+const tracks = spawnSync(gpy, ["-c", "import cuphoton.ximage.workflows, cuphoton.xray.detector_artifacts, cuphoton.xbeam, h5py"], { encoding: "utf8" });
+tracks.status === 0 ? ok("tracks", "xBeam, xRay and xImage (ximage extra) import in the GPU env") : bad("tracks", `an import failed in ${gpy}; rerun tools/setup-gpu-env.sh. Needed for Modules 06-08.`);
 
 // 4. Endpoint: the configured model answers a tool call.
 try {

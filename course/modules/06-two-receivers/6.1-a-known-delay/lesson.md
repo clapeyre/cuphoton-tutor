@@ -1,5 +1,5 @@
 ---
-id: "7.1"
+id: "6.1"
 title: A known delay
 question: How do you read a delay from two recordings, and when does the reading lie?
 terms: [cross-correlation, lag, cross-spectrum]

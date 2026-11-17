@@ -1,4 +1,4 @@
-# 7.1 · tutor notes
+# 6.1 · tutor notes
 
 **Goal:** the learner predicts and reads a delay two ways (lag peak, phase
 slope), then meets readings that are wrong without an error, and names
@@ -8,10 +8,10 @@ Source: docs/guide/correlate.qmd (the sample pair, "Read the delay from the
 lag correlation", "... from the cross-spectrum", Options, Troubleshooting:
 "The lag peak is at the wrong place. The delay can exceed the window"),
 docs/xbeam/time-series.md. `delays.py`, next to these notes, does both turns.
-**Run it in place, from the course folder, with outputs in `work/07/`; don't
+**Run it in place, from the course folder, with outputs in `work/06/`; don't
 copy it:** the hidden delays are in the file, and the learner's Files panel
-shows `work/07/`. GPU environment. Module 07 is a track: if this is the
-learner's first visit to `work/07/`, create it.
+shows `work/06/`. GPU environment. Module 06 is a track: if this is the
+learner's first visit to `work/06/`, create it.
 
 ## Video `v7-two-receivers` (opens the module)
 One wave reaching two dishes at different times, what a dish records (noise
@@ -40,8 +40,8 @@ question still stands.
 - Collect the prediction (where, and which sign). Most will say 7; the sign
   is the real question. If they can't predict the sign, accept "I'd check
   the guide's convention" and give it after the run.
-- Run `python <course>/modules/07-two-receivers/7.1-a-known-delay/delays.py known 7.1_delay.png`
-  from `work/07/`, then `show_figure(slot="delay")`.
+- Run `python <course>/modules/06-two-receivers/6.1-a-known-delay/delays.py known 7.1_delay.png`
+  from `work/06/`, then `show_figure(slot="delay")`.
 - Facts (real run, GPU; signals made like the guide's: 8,192 samples at
   1,024 Hz, noise of half the signal's size; 2 results of 4 windows):
   ```
@@ -59,7 +59,7 @@ question still stands.
 ## Your turn `hidden` (prediction, then checkpoint)
 - Collect what they'd trust. Don't reveal the delays (900 and 1,500) until
   they've judged the output.
-- Run `python <course>/.../delays.py hidden` from `work/07/` and show the
+- Run `python <course>/.../delays.py hidden` from `work/06/` and show the
   output whole:
   ```
   pair 1, linear  : +900 (11.5); +900 (12.1); +900 (13.5); +900 (11.5)
@@ -83,5 +83,5 @@ question still stands.
 - If they trust pair 1 circular because it agrees with itself: ask what a
   lag of 900 looks like on a circle of 1,024 (hint ladder (a) → (b): the
   guide's `lag_mode` row).
-- If asked "how high is high enough?": not settled here; 7.3 measures it
-  against a background. Settle, then `reveal("7.1")`.
+- If asked "how high is high enough?": not settled here; 6.3 measures it
+  against a background. Settle, then `reveal("6.1")`.

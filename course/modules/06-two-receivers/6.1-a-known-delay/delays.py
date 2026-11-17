@@ -1,4 +1,4 @@
-"""7.1: two signals with a known delay, correlated with xBeam on the GPU.
+"""6.1: two signals with a known delay, correlated with xBeam on the GPU.
 
     python delays.py known <out.png>
         The guide's sample pair (8,192 samples at 1,024 Hz; b is a copy of a, 7 samples late, plus noise

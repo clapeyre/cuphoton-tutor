@@ -215,7 +215,7 @@ learners; prefer them. Harvest more with `.claude/commands/harvest-misconception
 - **Docs:** docs/guide/correlate.qmd (Options, `lag_mode`; Troubleshooting,
   "The lag peak is at the wrong place").
 - **Probe:** "Two results agree on a lag of −124. Does that make it right?"
-- **Modules:** 07
+- **Modules:** 06
 
 ### M-RAW-CORRELATES: "Correlate the recordings as they are."
 - **Truth:** A correlation follows whatever is loudest in both recordings.
@@ -225,17 +225,17 @@ learners; prefer them. Harvest more with `.claude/commands/harvest-misconception
   whitening; choose the band and weight it by the noise yourself.
 - **Docs:** docs/guide/correlate.qmd ("Products are raw sums ...").
 - **Probe:** "What frequencies hold most of the power in each recording, and are they the ones the source is at?"
-- **Modules:** 07
+- **Modules:** 06
 
 ### M-WEIGHT-MEANS-RIGHT: "Weight 1.0 means the visibility is good."
 - **Truth:** A radio job's weights record how much valid data went into
   each record. A wrong delay or clock leaves full weights and normal-looking
   amplitudes per channel, with the signal turned into a phase slope across
-  the band that cancels in a band average (7.2: 0.176 → 0.001).
+  the band that cancels in a band average (6.2: 0.176 → 0.001).
 - **Docs:** docs/guide/correlate.qmd ("Correlate radio recordings");
   docs/xbeam/data-contract.md.
 - **Probe:** "Every record has weight 1.0. What would a wrong clock look like in them?"
-- **Modules:** 07
+- **Modules:** 06
 
 ### M-DELAY-SIGN: "A station that hears it later gets a positive delay."
 - **Truth:** Conventions differ, even within xBeam. In time-series
@@ -248,7 +248,73 @@ learners; prefer them. Harvest more with `.claude/commands/harvest-misconception
   correlation"); src/cuphoton/xbeam/adapters/radio/compute_plan.py
   (`_delay_values`).
 - **Probe:** "BB's clock is 1.75 µs late. What number goes into the job, and how will you know you had the sign right?"
+- **Modules:** 06
+
+### M-ORDER-FINDS-ALL: "The model-order sweep finds every mode in the trace."
+- **Truth:** The sweep picks the smallest order whose residual is within 1%
+  of the best; it can't see a mode that no order fits. Linear prediction
+  keeps only part of its polynomial's roots and can drop a fast mode even
+  without noise: at 0.1 ps steps a 2.0 THz mode as strong as another was
+  lost at every order, without a warning (7.2). The residual against the
+  expected noise shows it (25 times the floor there); planted modes at your
+  own step size test for it.
+- **Docs:** docs/guide/xray-traces.qmd ("Choose the model order";
+  Troubleshooting, "A fast mode is missing from the fit").
+- **Probe:** "The fit returned two modes. What would a third one that it missed leave behind?"
 - **Modules:** 07
+
+### M-EVEN-STEPS: "The fit uses the delays I give it."
+- **Truth:** Linear prediction assumes the samples are evenly spaced in
+  delay; it takes the delays but doesn't check them. A scan with 0.05 ps
+  steps then 0.13 ps steps returned three wrong frequencies and no error
+  (7.2). Check the steps before fitting.
+- **Docs:** docs/guide/xray-traces.qmd ("It assumes finite samples at
+  uniformly increasing delays; check that condition").
+- **Probe:** "What does linear prediction assume about the delays, and how would you check this scan meets it?"
+- **Modules:** 07
+
+### M-STATUS-MEANS-DATA: "Status 'fitted' means the row was measured."
+- **Truth:** A status code says what the code did, not what the pixel
+  recorded. xRay's detector fit sums each row with its neighbours
+  (`--integrate`) and smooths it, so dead rows came back fitted with their
+  neighbours' frequency, and the manifest counted no failures (7.3). Look at
+  what each row recorded, and exclude dead rows (`--exclude-y`).
+- **Docs:** docs/guide/xray-traces.qmd ("Fit every detector row": "These
+  steps change the trace's support and amplitude").
+- **Probe:** "What did rows 120–123 record, and what did the fit report for them?"
+- **Modules:** 07
+
+### M-SHARP-MEANS-RIGHT: "The reconstruction is sharper and similar to the coadd, so it's right."
+- **Truth:** xImage's evaluation compares the scene with the median of the
+  same frames, which share its noise: similarity and sharpness can't show
+  accuracy (guide). A known scene, or fakes planted at your settings, can.
+  On the M101 nights the scene read fakes 10% higher than the median of the
+  frames did, with a third of the scatter (8.3).
+- **Docs:** docs/guide/reconstruct.qmd ("Evaluate the run"; "The run
+  returns no output variance and no effective PSF for the scene").
+- **Probe:** "What would tell you that a source's brightness in the scene is right?"
+- **Modules:** 08
+
+### M-VALID-MEANS-USABLE: "validate_bundle returned no issues, so the bundle is fine."
+- **Truth:** Validation checks the arrays' form (shapes, dtypes, PSF size),
+  not their content. A cosmic ray in one frame became a fake source as
+  bright as a real one, and a PSF recorded half its width blurred the
+  scene; both bundles validated (8.2). The loss (2,083 and 173 against
+  about 3) was the alarm; the frames and the stars' widths found the cause.
+- **Docs:** docs/guide/reconstruct.qmd ("An empty list does not check every
+  pixel value").
+- **Probe:** "A source is in one frame and not the other two. Is it in the scene?"
+- **Modules:** 08
+
+### M-ONE-SCENE: "Reconstruct all the frames you have."
+- **Truth:** xImage fits one scene that doesn't change. A source that
+  changed between frames comes out as a faint ghost (L2: 8% of the
+  supernova's brightness on its night) or is rejected as an outlier (the
+  robust loss), with only the loss rising (8.3). Find changes with the
+  difference chain; reconstruct what stays put.
+- **Docs:** docs/guide/reconstruct.qmd (opening: "one nonnegative scene").
+- **Probe:** "One of your frames was taken after the supernova. What will the scene show there?"
+- **Modules:** 08
 
 ## Working through an agent
 

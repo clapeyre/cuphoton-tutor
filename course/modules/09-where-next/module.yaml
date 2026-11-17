@@ -1,0 +1,18 @@
+id: "09"
+title: Where next
+question: You've run four kinds of data through cuPhoton. What does your own work look like, and which part of cuPhoton would you start from?
+needs: none   # no runs; the tutor answers from the component briefs in 9.1/tutor.md
+objectives: [O7]
+misconceptions: []
+source: docs/guide/index.qmd ("Find your task") and the guide chapters in the pinned checkout
+time: 20–30 min
+intro: |
+  You've followed two pictures of the sky from raw images to a catalog you
+  can defend, then taken three other parts of cuPhoton through their own
+  kind of data: two receivers, a pump-probe scan, many frames of one scene.
+  This last module puts them on one map, with the parts you haven't run.
+
+  Then it's a conversation about your own work: what you measure, in what
+  form, and where in cuPhoton you'd start. The habits carry over whatever
+  the part: know what a step should give back, read the receipt, check the
+  noise model, and test with something whose answer you know.

@@ -1,4 +1,4 @@
-id: "07"
+id: "06"
 title: Two receivers, one signal
 question: When two receivers record the same source, how do you find the delay between them, and how do you know the answer is real?
 needs: linux_gpu   # the GPU environment; data/ ships with the course (LIGO GW150914 strain, public, from GWOSC)
@@ -7,8 +7,9 @@ misconceptions: [M-PEAK-IS-SIGNAL, M-DELAY-SIGN, M-WEIGHT-MEANS-RIGHT, M-RAW-COR
 source: docs/guide/correlate.qmd, docs/xbeam/README.md, docs/xbeam/time-series.md, docs/xbeam/data-contract.md, docs/xbeam/sidecars.md, examples/xbeam/correlate_series.py in the pinned checkout; NVIDIA Technical Blog, "Run GPU-powered black hole interferometry with NVIDIA cuPhoton" (13 Nov 2026)
 time: 75–100 min
 intro: |
-  An optional track on another part of cuPhoton, **xBeam**. It needs nothing
-  from the difference-imaging modules except their habits: predict before
+  The image chain is one part of cuPhoton. This module and the next two
+  each take another, on its own kind of data; this one is **xBeam**. They
+  need nothing from the image modules except their habits: predict before
   you run, read the receipt, test against a known answer.
 
   Clap your hands in a room with two microphones, and the nearer one hears

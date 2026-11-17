@@ -1,4 +1,4 @@
-# 7.3 · tutor notes
+# 6.3 · tutor notes
 
 **Goal:** on real data, the learner finds that raw strain gives a plausible
 wrong delay, fixes it by whitening, and judges the peak against a
@@ -10,10 +10,10 @@ no taper, mean removal or normalization. Add the pair ("a", "a") for an
 autocorrelation to normalize by"). Data: `data/` in this module's course
 folder, the two 32 s GWOSC files (4,096 Hz, GPS 1126259446 + 32 s, event at
 GPS 1126259462.4, 16.4 s in). `gw_delay.py`, next to these notes: run it
-in place, `python <course>/modules/07-two-receivers/7.3-two-detectors/gw_delay.py ...`,
-from `work/07/` (outputs land there; it finds the course's `data/` itself).
+in place, `python <course>/modules/06-two-receivers/6.3-two-detectors/gw_delay.py ...`,
+from `work/06/` (outputs land there; it finds the course's `data/` itself).
 Nothing is hidden in it: if they want to read or change it, copy it to
-`work/07/` and run the copy with `DATA=<course>/modules/07-two-receivers/data`. GPU environment. Read
+`work/06/` and run the copy with `DATA=<course>/modules/06-two-receivers/data`. GPU environment. Read
 the files with h5py: `strain/Strain`, `Xspacing` 1/4096 s (no xDR here: not
 FITS).
 
@@ -50,7 +50,7 @@ via GWOSC (gwosc.org)".
   ```
   Pair (H1, L1): negative lag = L1 earlier. The sign of the correlation:
   arm orientation. One sample is 0.24 ms; LIGO's 6.9 ms is within two
-  samples. A phase-slope reading (7.1) is possible over 35–350 Hz but noisy
+  samples. A phase-slope reading (6.1) is possible over 35–350 Hz but noisy
   for a 0.2 s chirp; not needed.
 - If they cast to float32: raw strain (~1e-19..1e-21) squared underflows
   float32 (smallest normal 1.2e-38), so autocorrelations come out 0 and a
@@ -84,7 +84,7 @@ via GWOSC (gwosc.org)".
   of what 32 s can say. Two of three to start.
 - Module exit (one question at most, then settle): "Your own recordings:
   what would you check first?" Look for: the largest delay the geometry
-  allows and windows longer than it (7.1), the conventions' signs checked
-  against a run with a known answer (7.2), the noise spectrum and whitening
-  (7.3), a background from the same data (7.3), and the receipt
-  (`ingest-manifest.json` for radio jobs). Settle, then `reveal("7.3")`.
+  allows and windows longer than it (6.1), the conventions' signs checked
+  against a run with a known answer (6.2), the noise spectrum and whitening
+  (6.3), a background from the same data (6.3), and the receipt
+  (`ingest-manifest.json` for radio jobs). Settle, then `reveal("6.3")`.

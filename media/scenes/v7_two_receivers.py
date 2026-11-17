@@ -168,8 +168,8 @@ class V7(Scene):
             g = VGroup(label(num, 26, ACC), label(txt, 26)).arrange(DOWN, buff=0.2).move_to(box)
             return VGroup(box, g)
 
-        cards = VGroup(card("7.1", "A known delay"), card("7.2", "Three radio stations"),
-                       card("7.3", "Two gravitational-\nwave detectors")).arrange(RIGHT, buff=0.4).shift(DOWN * 0.1)
+        cards = VGroup(card("6.1", "A known delay"), card("6.2", "Three radio stations"),
+                       card("6.3", "Two gravitational-\nwave detectors")).arrange(RIGHT, buff=0.4).shift(DOWN * 0.1)
         t.at("find a delay you know"); t.play(FadeIn(cards[0]), run_time=0.4)
         t.at("correlate three radio stations"); t.play(FadeIn(cards[1]), run_time=0.4)
         t.at("measure that wave's delay"); t.play(FadeIn(cards[2]), run_time=0.4)

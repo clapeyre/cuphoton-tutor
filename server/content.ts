@@ -168,7 +168,7 @@ function parseBody(body: string, lessonDir: string, videos: Course["videos"], le
 // A guide page by its file name (read-fits): its title from the pinned checkout's docs/guide, and its URL.
 function guidePage(base: string, name: string) {
   const f = path.join(config.cuphotonDir, "docs", "guide", `${name}.qmd`);
-  const t = fs.existsSync(f) ? fs.readFileSync(f, "utf8").match(/^# (.+?)(?:\s*\{#[^}]*\})?\s*$/m)?.[1] : undefined;
+  const t = fs.existsSync(f) ? fs.readFileSync(f, "utf8").match(/^# (.+?)(?:\s*\{[^}]*\})?\s*$/m)?.[1] : undefined;
   return { title: t ?? name, url: `${base}${name}.html` };
 }
 

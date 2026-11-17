@@ -1,4 +1,4 @@
-# 7.2 · tutor notes
+# 6.2 · tutor notes
 
 **Goal:** the learner runs the radio path on the GPU (inspect, sidecar,
 correlate), predicts and reads visibilities, finds the station with the bad
@@ -10,13 +10,13 @@ Source: docs/guide/correlate.qmd ("Correlate radio recordings"),
 docs/xbeam/README.md, data-contract.md, sidecars.md; the developer blog (13
 Nov 2026, "Run GPU-powered black hole interferometry with NVIDIA cuPhoton")
 for context. Two scripts next to these notes. **Run both in place, from the
-course folder, with outputs in `work/07/`; don't copy `make_recordings.py`:
+course folder, with outputs in `work/06/`; don't copy `make_recordings.py`:
 the answer is in it.** `visibilities.py` may be copied if they ask for it.
 
 ## Setup (when you prepare the lesson)
-From `work/07/`, GPU environment:
+From `work/06/`, GPU environment:
 ```
-python <course>/modules/07-two-receivers/7.2-radio-recordings/make_recordings.py radio
+python <course>/modules/06-two-receivers/6.2-radio-recordings/make_recordings.py radio
 ```
 Writes `radio/AA.vdif`, `BB.vdif`, `CC.vdif` (4 MB each: 1 s, 16 MHz real
 sampling, 2 bits, one 8 MHz band at 1.4 GHz, 500 frames of 8,032 bytes) and
@@ -34,7 +34,7 @@ the job's clocks are all 0. 20% of each recording is the shared sky.
 - Collect the prediction for amplitude and phase. Expected reasoning:
   amplitude is the shared fraction (the same on every baseline, here, since
   every station sees the same sky), phase flat at 0 once the delays are
-  right (7.1: a leftover delay would be a slope). If they have no basis for
+  right (6.1: a leftover delay would be a slope). If they have no basis for
   the amplitude, accept "some fraction, the same everywhere".
 - Run, showing commands and outputs in code blocks (excerpts):
   ```
@@ -64,7 +64,7 @@ the job's clocks are all 0. 20% of each recording is the shared sky.
 ## Your turn `fix-it` (checkpoint)
 - **Pass:** (a) BB: it's in both sloping baselines and not in the flat one
   (if they say "AA–BB and BB–CC are bad", ask what those have in common);
-  (b) 1.75 µs, from the phase slope (7.1), or from 14 turns across 8 MHz;
+  (b) 1.75 µs, from the phase slope (6.1), or from 14 turns across 8 MHz;
   (c) a change to BB's clock (or its delay model) in the job, with a sign
   they've reasoned about, and a prediction of the rerun (all three flat).
 - The sign: the job's delays say how much **earlier** the station hears the
@@ -102,4 +102,4 @@ the job's clocks are all 0. 20% of each recording is the shared sky.
   clocks are found the way the learner just did, by fringe-fitting a strong
   source. The Event Horizon Telescope correlates 2-bit recordings at up to
   64 Gbps per station (blog).
-- Settle, then `reveal("7.2")`.
+- Settle, then `reveal("6.2")`.

@@ -35,8 +35,11 @@ modules:
   - 03-onto-the-gpu
   - 04-your-own-data
   - 05-the-shipped-chain
-  - 06-where-next
-  - 07-two-receivers   # track: xBeam (optional, after the main course)
+  # The component tracks: each stands on its own after Module 05.
+  - 06-two-receivers   # xBeam
+  - 07-pump-and-probe  # xRay
+  - 08-many-frames     # xImage
+  - 09-where-next      # the map, and the learner's own work
 
 # The stage chain drawn by :::chain. `does` is the box text; `definition`
 # opens beneath the box when the learner clicks it.

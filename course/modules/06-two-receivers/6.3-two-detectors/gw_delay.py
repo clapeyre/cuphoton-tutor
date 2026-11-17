@@ -1,4 +1,4 @@
-"""7.3: GW150914 in the two LIGO detectors. When did the wave reach each, and is the peak real?
+"""6.3: GW150914 in the two LIGO detectors. When did the wave reach each, and is the peak real?
 
     python gw_delay.py look <out.png>
         The strain around the event in Hanford (H1) and Livingston (L1), and what frequencies it holds.

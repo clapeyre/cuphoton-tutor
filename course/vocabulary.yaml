@@ -427,76 +427,155 @@ terms:
     bridges: ["4.4's 'scatter in units of quoted error'"]
     avoid: []
 
-  # --- Module 07 (track: xBeam) -----------------------------------------------
+  # --- Module 06 (track: xBeam) -----------------------------------------------
   - term: cross-correlation
     definition: "How alike two recordings are when one is shifted against the other by each possible lag. It peaks at the lag that lines them up. xBeam computes R(k) = Σ a[n]·conj(b[n+k]), averaged over windows, as raw sums."
     source: "docs/guide/correlate.qmd"
-    introduce_at: "7.1"
+    introduce_at: "6.1"
     bridges: ["sliding one recording past the other and counting how well they match"]
     avoid: ["correlation coefficient (that's the normalized value)"]
 
   - term: lag
     definition: "The shift, in samples, between the two signals of a pair. In xBeam's time-series correlation a positive lag means the second signal arrives later. Divide by the sample rate for seconds."
     source: "docs/guide/correlate.qmd"
-    introduce_at: "7.1"
+    introduce_at: "6.1"
     bridges: ["delay", "offset"]
     avoid: []
 
   - term: cross-spectrum
     definition: "The Fourier transform of one recording times the conjugate of the other's, frequency by frequency, averaged over windows. Its phase rises with frequency in proportion to the delay, so its slope reads the delay, fractions of a sample included."
     source: "docs/guide/correlate.qmd"
-    introduce_at: "7.1"
+    introduce_at: "6.1"
     bridges: ["the correlation, frequency by frequency"]
     avoid: []
 
   - term: VDIF
     definition: "The VLBI Data Interchange Format: a radio telescope's recording as frames of packed voltage samples (often two bits each), each behind a header with its time, station and thread. xBeam reads file-backed, two-bit, non-legacy VDIF."
     source: "docs/guide/correlate.qmd ('Correlate radio recordings')"
-    introduce_at: "7.2"
+    introduce_at: "6.2"
     bridges: ["the raw recording from one dish"]
     avoid: ["image (VDIF holds voltages, not pictures)"]
 
   - term: delay model
     definition: "For each station, when the wavefront from the source arrives there, as a polynomial in time (it changes as the Earth turns), plus the station's clock. The correlator shifts each recording by it before multiplying. In an xBeam job, a station's delay says how much earlier it hears the wavefront than the reference."
     source: "docs/guide/correlate.qmd; docs/xbeam/data-contract.md"
-    introduce_at: "7.2"
+    introduce_at: "6.2"
     bridges: ["the timetable that lines the recordings up"]
     avoid: []
 
   - term: baseline
     definition: "A pair of stations whose recordings are correlated. Longer baselines see finer detail on the sky."
     source: "docs/guide/correlate.qmd; developer blog, 13 Nov 2026"
-    introduce_at: "7.2"
+    introduce_at: "6.2"
     bridges: ["a pair of dishes"]
     avoid: []
 
   - term: visibility
     definition: "What a radio correlator writes for one baseline, frequency channel and stretch of time: a complex number. Its amplitude says how much the two recordings share; its phase, how well they were lined up (and, with a correct model, where the source is). Imaging builds a picture from many of them."
     source: "docs/guide/correlate.qmd ('Correlate radio recordings')"
-    introduce_at: "7.2"
+    introduce_at: "6.2"
     bridges: ["the cross-spectrum of two dishes, per channel"]
     avoid: []
 
   - term: strain
     definition: "What a gravitational-wave detector measures: the relative change in length of its arms, a dimensionless number around 10⁻²¹ for GW150914."
     source: "course (LIGO, PRL 116, 061102)"
-    introduce_at: "7.3"
+    introduce_at: "6.3"
     bridges: ["how much the arms stretch, as a fraction of their length"]
     avoid: []
 
   - term: whitening
     definition: "Dividing a recording, frequency by frequency, by its own noise level, so every frequency carries noise of the same size. Then the loudest noise no longer dominates a correlation."
     source: "course"
-    introduce_at: "7.3"
+    introduce_at: "6.3"
     bridges: ["turning the volume down where the noise is loud"]
     avoid: []
 
   - term: background estimate
     definition: "The values the same analysis gives where there's no signal, measured on the same data (other stretches, or one recording shifted in time). A result is significant only against it."
     source: "course"
-    introduce_at: "7.3"
-    bridges: ["what noise alone does", "in 7.3, just 'background'"]
+    introduce_at: "6.3"
+    bridges: ["what noise alone does", "in 6.3, just 'background'"]
     avoid: ["sky background (Module 00's background: the sky's own level)"]
+
+  # --- Module 07 (track: xRay) ------------------------------------------------
+  - term: pump-probe
+    definition: "A way to watch something too fast to film: a laser pulse (the pump) starts it, and an X-ray pulse (the probe) a set delay later takes one snapshot. Stepping the delay makes a movie, one detector frame per delay. Laser-off frames show the sample at rest."
+    source: "docs/guide/xray-traces.qmd"
+    introduce_at: "7.1"
+    bridges: ["a strobe light on a vibrating string"]
+    avoid: []
+
+  - term: trace
+    definition: "In xRay: what the laser changed, per delay, for a region of the detector: (on + S) / (off + S) − 1 by default, where S is the mean laser-off level, so a small change comes out about half its size. reference_shift=False gives on / off − 1."
+    source: "docs/guide/xray-traces.qmd ('Extract a trace')"
+    introduce_at: "7.1"
+    bridges: ["the ringing, delay by delay"]
+    avoid: []
+
+  - term: damped mode
+    definition: "One oscillation in a trace that dies away: a frequency (THz when delays are in picoseconds), a decay rate, an amplitude and a phase. Linear prediction fits a trace as a sum of them plus a constant."
+    source: "docs/guide/xray-traces.qmd"
+    introduce_at: "7.1"
+    bridges: ["one note of the crystal's ringing"]
+    avoid: []
+
+  - term: model order
+    definition: "The number of components linear prediction keeps (n_components, --components). Each oscillating mode takes two. Too small misses a mode, too large fits noise; the detector command's default is 30."
+    source: "docs/guide/xray-traces.qmd ('Choose the model order')"
+    introduce_at: "7.1"
+    bridges: []
+    avoid: []
+
+  - term: fit residual
+    definition: "The trace minus the fit. When the model holds every mode, it is the noise; a missing mode leaves structure in it and raises it above the noise."
+    source: "course; docs/guide/xray-traces.qmd ('The reconstruction should follow the points with no leftover oscillation')"
+    introduce_at: "7.2"
+    bridges: ["what the fit leaves"]
+    avoid: ["residual (alone: in this course that's what's left in a difference image)"]
+
+  - term: dispersion
+    definition: "How a crystal's vibration frequency changes with the wave's length (its momentum). Each detector row sees a different momentum, so the fitted frequency across the detector traces the dispersion curve."
+    source: "course; docs/guide/xray-traces.qmd (phonon-viz)"
+    introduce_at: "7.3"
+    bridges: ["the pitch changing with position along the detector"]
+    avoid: []
+
+  # --- Module 08 (track: xImage) ----------------------------------------------
+  - term: bundle
+    definition: "xImage's input: named arrays in an NPY folder, HDF5 file or Zarr store. Required: images (batch, y, x, frame), variances (same shape) and psfs (psf_y, psf_x, channel, frame). Optional: masks (True = good) and exp_times."
+    source: "docs/guide/reconstruct.qmd ('Save and validate a bundle')"
+    introduce_at: "8.1"
+    bridges: ["the frames, their noise and their blur, packed together"]
+    avoid: []
+
+  - term: reconstruction
+    definition: "xImage's estimate of one nonnegative scene that, blurred by each frame's PSF, matches every frame within its noise. It comes with a receipt (summary.json) but no variance and no PSF of its own."
+    source: "docs/guide/reconstruct.qmd"
+    introduce_at: "8.1"
+    bridges: ["the sharp scene all the frames agree on"]
+    avoid: ["deconvolved truth", "stack (a stack averages; it keeps the blur)"]
+
+  - term: loss
+    definition: "In xImage: the mean, over good pixels, of the squared misfit between the blurred scene and the frames, divided by the variance. Near 1 when the scene explains the frames down to the noise; far above it when something in the bundle doesn't fit."
+    source: "docs/guide/reconstruct.qmd ('Run the reconstruction')"
+    introduce_at: "8.1"
+    bridges: ["chi-squared per pixel (4.2's χ²/dof, for the reconstruction)"]
+    avoid: []
+
+  - term: cosmic ray
+    definition: "A particle that hits the detector during one exposure and lights one or a few pixels: in one frame only, and sharper than the PSF allows."
+    source: "course"
+    introduce_at: "8.2"
+    bridges: []
+    avoid: []
+
+  - term: robust loss
+    definition: "A loss that counts small misfits as L2 does and large ones less (Huber: quadratic up to a threshold in units of the noise, linear past it). xImage's rho algorithm uses it, so a few bad pixels pull less on the scene."
+    source: "docs/guide/reconstruct.qmd (Options, rho)"
+    introduce_at: "8.2"
+    bridges: ["a fit that doesn't let a few wild pixels vote too loudly"]
+    avoid: []
 
 confusables:
   - words: ["PSF width (psf_sigma, sigma_x, sigma_y)", "variance plane", "error bar / covariance / standard_errors", "noise"]
@@ -513,8 +592,14 @@ collisions:
     cuphoton_meaning: "Two meanings: the convolution weights xPois fits (module 01), and a function launched on the GPU (module 03)."
     rule: "Not used in module 00. Introduce the matching sense in module 01 and the GPU sense in module 03, and name which one each time."
   - word: background
-    cuphoton_meaning: "In images (Module 00 on): the sky's own glow in every pixel. In 7.3: what an analysis gives without a signal (the term 'background estimate')."
-    rule: "In Module 07 say 'background' only for the noise-only comparison, and only after 7.3 introduces it; never for the sky level there."
+    cuphoton_meaning: "In images (Module 00 on): the sky's own glow in every pixel. In 6.3: what an analysis gives without a signal (the term 'background estimate')."
+    rule: "In Module 06 say 'background' only for the noise-only comparison, and only after 6.3 introduces it; never for the sky level there."
   - word: baseline
-    cuphoton_meaning: "In 7.2 on: a pair of correlated stations. Module 00's vocabulary avoids it as a word for the sky background."
+    cuphoton_meaning: "In 6.2 on: a pair of correlated stations. Module 00's vocabulary avoids it as a word for the sky background."
     rule: "Use it only for a pair of stations."
+  - word: residual
+    cuphoton_meaning: "From 0.3: what's left in a difference image that isn't noise. In Module 07: the trace minus the fit (the term 'fit residual')."
+    rule: "In Module 07 say 'fit residual' for trace minus fit; keep 'residual' alone for difference images."
+  - word: trace
+    cuphoton_meaning: "In Module 07: xRay's on/off trace over delay. In Module 08: xImage's run folder trace/ holds the loss per iteration."
+    rule: "In Module 08 say 'the loss per iteration', not 'the trace'."
