@@ -1,0 +1,75 @@
+1
+00:00:00,275 --> 00:00:03,125
+Strike a bell, and it rings at its own notes.
+
+2
+00:00:03,125 --> 00:00:10,100
+Strike a crystal with a very short laser pulse, and its atoms ring too, swaying together at their own frequencies.
+
+3
+00:00:10,100 --> 00:00:12,625
+But they do it trillions of times a second.
+
+4
+00:00:12,625 --> 00:00:14,675
+No camera is that fast.
+
+5
+00:00:15,550 --> 00:00:17,813
+A beamline uses two pulses.
+
+6
+00:00:17,813 --> 00:00:20,762
+The laser pulse, the pump, starts the ringing.
+
+7
+00:00:20,762 --> 00:00:29,400
+An X-ray pulse, the probe, arrives a set delay later, and the X-rays it scatters onto a detector record where the atoms are at that instant.
+
+8
+00:00:29,400 --> 00:00:35,300
+Then it repeats, with the delay a little longer each time: one detector frame per delay.
+
+9
+00:00:36,200 --> 00:00:39,737
+Frames taken without the laser show the crystal at rest.
+
+10
+00:00:39,737 --> 00:00:46,462
+The beam's own brightness wobbles from pulse to pulse, so each frame is divided by a monitor of it first.
+
+11
+00:00:46,462 --> 00:00:55,150
+Then compare laser on with laser off, delay by delay, and what's left is what the laser changed: a trace that rings, and dies away.
+
+12
+00:00:56,050 --> 00:01:00,638
+xRay fits the trace as a sum of damped oscillations, called modes.
+
+13
+00:01:00,638 --> 00:01:05,200
+Each mode has a frequency, a rate at which it dies away, and a strength.
+
+14
+00:01:05,200 --> 00:01:08,450
+Here there are two, and together they follow the trace.
+
+15
+00:01:09,350 --> 00:01:15,275
+Each row of the detector sees the crystal from a slightly different angle, and rings at its own frequency.
+
+16
+00:01:15,275 --> 00:01:18,413
+On a GPU, xRay fits every row.
+
+17
+00:01:18,413 --> 00:01:25,112
+In this module, you'll fit one trace whose answer you know, find out how a mode can go missing, and fit a whole detector.
+
+18
+00:01:25,112 --> 00:01:27,275
+A fit always returns modes.
+
+19
+00:01:27,275 --> 00:01:29,575
+The question is whether they're all there.

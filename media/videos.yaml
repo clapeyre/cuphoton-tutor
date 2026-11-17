@@ -64,3 +64,21 @@ v7-two-receivers:
     - [42.8, "slide, multiply, add"]
     - [69.0, "why line them up"]
     - [88.9, "this module"]
+v8-pump-and-probe:
+  title: Pump and probe
+  duration: "1:30"
+  chapters:
+    - [0, "a crystal rings"]
+    - [15.3, "pump, then probe"]
+    - [35.9, "laser on, laser off"]
+    - [55.8, "what xRay fits"]
+    - [69.0, "every row, and this module"]
+v9-many-frames:
+  title: Many frames, one scene
+  duration: "1:14"
+  chapters:
+    - [0, "many frames"]
+    - [15.2, "stacking keeps the blur"]
+    - [24.8, "working backwards"]
+    - [45.0, "one scene"]
+    - [58.5, "this module"]

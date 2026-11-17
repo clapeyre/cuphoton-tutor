@@ -23,5 +23,6 @@ intro: |
   cuPhoton's **xRay** reduces the laser-on and laser-off frame stacks to
   traces and fits each one as a sum of damped oscillations: each mode's
   frequency, how fast it dies, and how strong it is. On a GPU it fits every
-  row of the detector. You'll fit one trace whose answer you know, find out
+  row of the detector. The video in the first lesson shows it in a minute
+  and a half. You'll fit one trace whose answer you know, find out
   how a fit can lose a mode without a word, then fit a whole detector.

@@ -16,7 +16,8 @@ intro: |
   blur, its PSF, and its noise, it fits one sharp scene that, blurred by
   each frame's own PSF, matches every frame. It's used for telescope
   images, microscopy and adaptive optics. It runs on PyTorch, on a CPU or a
-  GPU, and every run writes a receipt.
+  GPU, and every run writes a receipt. The video in the first lesson shows
+  how it works backwards from a guess.
 
   You'll reconstruct a scene you know, then two bundles where something is
   wrong that the validation doesn't catch, then the M101 nights from

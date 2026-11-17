@@ -6,6 +6,12 @@ terms: [pump-probe, trace, damped mode, model order]
 guide: [xray-traces]
 ---
 
+:::video v8-pump-and-probe
+:::
+
+The video showed the whole path, from a laser pulse to a fitted trace. Here
+it is in the user guide's terms.
+
 The data comes as two HDF5 files, one laser-on and one laser-off, each a
 stack of detector frames, one per delay, with the delays and an
 incident-beam monitor (`i0`) beside them. The X-ray beam's intensity

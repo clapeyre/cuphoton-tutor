@@ -72,3 +72,12 @@ track: if this is the learner's first visit to `work/07/`, create it.
 - If they ask about the 1% constant: the fit carries a constant term
   besides the modes; in this run it isn't listed as a mode.
 - Settle, then `reveal("7.1")`.
+
+## Video `v8-pump-and-probe` (opens the module)
+A crystal ringing after a laser pulse, pump then probe (one frame per
+delay), laser on against laser off giving the trace (the guide's sample
+pair, reduced by xRay), the trace fitted as two damped modes (0.32 and
+0.72 THz, real fit), and a detector whose rows ring at different
+frequencies. It names no amplitude, order, residual or status code: the
+turns' questions still stand. If a learner seems lost on what's measured,
+offer it and use its words: pump, probe, delay, trace, mode.

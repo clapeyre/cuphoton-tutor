@@ -70,3 +70,12 @@ to `work/08/`, create it.
   isn't 1 even converged: don't speculate past "the scene isn't a perfect
   fit yet"; the guide doesn't give an expected value.
 - Settle, then `reveal("8.1")`.
+
+## Video `v9-many-frames` (opens the module)
+Three frames with their own PSFs, the median (less noise, same blur), and
+xImage working backwards: a guess blurred by each frame's PSF and compared
+with that frame, adjusted step by step while the loss falls (real snapshots
+after 1, 3, 10, 30, 75 steps). It uses its own scene (a close pair and a
+third source), not 8.1's, and shows no numbers: `predict-scene` still
+stands. It does show the dark rings around sharpened sources; if a learner
+predicts them from the video, credit it.

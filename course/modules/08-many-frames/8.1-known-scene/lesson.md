@@ -6,6 +6,9 @@ terms: [bundle, reconstruction, loss]
 guide: [reconstruct]
 ---
 
+:::video v9-many-frames
+:::
+
 xImage reads a [[bundle]]: a folder (or an HDF5 file or Zarr store) of
 named arrays. Three are required: the `images`, one per frame, all on one
 pixel grid; their `variances`, pixel by pixel; and one `psfs` per frame.

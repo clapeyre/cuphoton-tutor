@@ -1,0 +1,63 @@
+1
+00:00:00,275 --> 00:00:04,325
+Take several pictures of the same scene, and each comes out a little different.
+
+2
+00:00:04,325 --> 00:00:10,887
+The blur changes from one to the next, from the air, the focus, or a shaking mount, and so does the noise.
+
+3
+00:00:10,887 --> 00:00:14,600
+Each frame has its own blur, its point spread function.
+
+4
+00:00:15,475 --> 00:00:19,800
+Stacking them, taking the median pixel by pixel, beats down the noise.
+
+5
+00:00:19,800 --> 00:00:21,237
+But it keeps the blur.
+
+6
+00:00:21,237 --> 00:00:24,200
+Two sources close together still look like one.
+
+7
+00:00:25,100 --> 00:00:27,025
+xImage works backwards.
+
+8
+00:00:27,025 --> 00:00:33,675
+It starts from a guess of the scene, blurs the guess with each frame's own blur, and compares the result with that frame.
+
+9
+00:00:33,675 --> 00:00:37,400
+Where they disagree, it adjusts the scene, and tries again.
+
+10
+00:00:37,400 --> 00:00:44,425
+Step by step, the blurred scene matches every frame more closely, and the mismatch, the loss, falls toward the noise.
+
+11
+00:00:45,275 --> 00:00:49,025
+What comes back is one sharp scene that all the frames agree on.
+
+12
+00:00:49,025 --> 00:00:52,425
+The pair that the stack blurred together is two sources again.
+
+13
+00:00:52,425 --> 00:00:57,850
+With it comes a receipt: what ran, where, for how many steps, and how well it matched.
+
+14
+00:00:58,775 --> 00:01:09,063
+In this module, you'll reconstruct a scene you know, look for what went wrong in two bundles that both look fine, and reconstruct the nights of M101 from earlier in the course.
+
+15
+00:01:09,063 --> 00:01:11,375
+A sharper picture is easy to make.
+
+16
+00:01:11,375 --> 00:01:13,575
+The question is whether it's true.
