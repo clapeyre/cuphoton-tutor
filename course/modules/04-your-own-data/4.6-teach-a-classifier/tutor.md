@@ -83,6 +83,13 @@ in `work/04/data`). Its docstring describes every choice.
   have shapes these don't (ours are one width, one brightness profile);
   surveys label real ones by hand, which is what xScan's review queue
   (`cuphoton xscan review-queue`) is for. Mention, don't run.
+- If they ask whether the classifier can clean up 4.5's stack (its 11
+  hotspots in the new area, all residues of the blurry 11 May night): no.
+  Scored on the weighted stack's difference, the first model calls 3 of 11
+  real (p 0.83, 0.99, 1.00), the retrained one 4 (0.95, 0.66, 0.97, 0.99),
+  and not the same ones. A reference blurrier than the target leaves a
+  residue neither model saw in training: the same lesson as the cosmic
+  rays. (Checked 17 Nov with the walkthrough learner's two runs.)
 - Settle.
 
 ## Your turn `next-night` (module exit)

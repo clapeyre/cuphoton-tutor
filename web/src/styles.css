@@ -229,3 +229,14 @@ pre.files-code { margin: 0; flex: 1; min-width: 0; padding: 8px 10px; border-rad
 .filelink code { text-decoration: underline dotted; text-underline-offset: 3px; }
 .filelink:hover code { border-color: var(--brand); }
 @media (max-width: 700px) { .files-main { flex-direction: column; } .files-list { flex: 0 0 auto; max-height: 30vh; border-right: 0; border-bottom: 1px solid var(--border-color-base); } }
+
+/* the course map stays in view while the lesson scrolls (walkthrough 5, 4.6) */
+@media (min-width: 901px) {
+  .map { position: sticky; top: 64px; align-self: flex-start; max-height: calc(100vh - 64px); overflow-y: auto; }
+}
+
+/* conversations: your messages on the right, the tutor's full width (walkthrough 5, 4.5) */
+.msg.learner { align-self: flex-end; max-width: 88%; background: rgba(118, 185, 0, 0.10); border: 1px solid rgba(118, 185, 0, 0.35); border-radius: 12px 12px 4px 12px; }
+.msg.learner .who { color: var(--text-color-brand); text-align: right; }
+.msg.tutor { border-radius: 12px 12px 12px 4px; }
+.card.trip .msg.learner { max-width: 92%; }

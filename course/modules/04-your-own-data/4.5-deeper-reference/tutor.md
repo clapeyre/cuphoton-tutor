@@ -71,7 +71,18 @@ did; on their own survey, nights won't share a grid.
   kernel's squared values is 0.06, so the reference's variance (152 per
   pixel) arrives as about 9.5, against the target's 171. Cutting 152 to 49
   (the stack) cuts 9.5 to about 5: 2.5% of the total.
-- **When stacking the reference helps:** when it is the noisier image (a
+- **When stacking the reference helps** (walkthrough 5, second pass: the
+  learner found the lesson enlightening but unsatisfying, "something we spend
+  a long time showing doesn't work". Close on this rule, with numbers, so the
+  takeaway is when to stack, not that stacking failed). Stacking N nights
+  divides the reference's variance, so its share s of the difference's
+  variance becomes s/N: the noise scales by √(1 − s + s/N). Here s = 0.05:
+  three nights gain at most 1.7%. With s = 0.5 (a reference no sharper than
+  the target and about as deep): three nights, 18% less noise, about 0.22
+  mag deeper; ten, 26% and 0.32 mag. The share is the number to measure
+  first; the script prints it. Also: xRep did its part right (identity on
+  this grid, variance and mask carried); what failed was the prediction.
+  Otherwise: when it is the noisier image (a
   short reference, a deep or stacked target); when the reference night was
   poor; or for area. And the recipe: select nights by seeing (never blurrier
   than the target), scale to one flux scale (the zero points differ by up to
