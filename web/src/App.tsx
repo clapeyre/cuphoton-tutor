@@ -154,7 +154,7 @@ export function App() {
                 </button>
                 {open && u.lessons.map((l) => (
                   <button key={l.id} type="button" className={`row ${l.id === lessonId ? "cur" : ""}`} onClick={() => go(l.id)} style={{ paddingLeft: 4 }}>
-                    <span className={`sq ${box(l.id)}`} aria-hidden="true" style={{ flex: "none", cursor: "inherit" }} />
+                    <span className={`sq ${box(l.id)} ${l.id === lessonId ? "cur" : ""}`} aria-hidden="true" style={{ flex: "none", cursor: "inherit" }} />
                     <span style={{ fontSize: 14 }}>{l.id} {l.title}</span>
                   </button>
                 ))}
