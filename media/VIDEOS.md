@@ -32,6 +32,7 @@ a `data_vN.py` the pipeline can rerun.
 | v2-it-ran | It ran. Is it right? | 1:21 | after 2.3 | L0/L1 | draft rendered, cued on the word |
 | v3-kernel | What the matching kernel does | 1:21 | start of 1.4 | L2 | rendered, cued on the word; real kernel fit |
 | v4-where-data-lives | Where your data lives: host and device | 1:15 | start of 3.1 (opens Module 03) | L0/L1 | rendered, cued on the word; real GPU timings |
+| v7-two-receivers | Two receivers, one signal | 1:51 | start of 7.1 (opens Module 07) | L0 | rendered, cued on the word; xBeam data |
 | v6-one-image-through-the-chain | One image through the shipped chain | 1:19 | start of 5.1 (opens Module 05) | L0/L1 | rendered, cued on the word; real chain run |
 | v5-why-the-sum-wobbles | Why the sum wobbles | 1:31 | start of 5.3 (after 4.4) | L1 | rendered, cued on the word; xRep data |
 

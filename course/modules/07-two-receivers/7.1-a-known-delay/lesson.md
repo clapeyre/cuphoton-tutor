@@ -6,13 +6,19 @@ terms: [cross-correlation, lag, cross-spectrum]
 guide: [correlate]
 ---
 
-Start where the user guide starts: two signals, one a copy of the other
-that arrives a few samples later, with noise of its own. xBeam cuts both into
-windows, takes the Fourier transform of each window, multiplies one
-transform by the conjugate of the other and averages over the windows. That
-product is the [[cross-spectrum]]. Transformed back, it becomes the
-[[cross-correlation]]: how alike the two signals are when one is shifted by
-each possible [[lag]].
+:::video v7-two-receivers
+:::
+
+The video found the delay by sliding one recording past the other. xBeam
+gets the same sums faster, through Fourier transforms: it cuts both
+recordings into windows, turns each window into its frequencies, multiplies
+the two frequency by frequency, and averages over the windows. That product
+is the [[cross-spectrum]]. Turned back into a function of the shift, it's the
+[[cross-correlation]] from the video, one value per [[lag]], the shift in
+samples.
+
+You'll start where the user guide starts: two made-up signals, one a copy of
+the other that arrives a few samples later, plus noise of its own.
 
 In Python it takes a source and a spec: `ArraySource` holds the signals on
 one sample grid, and `CorrelationSpec` names the pairs, the window length,

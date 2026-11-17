@@ -7,20 +7,24 @@ misconceptions: [M-PEAK-IS-SIGNAL, M-DELAY-SIGN, M-WEIGHT-MEANS-RIGHT, M-RAW-COR
 source: docs/guide/correlate.qmd, docs/xbeam/README.md, docs/xbeam/time-series.md, docs/xbeam/data-contract.md, docs/xbeam/sidecars.md, examples/xbeam/correlate_series.py in the pinned checkout; NVIDIA Technical Blog, "Run GPU-powered black hole interferometry with NVIDIA cuPhoton" (13 Nov 2026)
 time: 75–100 min
 intro: |
-  A track on one more part of cuPhoton: **xBeam**, which correlates
-  recordings. It's independent of the difference-imaging modules, apart from
-  their habits: predict before you run, read the receipt, test against a
-  known answer.
+  An optional track on another part of cuPhoton, **xBeam**. It needs nothing
+  from the difference-imaging modules except their habits: predict before
+  you run, read the receipt, test against a known answer.
 
-  When two receivers record the same source (two microphones, two radio
-  telescopes, two gravitational-wave detectors), each hears it at a slightly
-  different time. Correlating the two recordings finds that delay, and how
-  much of the two recordings is the shared source. Radio astronomers do this
-  between telescopes thousands of kilometres apart to see detail no single
-  dish could: the Event Horizon Telescope's images of black holes came out
-  of such a correlation, and xBeam does it on GPUs.
+  Clap your hands in a room with two microphones, and the nearer one hears
+  the clap first. Any two receivers that pick up the same source hear it at
+  slightly different times, and that gap, the **delay**, tells you about
+  where the source is. xBeam finds the delay by comparing the two
+  recordings, a calculation called correlation. The video below shows it in
+  under two minutes.
 
-  You'll measure a known delay, then correlate radio recordings from three
-  stations, then find the delay of a real gravitational wave between the two
-  LIGO detectors. Each time, the run will hand back a number, and the
-  question is when to believe it.
+  Why astronomers care: radio telescopes on different continents record the
+  same distant galaxy or black hole. Lined up by their delays and
+  correlated, they work like a single telescope as wide as the distance
+  between them. That's how the Event Horizon Telescope imaged black holes,
+  and xBeam does this correlation on GPUs.
+
+  You'll find a delay you know, then correlate the recordings of three
+  radio telescopes (made up, with a known answer), then measure the delay
+  of a real gravitational wave between the two LIGO detectors. Each run
+  hands you a number; the question each time is when to believe it.

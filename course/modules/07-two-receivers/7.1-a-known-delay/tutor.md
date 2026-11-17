@@ -13,6 +13,17 @@ copy it:** the hidden delays are in the file, and the learner's Files panel
 shows `work/07/`. GPU environment. Module 07 is a track: if this is the
 learner's first visit to `work/07/`, create it.
 
+## Video `v7-two-receivers` (opens the module)
+One wave reaching two dishes at different times, what a dish records (noise
+with a faint shared pattern), sliding one recording past the other until
+the products line up and the sum peaks (real xBeam curve), why baselines
+matter (the EHT), and the module's three lessons. Added after walkthrough 8:
+the author, new to radio astronomy, found the module hard to picture. If a
+learner seems lost on what's being measured, offer it, and use its words:
+two receivers, one source, a delay. It shows a peak right of zero but never
+says what a positive lag means in xBeam: the `known-delay` turn's sign
+question still stands.
+
 ## Setup facts
 - xBeam takes NumPy or CuPy vectors in `ArraySource({"a": a, "b": b},
   sample_rate_hz=...)`; `CorrelationSpec(pairs=(("a", "b"),),

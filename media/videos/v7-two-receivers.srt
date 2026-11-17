@@ -1,0 +1,95 @@
+1
+00:00:00,300 --> 00:00:05,750
+Far away, a source sends out waves: radio waves, from a galaxy or a black hole.
+
+2
+00:00:05,750 --> 00:00:09,050
+Two radio telescopes on the ground both receive them.
+
+3
+00:00:09,050 --> 00:00:15,450
+But the source isn't straight overhead, so each wavefront reaches one dish first, and the other a moment later.
+
+4
+00:00:15,450 --> 00:00:17,300
+That moment is the delay.
+
+5
+00:00:17,300 --> 00:00:22,475
+It depends on where the source is in the sky, and it changes slowly as the Earth turns.
+
+6
+00:00:23,375 --> 00:00:26,050
+A radio telescope doesn't take a picture.
+
+7
+00:00:26,050 --> 00:00:30,450
+It records the voltage from its receiver, millions of times a second.
+
+8
+00:00:30,450 --> 00:00:33,612
+Most of that voltage is the receiver's own noise.
+
+9
+00:00:33,612 --> 00:00:40,162
+The source is a faint pattern hidden in both recordings, the same pattern in each, shifted by the delay.
+
+10
+00:00:40,162 --> 00:00:42,200
+By eye, you can't see it.
+
+11
+00:00:43,100 --> 00:00:45,975
+To find it, slide one recording past the other.
+
+12
+00:00:45,975 --> 00:00:50,250
+At each shift, multiply them sample by sample, and add up the products.
+
+13
+00:00:50,250 --> 00:00:54,900
+Mostly, the products are as often negative as positive, and the sum stays small.
+
+14
+00:00:54,900 --> 00:00:59,612
+When the hidden patterns line up, the products turn mostly positive, and the sum jumps.
+
+15
+00:00:59,612 --> 00:01:01,925
+That curve is the cross-correlation.
+
+16
+00:01:01,925 --> 00:01:03,887
+Its peak sits at the delay.
+
+17
+00:01:03,887 --> 00:01:08,450
+xBeam computes it this way, through Fourier transforms, on the GPU.
+
+18
+00:01:09,350 --> 00:01:14,550
+Radio astronomers correlate recordings from dishes thousands of kilometres apart.
+
+19
+00:01:14,550 --> 00:01:23,913
+Lined up by their delays, each pair of dishes, a baseline, sees detail as fine as a single dish as wide as the distance between them.
+
+20
+00:01:23,913 --> 00:01:28,300
+That's how the Event Horizon Telescope made its images of black holes.
+
+21
+00:01:29,175 --> 00:01:37,712
+The same idea works for any two receivers that hear one source: two microphones, or the two detectors that heard the first gravitational wave.
+
+22
+00:01:37,712 --> 00:01:45,088
+In this module, you'll find a delay you know, correlate three radio stations, and measure that wave's delay yourself.
+
+23
+00:01:45,088 --> 00:01:47,975
+Each time, the correlation hands you a number.
+
+24
+00:01:47,975 --> 00:01:50,100
+The question is when to believe it.

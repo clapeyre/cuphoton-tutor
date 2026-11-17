@@ -55,3 +55,12 @@ v3-kernel:
     - [32.3, built from shapes]
     - [51.7, read the kernel]
     - [75.7, ask]
+v7-two-receivers:
+  title: Two receivers, one signal
+  duration: "1:51"
+  chapters:
+    - [0, "one wave, two dishes"]
+    - [23.1, "what a dish records"]
+    - [42.8, "slide, multiply, add"]
+    - [69.0, "why line them up"]
+    - [88.9, "this module"]

@@ -23,7 +23,7 @@ try {
     }
     if (!l.tutorNotes) bad("tutor notes", `${l.id} has no tutor.md`);
     // Every [[term]] and key term must have a definition, or it renders as plain text.
-    const refs = [...l.source.matchAll(/\[\[(.+?)\]\]/g)].map((m) => m[1].split("|")[0]).concat(l.terms);
+    const refs = [...l.source.matchAll(/\[\[(.+?)\]\]/g)].map((m) => m[1]).concat(l.terms).map((r) => r.split("|")[0]);
     for (const r of refs) {
       const k = r.startsWith("@") ? r : normKey(r);
       if (!c.glossary.has(k) && !c.glossary.has(k.replace(/s$/, ""))) bad("term", `${l.id}: [[${r}]] has no definition`);
