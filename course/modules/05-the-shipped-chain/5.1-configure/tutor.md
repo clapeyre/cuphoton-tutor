@@ -9,7 +9,7 @@ What the chain is, its stages on the GPU with real timings from the final
 configuration, the catalog row and summary it leaves, the configuration that
 drives it. It names no trap: don't add one when discussing it.
 
-## Setup (once, in the first turn)
+## Setup (once, when you prepare the lesson)
 - Working dir `work/05/`. Data: the module 04 files in
   `course/modules/04-your-own-data/data/` (absolute paths: the selections file
   needs them). Python: the GPU environment (it has the `catalog` extra and the
@@ -20,12 +20,19 @@ drives it. It names no trap: don't add one when discussing it.
   "r", `image`, `mask`, `variance` (target files), `template`,
   `template_mask`, `template_variance` (reference files).
 - Start the configuration from `<checkout>/examples/transient-chain/config-generic.yaml`,
-  copied to `work/05/config.yaml`. Reference answer (verified):
+  copied to `work/05/config.yaml` when you prepare the lesson (on opening, or
+  ahead), before the learner's first message:
+  the learner reads the whole file in the Files panel (walkthrough 6: shown
+  only the `survey` block, they missed that the rest of the file decides
+  things too, and later searched the wrong block). Reference answer (verified):
   `config-ps1.yaml` next to these notes.
 
 ## Your turn `settings`
-- Show the `survey:` block of `config-generic.yaml` when asked (as written,
-  comments included). It describes a DECam-style layout.
+- The learner has the whole file in Files. Point to blocks by name
+  (`survey`, `xfit`, ...) rather than pasting the file; show a block in the
+  chat when they ask. The `survey` block describes a DECam-style layout.
+  If they spot `xfit.psf_sigma_px: null` and its comment now, good: ask what
+  it will be measured from on this pair, and let the run answer.
 - **Pass:** at least three of the four, each with its reason from 4.1:
   1. `variance_kind: variance` for the target (shipped: `inverse_variance`;
      the PS1 `.var.fits` is a variance in counts², checked in 4.1);

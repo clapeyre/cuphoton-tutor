@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { C, lookup, type Ctx, type TermDef } from "./ctx.tsx";
+import { FilesPanel } from "./Files.tsx";
 import { Margin } from "./Margin.tsx";
 import { Inline, TermPopover } from "./Prose.tsx";
 import { PartView } from "./Parts.tsx";
-import type { Course, Lesson, Pointer, ServerState } from "./types.ts";
+import type { Course, Lesson, Pointer, ServerState, WorkFile } from "./types.ts";
 
 function useServer() {
   const [state, setState] = useState<ServerState | null>(null);
@@ -40,6 +41,11 @@ export function App() {
   const [pointer, setPointer] = useState<Pointer | null>(null);
   const place = useRef<{ y: number; video?: HTMLVideoElement; t?: number; playing?: boolean } | null>(null);
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
+  // The Files panel: which work folder, which file, and whether it's open.
+  const [filesOpen, setFilesOpen] = useState(false);
+  const [filesDir, setFilesDir] = useState<string | null>(null);
+  const [filesPath, setFilesPath] = useState<string | null>(null);
+  const [workFiles, setWorkFiles] = useState<Record<string, WorkFile[]>>({});
 
   useEffect(() => { fetch("/api/course").then((r) => r.json()).then(setCourse); }, []);
   useEffect(() => {
@@ -59,6 +65,17 @@ export function App() {
     send({ type: "open", lesson: lessonId });
     if (!lessons[lessonId]) fetch(`/api/lesson/${encodeURIComponent(lessonId)}`).then((r) => r.ok ? r.json() : null).then((l) => l && setLessons((x) => ({ ...x, [l.id]: l })));
   }, [lessonId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // This lesson's module, and the files in its work folder: fetched on arrival, again whenever the tutor
+  // goes idle (it may have written something), and when the panel's folder changes.
+  const moduleId = course?.modules.find((u) => u.lessons.some((l) => l.id === lessonId))?.id ?? null;
+  const busy = !!state?.activity.main;
+  const loadFiles = useCallback((dir: string) => {
+    fetch(`/api/files?dir=${encodeURIComponent(dir)}`).then((r) => r.json()).then((j) => setWorkFiles((x) => ({ ...x, [dir]: j.files ?? [] }))).catch(() => {});
+  }, []);
+  useEffect(() => { if (moduleId && !busy) loadFiles(moduleId); }, [moduleId, busy, loadFiles]);
+  useEffect(() => { if (filesOpen && filesDir && filesDir !== moduleId) loadFiles(filesDir); }, [filesOpen, filesDir, moduleId, loadFiles]);
+  const openFile = useCallback((p: string | null) => { setFilesDir(moduleId); setFilesPath(p); setFilesOpen(true); }, [moduleId]);
 
   const glossary = useMemo(() => new Map((course?.glossary ?? []).map((g) => [g.key, g])), [course]);
   const lesson = lessonId ? lessons[lessonId] : undefined;
@@ -93,7 +110,10 @@ export function App() {
   const go = (id: string) => { location.hash = `#/${id}`; };
   const box = (id: string) => state.boxes[id] ?? "empty";
 
-  const ctx: Ctx | null = lesson ? { course, glossary, state, lesson, send, askAbout, def, setDef } : null;
+  const workDir = moduleId ?? "";
+  const ctx: Ctx | null = lesson ? { course, glossary, state, lesson, send, askAbout, def, setDef, workDir, workFiles: workFiles[workDir] ?? [], openFile } : null;
+  const dirs = course.modules.map((u) => u.id);
+  const panelDir = filesDir ?? workDir;
   const lst = lesson ? state.page.lessons[lesson.id] : undefined;
 
   return (
@@ -113,7 +133,15 @@ export function App() {
             </div>
           ))}
         </nav>
+        <button type="button" className="btn tertiary small files-btn" aria-expanded={filesOpen}
+          onClick={() => filesOpen ? setFilesOpen(false) : openFile(filesDir === moduleId ? filesPath : null)}>
+          Files
+        </button>
       </header>
+      {filesOpen && panelDir && (
+        <FilesPanel dirs={dirs} dir={panelDir} setDir={setFilesDir} files={workFiles[panelDir] ?? []}
+          path={filesPath} setPath={setFilesPath} onClose={() => setFilesOpen(false)} refresh={() => loadFiles(panelDir)} />
+      )}
       <div className="cols">
         <nav className="map" aria-label="Course map">
           {course.modules.map((u) => {

@@ -225,6 +225,14 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
               </div>
             ))}
             {working && <span className="typing" aria-live="polite">The tutor is {doing}</span>}
+            {settled && unrolled && !working && !streaming && (
+              <div className="btn-row">
+                <button type="button" className="link" onClick={() => {
+                  setUnrolled(false);
+                  requestAnimationFrame(() => document.getElementById(`turn-${part.id}`)?.scrollIntoView({ block: "start", behavior: "smooth" }));
+                }}>Hide the conversation</button>
+              </div>
+            )}
             {!settled && (
               <>
                 <label htmlFor={`in-${part.id}`} className="note">{lastLearner < 0 ? "Your answer" : "Your reply"}</label>

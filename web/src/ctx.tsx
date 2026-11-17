@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
-import type { Course, GlossaryEntry, Lesson, Pointer, ServerState } from "./types.ts";
+import type { Course, GlossaryEntry, Lesson, Pointer, ServerState, WorkFile } from "./types.ts";
 
 export interface Ctx {
   course: Course;
@@ -11,6 +11,10 @@ export interface Ctx {
   askAbout: (p: Pointer | null, opts?: { video?: HTMLVideoElement }) => void;
   def: TermDef | null;
   setDef: (d: TermDef | null) => void;
+  /** This module's work folder (work/<module id>) and what's in it, for the Files panel and file links. */
+  workDir: string;
+  workFiles: WorkFile[];
+  openFile: (path: string | null) => void;
 }
 /** An open definition: which term, where on the page, and the term's position (document coordinates). */
 export interface TermDef { where: string; key: string; anchor: { x: number; y: number; top: number } }

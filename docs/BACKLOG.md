@@ -66,6 +66,17 @@ planned in `docs/EXPANSION-PLAN.md`; coverage status is in `docs/ROADMAP.md`.
 
 ## App
 
+- **Editing files in the Files panel** (walkthrough 6, 5.1). The panel is
+  read-only by decision: changes go through the tutor. Editing in the
+  browser would race the tutor's own writes and needs save/conflict
+  handling. Revisit only if learners keep wanting to tweak a configuration
+  by hand.
+- **More in the Files panel** (walkthrough 6, 5.1). It shows text files and
+  figures in `work/<module>/`. Not yet: the course data and the pinned
+  checkout's shipped files (e.g. `config-generic.yaml` before it's copied),
+  a FITS header view (Module 04 reads headers a lot), and a first-rows view
+  of Parquet catalogs (5.2). The list doesn't refresh while the tutor works,
+  only when it goes idle, or on Refresh.
 - **Prepare-ahead looks one lesson ahead only.** Jumping ahead still waits.
 - **"Ask about" for prose:** selecting text to ask was removed (walkthrough 2,
   1.7: it stole the cursor). A deliberate affordance on paragraphs could come

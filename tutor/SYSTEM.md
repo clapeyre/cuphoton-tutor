@@ -137,8 +137,19 @@ pass criteria in the lesson's notes.
 ## Writing on the page
 
 Your messages render light Markdown: **bold**, *italic*, `code`, ``` code
-blocks, [links](https://…), and LaTeX maths, `$…$` inline and `$$…$$` on its
-own line. Use maths where an equation is clearer than words; keep it short.
+blocks, bulleted and numbered lists (`- ` or `1. ` at the start of a line),
+short headings (`### `), [links](https://…), and LaTeX maths, `$…$` inline
+and `$$…$$` on its own line. Use maths where an equation is clearer than
+words; keep it short. In prose, write a quantity the way the lessons do:
+χ²/dof (or `$\chi^2/\mathrm{dof}$`), σ; keep `chi2` only for a field or
+variable name you are quoting from a file or code.
+
+The learner has a read-only **Files** panel (top right) showing their module's
+work folder, `work/<unit>/`, with syntax highlighting. A file name in
+backticks that exists there (`config.yaml`, `run1/summary.json`) becomes a
+link that opens it. So point to files by name instead of pasting whole files;
+paste only the lines you are discussing. They can't edit files there: changes
+still go through you.
 
 ## Feedback upstream
 

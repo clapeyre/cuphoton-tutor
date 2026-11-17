@@ -4,6 +4,7 @@ import katex from "katex";
 import "katex/dist/katex.min.css";
 import { Code } from "./Code.tsx";
 import { heldUntil, lookup, useCtx } from "./ctx.tsx";
+import { resolveWorkPath } from "./Files.tsx";
 
 /** LaTeX maths with KaTeX; on a syntax error, the source is shown in red rather than breaking the page. */
 function Maths({ tex, display }: { tex: string; display: boolean }) {
@@ -37,9 +38,15 @@ export function Inline({ text, where }: { text: string; where: string }) {
     } else if (m[2]) out.push(m[3].startsWith("#/")
       ? <a key={n++} href={m[3]} className="lesson-link" title={`Go back to lesson ${m[3].slice(2)}`}>{m[2]}</a>
       : <a key={n++} href={m[3]} target="_blank" rel="noopener noreferrer" className="ext">{m[2]}</a>);
-    else if (m[4]) out.push(<strong key={n++}>{m[4]}</strong>);
-    else if (m[5]) out.push(<em key={n++}>{m[5]}</em>);
-    else if (m[6]) out.push(<code key={n++}>{m[6]}</code>);
+    else if (m[4]) out.push(<strong key={n++}><Inline text={m[4]} where={`${where}-b${n}`} /></strong>);
+    else if (m[5]) out.push(<em key={n++}><Inline text={m[5]} where={`${where}-i${n}`} /></em>);
+    else if (m[6]) {
+      // A file in this module's work folder opens in the Files panel.
+      const f = ctx.workFiles ? resolveWorkPath(ctx.workFiles, ctx.workDir, m[6]) : null;
+      out.push(f
+        ? <button key={n++} type="button" className="filelink" title={`Open work/${ctx.workDir}/${f}`} onClick={() => ctx.openFile(f)}><code>{m[6]}</code></button>
+        : <code key={n++}>{m[6]}</code>);
+    }
     else if (m[7]) out.push(<Maths key={n++} tex={m[7]} display />);
     else if (m[8]) out.push(<Maths key={n++} tex={m[8]} display={false} />);
     i = re.lastIndex;
@@ -114,9 +121,54 @@ export function MessageText({ text, where }: { text: string; where: string }) {
     <>
       {seq.map((b, i) => b.code
         ? <Code key={i} text={b.text.replace(/\n$/, "")} lang={b.lang || undefined} className="msg-code" />
-        : b.text.split(/\n\s*\n/).filter((p) => p.trim()).map((p, j) => (
-            <p key={`${i}-${j}`} className="msg-p"><Inline text={p.trim()} where={`${where}-${i}-${j}`} /></p>
-          )))}
+        : <TextBlocks key={i} text={b.text} where={`${where}-${i}`} />)}
+    </>
+  );
+}
+
+const ITEM = /^\s*(?:[-*•]|(\d+)[.)])\s+(.*)$/;
+
+/** Paragraphs, bulleted and numbered lists, and short headings (#, ##, ###), from plain text. A list may
+ *  follow its lead-in line directly, without a blank line; an indented line continues the item above. */
+function TextBlocks({ text, where }: { text: string; where: string }) {
+  type B = { kind: "p" | "h"; text: string } | { kind: "ul" | "ol"; items: string[]; start: number };
+  const out: B[] = [];
+  let para: string[] = [];
+  const flush = () => { if (para.length) out.push({ kind: "p", text: para.join("\n") }); para = []; };
+  for (const line of text.split("\n")) {
+    const last = out.at(-1);
+    const it = line.match(ITEM);
+    const h = line.match(/^\s*#{1,4}\s+(.*)$/);
+    if (!line.trim()) { flush(); continue; }
+    if (h) { flush(); out.push({ kind: "h", text: h[1] }); continue; }
+    if (it) {
+      flush();
+      const kind = it[1] ? "ol" : "ul";
+      if (last && last.kind === kind && !para.length) last.items.push(it[2]);
+      else out.push({ kind, items: [it[2]], start: it[1] ? Number(it[1]) : 1 });
+      continue;
+    }
+    if (!para.length && last && (last.kind === "ul" || last.kind === "ol") && /^\s+\S/.test(line)) {
+      last.items[last.items.length - 1] += " " + line.trim();
+      continue;
+    }
+    para.push(line);
+  }
+  flush();
+  // A blank line between items of one list (common in model output) shouldn't split the list.
+  const merged = out.reduce<B[]>((a, b) => {
+    const p = a.at(-1);
+    if (p && (p.kind === "ul" || p.kind === "ol") && p.kind === b.kind && "items" in b) { p.items.push(...b.items); return a; }
+    a.push(b); return a;
+  }, []);
+  return (
+    <>
+      {merged.map((b, j) => {
+        const w = `${where}-${j}`;
+        if ("text" in b) return <p key={j} className={b.kind === "h" ? "msg-h" : "msg-p"}><Inline text={b.text.trim()} where={w} /></p>;
+        const items = b.items.map((t, k) => <li key={k}><Inline text={t} where={`${w}-${k}`} /></li>);
+        return b.kind === "ul" ? <ul key={j} className="msg-list">{items}</ul> : <ol key={j} className="msg-list" start={b.start}>{items}</ol>;
+      })}
     </>
   );
 }

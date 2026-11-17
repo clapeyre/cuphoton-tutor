@@ -37,3 +37,6 @@ export interface ServerState {
   activity: { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
   notes: { ts: string; kind: string; summary: string }[];
 }
+
+/** A file in the learner's work folder (the Files panel). */
+export interface WorkFile { path: string; size: number; kind: "text" | "image" | "html" | "other" }

@@ -14,13 +14,15 @@ block per stage, and a `survey` block that says where each plane of the data
 is and what its numbers mean. It ships with a configuration for a different
 survey, with a different file layout, and checks every key when it loads it.
 
-The tutor can show you the shipped configuration's `survey` block, or any
-other block. What you decided about this data in [4.1](#/4.1) is what goes
-into it.
+The tutor starts by copying the shipped configuration into your work folder as
+`config.yaml`. Open it with **Files**, top right, and read it whole: it's
+short, and every line is commented. What you decided about this data in
+[4.1](#/4.1) goes into the `survey` block, but the other blocks make decisions
+too, through their defaults.
 
 :::your-turn settings
 title: What has to change?
-prompt: Ask to see the shipped configuration's survey block. Which settings must change for the M101 pair, and why? Then ask the tutor to write the configuration and run the chain on the GPU.
+prompt: Read the shipped configuration in Files. Which settings must change for the M101 pair, and why? Then ask the tutor to write the configuration and run the chain on the GPU.
 :::
 
 :::your-turn success

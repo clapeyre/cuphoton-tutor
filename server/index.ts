@@ -42,6 +42,45 @@ function under(base: string, rel: string, allow: RegExp) {
 }
 const IMG = /\.(png|jpe?g|gif|svg|webp)$/i;
 
+// The Files panel: read-only views of the learner's work folder. Nothing here writes; paths are
+// relative to work/ and can't leave it.
+const WORK = () => path.join(config.learnerDir, "work");
+const TEXT = /\.(py|ya?ml|json|jsonl|txt|md|log|csv|tsv|sh|toml|cfg|ini|out|err)$/i;
+const SKIP_DIR = /^(__pycache__|\.git|node_modules|\.ipynb_checkpoints)$/;
+function fileKind(name: string) {
+  return TEXT.test(name) ? "text" : IMG.test(name) ? "image" : /\.html$/i.test(name) ? "html" : "other";
+}
+function listWork(dir: string) {
+  const root = dir ? under(WORK(), dir, /./) : null;
+  if (!root || !fs.existsSync(root) || !fs.statSync(root).isDirectory()) return { dir, files: [] };
+  const files: { path: string; size: number; kind: string }[] = [];
+  const walk = (d: string, depth: number) => {
+    let ents: fs.Dirent[];
+    try { ents = fs.readdirSync(d, { withFileTypes: true }); } catch { return; }
+    ents.sort((a, b) => Number(b.isFile()) - Number(a.isFile()) || a.name.localeCompare(b.name));
+    for (const e of ents) {
+      if (files.length >= 800) return;
+      const full = path.join(d, e.name);
+      if (e.isDirectory()) { if (depth < 5 && !SKIP_DIR.test(e.name)) walk(full, depth + 1); }
+      else if (e.isFile()) files.push({ path: path.relative(root, full), size: fs.statSync(full).size, kind: fileKind(e.name) });
+    }
+  };
+  walk(root, 0);
+  return { dir, files };
+}
+const MAX_TEXT = 512 * 1024;
+function readWork(rel: string) {
+  const f = under(WORK(), rel, TEXT);
+  if (!f || !fs.existsSync(f) || !fs.statSync(f).isFile() || !fs.realpathSync(f).startsWith(fs.realpathSync(WORK()) + path.sep))
+    return { error: "not a text file in your work folder" };
+  const size = fs.statSync(f).size;
+  const fd = fs.openSync(f, "r");
+  const buf = Buffer.alloc(Math.min(size, MAX_TEXT));
+  fs.readSync(fd, buf, 0, buf.length, 0);
+  fs.closeSync(fd);
+  return { path: rel, size, truncated: size > MAX_TEXT, text: buf.toString("utf8") };
+}
+
 function notes() {
   if (!fs.existsSync(QUEUE())) return [];
   return fs.readFileSync(QUEUE(), "utf8").split("\n").filter(Boolean).map((l) => {
@@ -64,6 +103,14 @@ const server = http.createServer((req, res) => {
   if (p.startsWith("/api/lesson/")) {
     const l = course.lessons.get(decodeURIComponent(p.slice("/api/lesson/".length)));
     return l ? json(publicLesson(l)) : json({ error: "no such lesson" }, 404);
+  }
+  // The learner's files, read-only: a module's work folder listed, and one text file's contents.
+  if (p === "/api/files" || p === "/api/file") {
+    try {
+      if (p === "/api/files") return json(listWork(url.searchParams.get("dir") ?? ""));
+      const r = readWork(url.searchParams.get("path") ?? "");
+      return "error" in r ? json(r, 404) : json(r);
+    } catch { return json({ error: "can't read that" }, 400); }
   }
   if (p === "/api/health") return json({ ok: true, model: `${config.provider}/${config.model}`, lessons: course.order.length });
   if (p.startsWith("/media/") && p.endsWith(".vtt")) { // subtitles: the .srt next to the video, as WebVTT
