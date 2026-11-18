@@ -8,15 +8,40 @@ blocks and in the margin. One server per learner, on the GPU machine. See
 
 ## Run it
 
+You need an NVIDIA GPU with 16 GB (a T4 is enough), Linux, about 20 GB of
+disk, and a key for a model that can call tools (see "The model" below).
+The page asks for the model on first visit.
+
+**On Brev, from your laptop** (needs the [Brev CLI](https://docs.nvidia.com/brev),
+logged in with `brev login`):
+
 ```bash
-npm ci
-npm run build          # the page, into web/dist
-npm run smoke          # GPU, endpoint, course, Python env
-npm start              # http://127.0.0.1:8765
+brev create cuphoton --type g4dn.xlarge        # a T4, about $0.63/h; wait for it to be ready
+curl -fsSLO https://raw.githubusercontent.com/clapeyre/cuphoton-tutor/main/tools/brev-setup.sh
+brev exec cuphoton @brev-setup.sh              # installs everything, about 5 minutes
+brev ports open cuphoton 8765 --protocol http  # prints the course's https link
 ```
 
-From a laptop: `ssh -L 8765:127.0.0.1:8765 <gpu-machine>`, then open
-http://localhost:8765.
+Open the link: Brev asks you to sign in, then the course's setup page asks
+for the tutor's model. Your browser becomes the course's owner; the admin
+page has a link to open it on another device. `brev stop cuphoton` when you
+pause (your work stays on the disk), `brev delete cuphoton` when done. To
+let someone else in, `--authorize their@email` on the `ports open` line.
+Publishing this as a one-click launchable: `docs/LAUNCHABLE.md`.
+
+**On any Linux GPU machine:**
+
+```bash
+git clone https://github.com/clapeyre/cuphoton-tutor.git && cd cuphoton-tutor
+tools/install.sh       # cuPhoton, both Python environments, the app; then starts the server
+```
+
+The server listens on http://127.0.0.1:8765. From a laptop:
+`ssh -L 8765:127.0.0.1:8765 <gpu-machine>`, then open http://localhost:8765.
+`tools/serve.sh` restarts it (log in `server.log`).
+
+**Developing the course:** after `tools/install.sh` (or by hand: `npm ci`,
+`npm run build`, `npm run smoke`, `npm start`).
 
 While editing, run `npm run dev` instead of `npm start`: same address, the
 server restarts when `server/`, `course/` or the tutor's prompt and skills

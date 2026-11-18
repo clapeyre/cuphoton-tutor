@@ -14,20 +14,17 @@ this course needs from them.
   15 GB, plus the checkout, the course data and the learner's work).
 - **Code:** "I have code files in a git repository":
   `https://github.com/clapeyre/cuphoton-tutor` (public).
-- **Setup script:**
+- **Setup script:** `tools/brev-setup.sh`, which clones the course, runs
+  `tools/install.sh` (starting the server) and adds an `@reboot` line. Paste
+  it, or this, which fetches it:
 
   ```bash
   #!/bin/bash
-  set -euo pipefail
-  [ -d ~/cuphoton-tutor ] || git clone https://github.com/clapeyre/cuphoton-tutor.git ~/cuphoton-tutor
-  cd ~/cuphoton-tutor
-  tools/install.sh
-  # Start the server again after a reboot.
-  ({ crontab -l 2>/dev/null || true; } | { grep -v cuphoton-tutor || true; }; echo "@reboot cd $HOME/cuphoton-tutor && PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin tools/serve.sh") | crontab -
+  bash -c "$(curl -fsSL https://raw.githubusercontent.com/clapeyre/cuphoton-tutor/main/tools/brev-setup.sh)"
   ```
 
-  If Brev clones the repository itself, point the script at that folder
-  instead of cloning again.
+  If Brev clones the repository itself, run `tools/brev-setup.sh` from that
+  clone with `CUPHOTON_LEARN_DIR` set to it.
 - **Network:** one **secure link** on port **8765**, named "cuPhoton Learn",
   shown as the call to action. Do **not** also open 8765 as a TCP port: the
   tutor runs shell commands on the instance.
@@ -56,7 +53,11 @@ this course needs from them.
 2. The course's own lock: the first browser to open it owns it; everything
    else needs its cookie or the access link (`learner/access-link.txt` on the
    instance). This is what actually keeps a shell from being shared.
-3. The server listens on 127.0.0.1 unless `HOST` says otherwise.
+3. The server listens on Brev's mesh address (interface `wt0`, NetBird),
+   which is how the secure link's proxy reaches the instance: not on
+   127.0.0.1 (the proxy gets a 503) and not on the public interface.
+   `tools/serve.sh` looks the address up at each start, waiting for the mesh
+   at boot; `HOST` in the environment or `.env` overrides it.
 
 ## Tested on a Brev T4 (18 Nov)
 
@@ -69,14 +70,13 @@ $0.63/h), setup script above run as is:
 - **Passwordless sudo: yes**, so xDR's build tools install.
 - **Reboot: the server comes back** (the `@reboot` line), listening within
   a minute of boot.
+- **Secure link:** a server on 127.0.0.1 gives a 503 through the link; on
+  the mesh address the page, the setup form (a POST) and the tutor's
+  WebSocket all work through it, the lock included, and it survives a reboot.
 - The first version of the script failed on its last line (an empty crontab
   makes `grep -v` exit 1 under `pipefail`); fixed above.
 
 ## Still to check
 
-- Does the secure link reach a server on 127.0.0.1, or does it need
-  `HOST=0.0.0.0`? This needs a signed-in browser. If the page doesn't load,
-  set `HOST=0.0.0.0` in `.env` and run `tools/serve.sh` (the access lock
-  still applies).
 - That every module runs on a T4 (4.6 trains a classifier with PyTorch; 6.3
   and 8.3 run on the GPU): run the course once there.
