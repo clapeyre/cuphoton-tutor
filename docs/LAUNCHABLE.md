@@ -79,10 +79,24 @@ $0.63/h), setup script above run as is:
 - **Secure link:** a server on 127.0.0.1 gives a 503 through the link; on
   the mesh address the page, the setup form (a POST) and the tutor's
   WebSocket all work through it, the lock included, and it survives a reboot.
+- **Stop and start** (`brev stop`, `brev start`): the server is back by
+  itself within a minute of the start, on the same mesh address, with the
+  learner's work and model kept. Brev's list may say STOPPED while
+  `brev start` still refuses ("status=STOPPING") for a few minutes; retry.
+- **The GPU lessons on a T4**, run as the tutor runs them, 2.5–4× slower
+  than the RTX 4070 Ti SUPER the course was built on, same results:
+  6.3's xImage runs 6–7 s each (2 s); 8.3's whole-detector fit 37–61 s
+  (16 s); 4.6's training 6 s warm, 30 s on the first run after a boot
+  (2.4 s). The page shows each step with its time while the tutor waits.
+- **Jupyter:** Brev's image also runs JupyterLab with no token on port
+  8888, behind its own Brev secure link (same sign-in) and closed on the
+  public IP. A launchable for this course doesn't need that link.
 - The first version of the script failed on its last line (an empty crontab
   makes `grep -v` exit 1 under `pipefail`); fixed above.
 
-## Still to check
+## Still to do
 
-- That every module runs on a T4 (4.6 trains a classifier with PyTorch; 6.3
-  and 8.3 run on the GPU): run the course once there.
+- Create the launchable itself in the Brev console from the settings above
+  (there's no CLI command for it), deploy it once from its link, and open
+  the course from a second device with the access link.
+
