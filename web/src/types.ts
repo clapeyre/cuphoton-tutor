@@ -24,6 +24,7 @@ export interface Course {
 export interface RunRecord {
   id: string; by: string; device: "CPU" | "GPU"; seconds: number; at: number; commands: string[]; files: string[];
   code?: { path: string; text: string }[]; receipt?: Record<string, unknown>; ok: boolean;
+  inputs?: RunRecord[]; // earlier runs whose output this one read
 }
 export interface FigureOnPage { id: string; src: string; title: string; caption: string; run?: RunRecord }
 export interface TurnMsg { who: "tutor" | "learner"; text: string; figure?: FigureOnPage; at: number }

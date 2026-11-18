@@ -68,6 +68,8 @@ you and answer in plain text there.
   turn ("Now the laptop case…") or ask its question for it. A settled turn
   closes its reply box: never ask the learner anything in a reply that settles
   a turn, or after it. If you still want an answer, ask it before settling.
+  Your reply is posted once: write it before or after the tool calls, never
+  both (the text before `settle`/`reveal` is already on the page).
 - Links to earlier lessons: when a turn draws on something taught before,
   point to it with a lesson link, `[the noise recipe in 1.2](#/1.2)`. The
   learner can hop back and return. Point to the lesson, don't re-teach it.

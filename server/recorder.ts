@@ -18,6 +18,8 @@ export interface RunRecord {
   receipt?: Record<string, unknown>; // summary.json fields, when a cuPhoton CLI run wrote one
   ok: boolean;
   tool: string;
+  /** Earlier runs whose output this one read (a plotting script drawing a GPU run's results). */
+  inputs?: Omit<RunRecord, "inputs">[];
 }
 
 const STAGES = ["xRep", "xPois", "xFit", "xScan", "xDR", "xImage"];
@@ -104,11 +106,44 @@ export class Recorder {
     if (this.runs.length > 500) this.runs.splice(0, this.runs.length - 500);
   }
 
-  /** The most recent run that wrote this file, with the runs that wrote its inputs folded in. */
+  /** The most recent run that wrote this file, with the runs that wrote its inputs folded in: a figure drawn
+   *  by a 0.4 s plotting script from a GPU run's summary.json is labelled with that GPU run. */
   recordFor(file: string): RunRecord | undefined {
     const rel = path.relative(config.learnerDir, path.resolve(config.learnerDir, file));
-    const r = [...this.runs].reverse().find((x) => x.files.includes(rel) && x.tool === "bash");
-    return r;
+    const i = this.runs.findLastIndex((x) => x.files.includes(rel) && x.tool === "bash");
+    if (i < 0) return undefined;
+    const r = this.runs[i];
+    const text = r.commands.join("\n") + "\n" + (r.code ?? []).map((c) => c.text).join("\n");
+    const own = path.dirname(rel);
+    // The script names the file (or its path from a subfolder: cd work/03 && … "qs-gpu/summary.json"), or names
+    // the run's output folder as a whole (--output-dir work/03/qs-gpu). Its own output folder doesn't count.
+    const mentions = (f: string) => {
+      const parts = f.split("/");
+      for (let k = 0; k <= parts.length - 2; k++) if (text.includes(parts.slice(k).join("/"))) return true;
+      const dir = path.dirname(f);
+      if (dir === "." || !dir.includes("/") || own === dir || own.startsWith(dir + "/")) return false;
+      return new RegExp(`${dir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/?["'\\s)]`).test(text);
+    };
+    const inputs: RunRecord[] = [];
+    const seen = new Set<string>();
+    for (let j = i - 1; j >= 0 && j >= i - 200; j--) {
+      const x = this.runs[j];
+      if (!x.ok || x.tool !== "bash") continue;
+      const read = x.files.filter((f) => f !== rel && !seen.has(f) && !/\.(png|jpe?g|svg|log|err|out)$/.test(f) && mentions(f));
+      if (!read.length) continue;
+      x.files.forEach((f) => seen.add(f));
+      inputs.push(x);
+    }
+    if (!inputs.length) return r;
+    const all = [...inputs.reverse(), r];
+    const stages = STAGES.filter((s) => all.some((x) => x.by.split(" + ").includes(s)));
+    return {
+      ...r,
+      by: stages.length ? stages.join(" + ") : inputs.find((x) => x.by !== "shell")?.by ?? r.by,
+      device: all.some((x) => x.device === "GPU") ? "GPU" : "CPU",
+      seconds: all.reduce((t, x) => t + x.seconds, 0),
+      receipt: r.receipt ?? inputs.findLast((x) => x.receipt)?.receipt,
+      inputs: inputs.map(({ inputs: _, ...x }) => x),
+    };
   }
 }
-

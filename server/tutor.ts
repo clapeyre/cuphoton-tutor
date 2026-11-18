@@ -219,6 +219,9 @@ export class Tutor {
       sessionManager: sm,
       settingsManager: SettingsManager.inMemory({ compaction: { enabled: true }, retry: { enabled: true, maxRetries: 6 } } as any),
     });
+    // One tool call at a time, in the order the model wrote them. pi runs a batch in parallel by default, so
+    // `read fig.png` sent with the bash that writes it failed (ENOENT) and the tutor discussed a figure it never saw.
+    session.agent.toolExecution = "sequential";
     if (kind === "main") {
       session.subscribe((ev: any) => {
         // The page says the model's server is refusing and when the next try is, rather than going quiet.
@@ -250,9 +253,14 @@ export class Tutor {
         } else if (this.streamTurn && ev.type === "message_end" && ev.message?.role === "assistant") {
           const said = textOf(ev.message);
           delete this.activity.drafts[`turn:${this.streamTurn}`];
-          if (said) {
-            const [lid, tid] = this.streamTurn.split("/");
-            this.store.turn(lid, tid).log.push({ who: "tutor", text: said, at: Date.now() });
+          const [lid, tid] = this.streamTurn.split("/");
+          const log = this.store.turn(lid, tid).log;
+          // After settle or reveal the model often repeats its whole reply as the closing text: post it once.
+          const norm = (x: string) => x.replace(/\s+/g, " ").trim();
+          const last = log.at(-1);
+          if (said && last?.who === "tutor" && norm(last.text).includes(norm(said))) this.onActivity();
+          else if (said) {
+            log.push({ who: "tutor", text: said, at: Date.now() });
             this.spokeIn.add(this.streamTurn);
             this.store.save(this.lessonTurns);
           } else this.onActivity();

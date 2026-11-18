@@ -95,7 +95,13 @@ function RunRecordView({ r }: { r: RunRecord }) {
   const [code, setCode] = useState(false);
   return (
     <div className="run">
-      <div className="h">{new Date(r.at).toLocaleString()} · {r.ok ? "finished" : "failed"} · {r.seconds.toFixed(2)} s on the {r.device}</div>
+      <div className="h">{new Date(r.at).toLocaleString()} · {r.ok ? "finished" : "failed"} · {r.seconds.toFixed(2)} s on the {r.device}{r.inputs?.length ? `, with ${r.inputs.length === 1 ? "the run" : "the runs"} it drew on` : ""}</div>
+      {r.inputs?.map((x) => (
+        <div key={x.id}>
+          <div className="h">Drew on: {runLine(x)} · {new Date(x.at).toLocaleTimeString()}</div>
+          <Code text={x.commands.join("\n")} lang="bash" />
+        </div>
+      ))}
       {r.receipt && <pre>{Object.entries(r.receipt).map(([k, v]) => `${k}: ${String(v)}`).join("\n")}</pre>}
       <div>
         <div className="h">Files written</div>
