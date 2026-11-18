@@ -16,8 +16,14 @@ npm start              # http://127.0.0.1:8765
 ```
 
 From a laptop: `ssh -L 8765:127.0.0.1:8765 <gpu-machine>`, then open
-http://localhost:8765. For page development, run `npm run dev:server` and
-`npm run dev:web` (Vite on :5173, proxied to the server).
+http://localhost:8765.
+
+While editing, run `npm run dev` instead of `npm start`: same address, the
+server restarts when `server/`, `course/` or the tutor's prompt and skills
+change, and the page is rebuilt on every save (reload the browser). A
+restart cuts off a tutor turn in progress; the conversation survives. For
+hot reload of the page, `npm run dev:server` with `npm run dev:web` (Vite on
+:5173, proxied to the server).
 
 ## Configuration (environment or `.env`)
 

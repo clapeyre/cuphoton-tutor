@@ -2,6 +2,7 @@
   "name": "cuphoton-learn-app",
   "version": "0.1.0",
   "scripts": {
+    "dev": "tsx tools/dev.ts",
     "dev:server": "tsx watch server/index.ts",
     "dev:web": "vite web",
     "build": "vite build web",
