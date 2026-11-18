@@ -43,7 +43,7 @@ rows aren't objects, flags name which quantity failed. Probes M-UQVALID.
 
 ## Your turn `same-answer`
 - **Pass:** (a) the supernova is found (row 0), flux close to theirs
-  (43,407 vs 43,867 ± 186 in 4.4; err 329 vs 186: that's 5.3's question, just
+  (43,407 vs 43,867 ± 186 in 4.4, which the closing rounds to 43,900 ± 190; the learner's own 4.4 value may differ by a few tens: quote theirs if you have it; err 329 vs 186: that's 5.3's question, just
   note it); (b) the bogus residues of 4.3 are there (A, B, D), plus the star
   at (707, 456) and a weak one; (c) several rows per place, with the reason
   (split residues, both signs). If they count 12 "objects", point at the

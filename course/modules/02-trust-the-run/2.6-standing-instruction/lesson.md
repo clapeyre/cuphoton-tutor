@@ -17,7 +17,7 @@ you'll take from this course into real work.
 
 :::your-turn after-every-run
 title: After every run, check…
-prompt: Write your standing instruction, in your own words: what must the agent check, and report back to you, after every cuPhoton run? Then, to try it, direct one small run in a single instruction: name the component, the backend you want, the output directory, and the evidence you expect back.
+prompt: Write your standing instruction, in your own words: what must the agent check, and report back to you, after every cuPhoton run? Then, to try it, direct one small run in a single instruction: name the component, the hardware you want (and whether to fail without it), the output directory, and the evidence you expect back.
 :::
 
 :::closure

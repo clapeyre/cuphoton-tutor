@@ -15,8 +15,9 @@ drives it. It names no trap: don't add one when discussing it.
   needs them). Python: the GPU environment (it has the `catalog` extra and the
   `transient-chain` example installed). Launcher:
   `<checkout>/examples/transient-chain/launch.py`.
-- Selections file `work/05/selections.json`, one entry, keys used by the
-  generic adapter: `expnum` "m101-2012", `ccdnum` "skycell2381.053", `band`
+- Selections file `work/05/selections.json`: a JSON object with one key,
+  `{"selections": [ {…} ]}` (a bare list or a bare entry is rejected by
+  `launch.py`), holding one entry with the keys used by the generic adapter: `expnum` "m101-2012", `ccdnum` "skycell2381.053", `band`
   "r", `image`, `mask`, `variance` (target files), `template`,
   `template_mask`, `template_variance` (reference files).
 - Start the configuration from `<checkout>/examples/transient-chain/config-generic.yaml`,

@@ -20,7 +20,7 @@ prompt: Ask the tutor for the receipts. Which run was meant for the GPU and didn
 :::
 
 :::closure
-found: The silent one asked for the best available hardware (profile auto), didn't require a GPU, found none usable (gpu_available false), and ran every component on the cpu device, with status ok. The CPU baseline looks almost identical, except that it asked for the CPU on purpose (profile cpu). The GPU run shows cupy and cuda throughout. The numbers in all three agree, so they can't tell you anything; only the receipt's request and devices can. Adding --require-gpu would have made the fallback an error.
+found: The silent one asked for the best available hardware (profile auto), didn't require a GPU, found none usable (gpu_available false), and ran every component on the cpu device, with status ok. The CPU baseline looks almost identical, except that it asked for the CPU on purpose (profile cpu). The GPU run put every component on a cuda device, each with its own GPU backend (cupy for most, torch for xScan). The numbers in all three agree, so they can't tell you anything; only the receipt's request and devices can. Adding --require-gpu would have made the fallback an error.
 matters: The difference between the two CPU runs wasn't in what happened but in what was asked for. A receipt is only meaningful against your intent, so the instruction you give an agent has to carry that intent: "on the GPU, and fail if you can't".
 raises: Last step: write the instruction you'll give every agent that runs cuPhoton for you.
 :::

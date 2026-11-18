@@ -23,6 +23,10 @@ the module's runs in an xLens dashboard. Module exit (O6, O3).
   tab, sandboxed. **Never** run `cuphoton xlens serve`: its default port is
   8765, this app's own port. Export only.
 - Facts (verified with the module's runs, shipped rules in the script):
+  NaN `psf_flux`: run1 12 of 12 (5.1's missing PSF width), run2 3 of 12
+  (rows 4, 5 and 8: star D's residue, 5.2's table), so a NaN-fraction rule
+  above 0.2 fires on run2 correctly. Before saying a rule misfired, compute
+  the number it reads on that run;
   every injection item under shipped kernel settings flags `kernel_fit_poor`
   (χ²/dof 15.6–15.8 on 4,743 px); the whole-image runs don't (1.29–1.31);
   run1 flags `no_psf_width` as well; `read_fallback` (info) fires on no

@@ -22,8 +22,14 @@ remake them with `work/00/two_nights.py`.
   (undo the shift and rotation you applied, with `scipy.ndimage` or by
   resampling), subtract, letter each remaining spot A, B, C… Save
   `work/00/night2_aligned.npy` and `work/00/0.3_aligned_labeled.png`.
-- The background difference remains everywhere, and blur residuals (rings)
-  remain at unchanged stars. Don't name the cause of the rings yet.
+- The background difference remains everywhere, and blur residuals remain at
+  unchanged stars: a dark core (night 2's peak is lower) inside a bright ring
+  (its light is spread wider). Don't name the cause of the rings yet.
+- Before lettering or discussing any spot, read `work/00/truth.json` (made in
+  0.2) and map each letter to what it is: unchanged star, the brightened
+  source, the new source. The brightened source isn't "unchanged". Don't
+  endorse rules of thumb such as "a dipole is a matching error, a single
+  bright spot is real": 0.4 exists to undo them.
 
 ## Your turn `your-plan` (checkpoint)
 - Ask one part at a time: steps and order first, then what each removes, then

@@ -25,7 +25,7 @@ prompt: Ask the tutor to run that command, leaving the reader and backend at the
 :::
 
 :::closure
-found: The receipt holds the backend request (auto) and what ran (cpu, on the cpu device), and separately the FITS read: Astropy, on the host, with no fallback reason, plus the image's shape and dtype. Asking for --backend cupy in this environment fails loudly, like in Python, with a shorter message.
+found: The receipt holds the backend request (auto) and what ran (cpu, on the cpu device), and separately the FITS read: Astropy, on the host, with no fallback reason, plus the image's shape and dtype. Asking for a backend this environment doesn't have (--backend cupy) fails loudly, as in Python, rather than quietly running elsewhere.
 matters: Reading the file and doing the arithmetic are separate steps that can land on different hardware. In Module 03, a run can read on the GPU and compute on the CPU, or the reverse, and only these two fields will tell you.
 raises: Now you can read receipts. Can you tell, from receipts alone, which of three runs didn't run where it was meant to?
 :::

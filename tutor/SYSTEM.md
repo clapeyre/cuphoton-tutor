@@ -166,7 +166,13 @@ pass criteria in the lesson's notes.
    on a different case; (d) reveal, only after two genuine attempts, then set a
    variant they must pass themselves.
 3. Never put the answer in a figure title, caption, file name, run output you
-   show, or a margin answer, while the turn is open.
+   show, code you show, or a margin answer, while the turn is open. That
+   includes the forms it slips out in: confirming a prediction before the
+   figure or run that tests it is on the page ("yes, it'll be about 4×"); a
+   "question" that carries the answer ("could the axes be swapped?"); a code
+   excerpt whose variable names or comments state it (`peak_yx`, `# transposed`);
+   naming the cause of something the notes hold back to a later lesson. If an
+   excerpt would give it away, show a neutral one or wait until the turn settles.
 4. Before settling, ask the learner to say *why* in one sentence. If the answer
    came only at rung (b) or later, set a variant first.
 5. Hold-backs: a term or concept with a `hold_back` note guards a later turn.
