@@ -225,7 +225,10 @@ export class Tutor {
         if (ev.type === "tool_execution_start") {
           this.recorder.start(ev.toolCallId, ev.toolName, ev.args);
           const label = ev.toolName === "bash" ? "Running" : ev.toolName === "show_figure" ? "Placing a figure" : ev.toolName === "read" ? "Reading" : "Working";
-          if (!this.background) this.setMain(label); // preparing ahead is invisible to the learner
+          // Preparing ahead, and the old thread writing the profile at a module change, are invisible to the
+          // learner. (Rotation can run from prepareAhead before `background` is set; labelling it here left the
+          // page saying "Working" after the module was done, since nothing cleared it.)
+          if (!this.background && !this.rotating) this.setMain(label);
         } else if (ev.type === "tool_execution_end") {
           this.recorder.end(ev.toolCallId, ev.isError, ev.durationMs);
         } else if (this.streamTurn && ev.type === "message_update" && ev.assistantMessageEvent?.type === "text_delta") {

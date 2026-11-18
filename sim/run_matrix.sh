@@ -17,7 +17,7 @@ for model in "$@"; do
     ) &
     pids+=($!)
     port=$((port + 1))
-    sleep 5
+    sleep 45  # staggered: eight sessions starting at once hit the endpoint's burst limit (429)
   done
 done
 wait "${pids[@]}"
