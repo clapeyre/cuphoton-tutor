@@ -9,7 +9,7 @@
   --bg: #141414; --raised: #1f1f1f; --sunken: #0d0d0d; --subtle: #262626;
   --ink: #ececec; --ink2: #a3a3a3; --ink3: #737373; --line: #2e2e2e; --line2: #4a4a4a;
   --brand: #76b900; --series: #76b900; --ref: #8a8a8a;
-  --warn: #e0a526; --bad: #ef5b5b; --good: #76b900;
+  --warn: #e0a526; --thread: #5aa9e6; --bad: #ef5b5b; --good: #76b900;
   --sans: "NVIDIA Sans", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
@@ -84,6 +84,9 @@ label { color: var(--ink2); font-size: 13px; }
 <h2>Recent prompts <label style="margin-left:12px"><input type="checkbox" id="learner-only" checked> learner actions only</label></h2>
 <div class="tbl scroll"><table id="prompts"></table></div>
 
+<h2>Learner profile <span class="sub" id="profile-when"></span></h2>
+<div class="tbl"><pre id="profile" style="margin:0;padding:12px 14px;white-space:pre-wrap;font-family:var(--sans);font-size:13px;color:var(--ink)"></pre></div>
+
 <div class="two">
   <div><h2>By lesson</h2><div class="tbl scroll"><table id="lessons"></table></div></div>
   <div><h2>Tools</h2><div class="tbl scroll"><table id="tools"></table></div></div>
@@ -142,7 +145,7 @@ function header(r) {
   else if (t.preparing) { state = `Preparing ${t.preparing} ahead`; dot = "busy"; }
   else if (t.streaming) { state = "Working"; dot = "busy"; }
   $("#status").innerHTML = `<span class="dot ${dot}"></span>${esc(state)}${t.margins ? ` · ${t.margins} margin thread${t.margins > 1 ? "s" : ""} open` : ""}`;
-  $("#model").textContent = `${t.provider}/${t.model} · thinking ${t.thinking} · server up ${ago(r.startedAt).replace(" ago", "")}`;
+  $("#model").textContent = `${t.provider}/${t.model} · thinking ${t.thinking}${t.thread ? ` · thread for Module ${t.thread.module}, started ${ago(t.thread.startedAt)}` : ""} · server up ${ago(r.startedAt).replace(" ago", "")}`;
   $("#updated").textContent = "updated " + new Date(r.now).toLocaleTimeString();
 }
 
@@ -175,6 +178,7 @@ function lineChart(box, pts, opts) {
   pts.forEach((p, i) => { const d = new Date(p.t).toDateString(); if (d !== prevDay) { prevDay = d; if (x(i) - lastX > 50) { lastX = x(i); s += `<line x1="${x(i)}" x2="${x(i)}" y1="${H - B}" y2="${H - B + 4}" stroke="var(--line2)"/><text x="${x(i)}" y="${H - 6}" fill="var(--ink3)" font-size="11" text-anchor="start">${new Date(p.t).toLocaleDateString([], { month: "short", day: "numeric" })}</text>`; } } });
   for (const ref of opts.refs ?? []) if (ref.v <= ymax) s += `<line x1="${L}" x2="${W - R}" y1="${y(ref.v)}" y2="${y(ref.v)}" stroke="var(--ref)" stroke-dasharray="4 4"/><text x="${W - R - 4}" y="${y(ref.v) - 5}" fill="var(--ink2)" font-size="11" text-anchor="end">${esc(ref.label)}</text>`;
   for (const i of opts.marks ?? []) s += `<line x1="${x(i)}" x2="${x(i)}" y1="${T}" y2="${H - B}" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="2 3"/>`;
+  for (const m of opts.threadMarks ?? []) s += `<line x1="${x(m.i)}" x2="${x(m.i)}" y1="${T}" y2="${H - B}" stroke="var(--thread)" stroke-width="1.5"/><text x="${x(m.i) > W * 0.8 ? x(m.i) - 4 : x(m.i) + 4}" y="${T + 26}" fill="var(--thread)" font-size="11" text-anchor="${x(m.i) > W * 0.8 ? "end" : "start"}">${esc(m.label)}</text>`;
   if (opts.dots) s += pts.map((p, i) => `<circle cx="${x(i)}" cy="${y(Math.min(p.y, ymax))}" r="4" fill="${p.bad ? "var(--bad)" : "var(--series)"}" stroke="var(--raised)" stroke-width="2"/>`).join("");
   else s += `<path d="${pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.y).toFixed(1)}`).join("")}" fill="none" stroke="var(--series)" stroke-width="2" stroke-linejoin="round"/>`;
   s += `<line class="xh" y1="${T}" y2="${H - B}" stroke="var(--ink3)" visibility="hidden"/><circle class="hp" r="5" fill="var(--series)" stroke="var(--ink)" stroke-width="2" visibility="hidden"/>`;
@@ -199,9 +203,10 @@ function charts(r) {
   const t = r.tutor;
   const pts = r.context.map(([tt, y, lesson]) => ({ t: tt, y, lesson }));
   const marks = r.compactions.map((c) => pts.findIndex((p) => p.t >= c.t)).filter((i) => i >= 0);
-  $("#ctx-note").innerHTML = `Tokens the model reads on each call, main thread (${pts.length} calls). Dashed: where pi compacts (${k(t.compactAt)}). <span style="color:var(--warn)">Orange</span>: a compaction.`;
+  const threadMarks = r.threads.map((th) => ({ i: pts.findIndex((p) => p.t >= th.t), label: "Module " + th.to })).filter((m) => m.i >= 0);
+  $("#ctx-note").innerHTML = `Tokens the model reads on each call, main thread (${pts.length} calls). Dashed: where pi compacts (${k(t.compactAt)}). <span style="color:var(--warn)">Orange</span>: a compaction. <span style="color:var(--thread)">Blue</span>: a new thread for a module.`;
   lineChart($("#ctx-chart"), pts, {
-    ymax: (t.contextWindow ?? 200000) * 1.02, marks,
+    ymax: (t.contextWindow ?? 200000) * 1.02, marks, threadMarks,
     refs: [{ v: t.compactAt, label: "compacts here" }],
     yStep: (m) => m > 150000 ? 50000 : 25000, yFmt: (v) => k(v),
     tip: (p) => `<b>${k(p.y)}</b> tokens · ${when(p.t)}${p.lesson ? ` · lesson ${esc(p.lesson)}` : ""}`,
@@ -252,7 +257,12 @@ function tables(r) {
   ], r.margin, "None recorded since the admin page was added.");
 }
 
-function render(r) { last = r; header(r); alerts(r); tiles(r); charts(r); tables(r); }
+function profile(r) {
+  $("#profile").textContent = r.profile?.text ?? "Not written yet. The tutor writes it when the learner moves on to a new module, and the next module's thread starts from it.";
+  $("#profile-when").textContent = r.profile ? `updated ${ago(r.profile.at)} · learner/profile.md` : "";
+}
+
+function render(r) { last = r; header(r); alerts(r); tiles(r); charts(r); profile(r); tables(r); }
 
 async function load() {
   try {

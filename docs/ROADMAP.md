@@ -65,13 +65,24 @@ the model" button. It reads pi's session log; what the log doesn't keep
 (retries as they happen, compactions, margin calls, pings) goes to
 `learner/metrics.jsonl`.
 
+**One tutor thread per module (built 18 Nov).** Opening a lesson of a later
+module starts a new main thread (`learner/thread.json` says which module the
+current one belongs to). First the old thread rewrites `learner/profile.md`
+(`tutor/SYSTEM.md`, "The learner profile": their work, how they learn, wrong
+turns, terms they own / not anchored / explained off-list, open threads).
+The new thread starts from that profile, the learner's progress, and the
+course terms introduced so far, computed from `vocabulary.yaml`'s
+`introduce_at` rather than remembered. Earlier conversations stay readable
+in `page.json`. Going back to an earlier module stays in the current thread,
+with a pointer to that lesson's conversations. Pi's compaction stays on as
+a safety net. Tested on a copy of the author's run: the switch to 9.1 took
+the context from 134k to 22k. A module that outgrows the window should be
+split, not compacted (author, 18 Nov).
+
 Still to do:
-- **Fresh tutor thread per module.** Start a new main session at each
-  module boundary, seeded with a short learner profile carried forward
-  (how they answer, what they got wrong, what they're working on),
-  instead of relying on pi's generic compaction partway through a lesson.
-  Judge it on the admin page: peak context, waits, cost.
-- Watch the admin page during walkthrough 9 and note anything missing.
+- Watch the first real switch (the author's 9.1) on the admin page: the
+  profile, and whether the new thread re-anchors the terms it lists as
+  not anchored.
 
 ## 5. Public launch: a Brev launchable
 

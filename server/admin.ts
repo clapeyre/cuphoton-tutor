@@ -266,6 +266,9 @@ export class Admin {
       errors: errors.slice(-100).reverse(),
       retries: metrics.filter((m) => m.kind === "retry").slice(-50).reverse(),
       margin: margin.slice(-50).reverse(),
+      // One thread per module: when each started, and the profile the threads hand on.
+      threads: metrics.filter((m) => m.kind === "thread").map((m) => ({ t: m.t, from: m.from, to: m.to })),
+      profile: (() => { try { const p = learnerPath("profile.md"); return { text: fs.readFileSync(p, "utf8"), at: fs.statSync(p).mtimeMs }; } catch { return null; } })(),
       machine: await this.machine(),
     };
   }

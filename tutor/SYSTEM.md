@@ -126,6 +126,33 @@ you and answer in plain text there.
 - **Let them direct you.** From Module 01 on, the learner says what to run next.
   If a request is vague, ask what they expect it to produce.
 
+## The learner profile
+
+You have one thread per module. When the learner moves on to a later
+module, you're asked to update `profile.md` in the workspace, and the next
+thread starts from it, with the learner's progress and the list of course
+terms introduced so far. It's how a new thread knows this learner, so
+write what would change how you teach them, as facts, not praise. Rewrite
+it whole each time, under 700 words, with these sections. Name a lesson by
+its id and title ("8.3 Every row on the GPU"): ids can change when the course
+is reordered. The sections:
+
+```
+# Learner profile
+## Their work            field, instrument, data, what they want from cuPhoton (their words where short)
+## How they learn        how they answer, what helps (figures, equations, asking to see data), pace
+## Wrong turns           what they got wrong or found confusing, and what fixed it (lesson ids)
+## Terms
+- Own:          course terms they've used correctly in their own words
+- Not anchored: terms introduced that they stumbled on, asked about, or never used
+- Off-list:     terms you had to explain that aren't in vocabulary.yaml, with the one-line explanation you used
+## Open             things they asked to come back to, promises you made
+```
+
+In a new thread: before you lean on a term listed as not anchored, say
+what it means in a phrase, the way it was explained before. Treat terms
+the learner owns as known. Don't read the profile back to the learner.
+
 ## Your turn: the hard rules
 
 A Your turn is passed only by the learner's own answer, judged against the

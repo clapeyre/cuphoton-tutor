@@ -5,6 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { Type } from "typebox";
+import YAML from "yaml";
 import {
   createAgentSession, createExtensionRuntime, defineTool, loadSkillsFromDir, ModelRuntime,
   SessionManager, SettingsManager, type AgentSession, type ResourceLoader, type ToolDefinition,
@@ -33,6 +34,10 @@ export class Tutor {
   private spokeIn = new Set<string>(); // turn ids the tutor addressed during the current prompt
   private promptLesson: string | null = null; // the lesson the current main prompt is about
   private streamTurn: string | null = null; // the turn whose conversation the current main prompt's text goes to
+  // The main thread belongs to one module (learner/thread.json). Opening a lesson of a later module
+  // starts a new thread, seeded with the learner profile the old one wrote (see rotate()).
+  private thread: { module: string; startedAt: number } | null = null;
+  private rotating = false;
   recorder = new Recorder();
   activity: Activity = { main: null, turn: null, threads: {}, drafts: {} };
   onActivity: () => void = () => {};
@@ -54,6 +59,101 @@ export class Tutor {
     if (config.offline) process.env.PI_OFFLINE = "1";
     fs.mkdirSync(learnerPath("sessions", "main"), { recursive: true });
     this.main = await this.makeSession(SessionManager.continueRecent(config.learnerDir, learnerPath("sessions", "main")), "main");
+    try { this.thread = JSON.parse(fs.readFileSync(learnerPath("thread.json"), "utf8")); } catch {}
+    if (!this.thread) {
+      // A thread from before threads were per module: it belongs to the module of the learner's last exchange
+      // in a Your turn (not the current lesson: they may only be browsing).
+      let lastAt = 0, lastLesson = this.store.page.current ?? "";
+      for (const [id, l] of Object.entries(this.store.page.lessons))
+        for (const t of Object.values(l.turns)) for (const msg of t.log) if (msg.at > lastAt) { lastAt = msg.at; lastLesson = id; }
+      const m = this.moduleOf(lastLesson);
+      if (m) this.saveThread({ module: m, startedAt: Date.now() });
+    }
+  }
+
+  // ---------- one thread per module ----------
+
+  private moduleOf(lessonId: string) { return this.course.modules.find((m) => m.lessons.some((l) => l.id === lessonId))?.id ?? null; }
+  private moduleIndex(id: string) { return this.course.modules.findIndex((m) => m.id === id); }
+  private saveThread(t: { module: string; startedAt: number }) {
+    this.thread = t;
+    fs.writeFileSync(learnerPath("thread.json"), JSON.stringify(t, null, 1));
+  }
+  private moduleDone(moduleId: string) {
+    const m = this.course.modules.find((x) => x.id === moduleId);
+    return !!m && m.lessons.every((l) => l.turnIds.every((t) => this.store.lesson(l.id).turns[t]?.status === "settled"));
+  }
+
+  /** Before a prompt about `lessonId`: a later module gets a new thread; an earlier one gets a pointer to its conversations. */
+  private async ensureThread(lessonId: string) {
+    const m = this.moduleOf(lessonId);
+    if (!m || !this.thread || m === this.thread.module) return;
+    if (this.moduleIndex(m) > this.moduleIndex(this.thread.module)) return this.rotate(m);
+    this.pendingNotes.push(`[page] Lesson ${lessonId} is in Module ${m}, which an earlier thread of yours taught. Its conversations are in \`page.json\` (\`lessons["${lessonId}"].turns\`); read them if you need what was said.`);
+  }
+
+  private async rotate(next: string) {
+    const prev = this.thread!.module;
+    const prevTitle = this.course.modules.find((x) => x.id === prev)?.title ?? "";
+    this.rotating = true;
+    try {
+      // 1. The old thread writes down what the next one should know about the learner.
+      try {
+        await this.main.prompt([
+          `[page] The learner is moving on from Module ${prev} "${prevTitle}" to Module ${next}. Your next prompt starts a new thread`,
+          `that won't see this conversation. Update the learner profile, \`${learnerPath("profile.md")}\`, as described`,
+          'under "The learner profile" in your instructions: read it if it exists, then rewrite it whole with what this',
+          "module showed, in under 700 words (cut what would change your teaching least). This conversation may use older",
+          "lesson ids, from before the course was reordered: name every lesson by its id in the course outline of your",
+          'instructions and its title, e.g. "8.3 Every row on the GPU". Use write. Don\'t use ask, settle or reveal, and say',
+          "nothing on the page.",
+        ].join("\n"));
+      } catch (e: any) { console.error("[tutor] profile update failed:", e?.message ?? e); }
+      // 2. A new thread, told who the learner is and where they are.
+      this.main = await this.makeSession(SessionManager.create(config.learnerDir, learnerPath("sessions", "main")), "main");
+      for (const st of Object.values(this.store.page.lessons)) st.briefed = false; // this thread hasn't read any lesson yet
+      this.store.save(this.lessonTurns);
+      this.saveThread({ module: next, startedAt: Date.now() });
+      this.pendingNotes.unshift(this.threadSeed(next));
+      this.onMetric({ kind: "thread", from: prev, to: next });
+    } finally { this.rotating = false; }
+  }
+
+  /** The first thing a new thread reads: the profile, the learner's progress, and the course terms they've met. */
+  private threadSeed(moduleId: string) {
+    const mod = this.course.modules.find((x) => x.id === moduleId)!;
+    let profile = "(none yet)";
+    try { profile = fs.readFileSync(learnerPath("profile.md"), "utf8").trim() || profile; } catch {}
+    const progress = this.course.modules.filter((m) => this.moduleIndex(m.id) < this.moduleIndex(moduleId)).map((m) => {
+      const ls = m.lessons.map((l) => {
+        const st = this.store.page.lessons[l.id];
+        if (!st?.visited) return `${l.id} not visited`;
+        const open = l.turnIds.filter((t) => st.turns[t]?.status !== "settled");
+        return open.length ? `${l.id} visited, turns open: ${open.join(", ")}` : `${l.id} done`;
+      });
+      return `- Module ${m.id} "${m.title}": ${ls.join("; ")}`;
+    }).join("\n");
+    // Course terms introduced before this module (vocabulary.yaml's introduce_at), computed, not remembered.
+    const firstLesson = mod.lessons[0]?.id;
+    const cut = firstLesson ? this.course.order.indexOf(firstLesson) : this.course.order.length;
+    let terms: string[] = [];
+    try {
+      const voc = YAML.parse(fs.readFileSync(path.join(config.courseDir, "vocabulary.yaml"), "utf8"));
+      terms = (voc.terms ?? []).filter((t: any) => {
+        const at = String(t.introduce_at ?? "").match(/\d+\.\d+/)?.[0];
+        const i = at ? this.course.order.indexOf(at) : -1;
+        return i >= 0 && i < cut;
+      }).map((t: any) => String(t.term));
+    } catch {}
+    return [
+      `[page] This is a new thread of yours, for Module ${mod.id} "${mod.title}". Earlier threads taught the modules before it;`,
+      "what they left you is below. Earlier conversations are in `page.json` (`lessons[\"<id>\"].turns[\"<turn>\"].log`, and",
+      "`threads` for margin trips): read one when a lesson builds on it, rather than guessing what was said.",
+      "", "<learner-profile file=\"profile.md\">", profile, "</learner-profile>",
+      "", "<progress>", progress || "(this is the first module)", "</progress>",
+      "", "<terms-introduced>", terms.length ? terms.join("; ") : "(none yet)", "</terms-introduced>",
+      "These course terms were introduced in earlier modules. The profile says which ones the learner owns and which aren't anchored yet.",
+    ].join("\n");
   }
 
   // ---------- context ----------
@@ -293,7 +393,7 @@ export class Tutor {
       usage: m?.getContextUsage() ?? null,
       busy: this.activity.main, preparing: this.background, queued: this.foreground,
       streaming: m?.isStreaming ?? false, compacting: m?.isCompacting ?? false, retrying: m?.isRetrying ?? false,
-      margins: this.margins.size, sessionFile: m?.sessionManager.getSessionFile() ?? null,
+      margins: this.margins.size, thread: this.thread, sessionFile: m?.sessionManager.getSessionFile() ?? null,
     };
   }
 
@@ -306,8 +406,9 @@ export class Tutor {
   private enqueue(lessonId: string, label: string, msg: string, after?: (finalText: string) => void, streamTurn: string | null = null) {
     this.foreground++;
     // Anything the learner does comes first: interrupt a lesson being prepared ahead (it's retried later).
-    if (this.background) { this.interrupted = this.background; this.main.abort().catch(() => {}); }
+    if (this.background && !this.rotating) { this.interrupted = this.background; this.main.abort().catch(() => {}); }
     const run = async () => {
+      if (!this.rotating && this.thread && this.moduleOf(lessonId) !== this.thread.module) { this.setMain("Starting the module"); await this.ensureThread(lessonId); }
       this.promptLesson = lessonId;
       this.streamTurn = streamTurn;
       this.activity.turn = streamTurn;
@@ -358,8 +459,13 @@ export class Tutor {
     const st = this.store.lesson(next.id);
     const missing = this.openingSlots(next).filter((x) => !st.slots[x]);
     if (st.visited || !missing.length) return;
+    // The next lesson opens a new module, so a new thread: start it only once this module is finished.
+    const nextModule = this.moduleOf(next.id);
+    if (this.thread && nextModule !== this.thread.module && !this.moduleDone(this.thread.module)) return;
     const run = async () => {
       if (this.foreground || st.visited) return;
+      if (this.thread && nextModule && nextModule !== this.thread.module) await this.ensureThread(next.id);
+      if (this.foreground) return;
       this.background = next.id;
       this.promptLesson = next.id;
       this.spokeIn.clear();
@@ -389,14 +495,19 @@ export class Tutor {
     this.store.page.current = lesson.id;
     this.store.save(this.lessonTurns);
     const missing = lesson.slotIds.filter((x) => !st.slots[x]);
-    if (!first && missing.length === 0) { if (!this.foreground) this.prepareAhead(); return; }
+    // A lesson in a later module is answered by a new thread, which hasn't read any lesson yet: start it now,
+    // even when the lesson has nothing to fill, so the learner's first message doesn't wait for it.
+    const m = this.moduleOf(lesson.id);
+    const later = !!(this.thread && m && m !== this.thread.module && this.moduleIndex(m) > this.moduleIndex(this.thread.module));
+    if (later) st.briefed = false;
+    if (!first && missing.length === 0 && !later) { if (!this.foreground) this.prepareAhead(); return; }
     const turnState = lesson.turnIds.map((t) => `${t}: ${st.turns[t]?.status ?? "open"}`).join("; ");
     const head = `[page] Learner opened lesson ${lesson.id} "${lesson.title}" (first visit). Turns: ${turnState || "none"}.\nSlots to fill when due: ${missing.join(", ") || "none"}.`;
     const msg = first
       ? st.briefed
         ? `${head}\nYou read this lesson's text and notes when preparing it ahead${missing.length ? "" : ", and its opening slots are filled"}.`
         : `${head}\n\n${this.briefing(lesson)}`
-      : `[page] Learner is back on lesson ${lesson.id}. Turns: ${turnState}. Unfilled slots: ${missing.join(", ")}. Fill any that are due now; otherwise stop.`;
+      : `[page] Learner is back on lesson ${lesson.id}. Turns: ${turnState}. Unfilled slots: ${missing.join(", ")}. Fill any that are due now; otherwise stop.${st.briefed ? "" : "\n\n" + this.briefing(lesson)}`;
     st.briefed = true;
     this.enqueue(lesson.id, "Preparing the lesson", msg);
   }
