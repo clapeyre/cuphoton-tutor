@@ -10,7 +10,12 @@ this course needs from them.
 
 - **Compute:** VM mode (not a container), Ubuntu with NVIDIA drivers and
   CUDA. A GPU with at least 16 GB: the course was built on an RTX 4070 Ti
-  SUPER (16 GB). Disk: 60 GB or more (the two Python environments take about
+  SUPER (16 GB). **At least 4 vCPUs and 16 GB of RAM** (the g4dn.xlarge
+  below is the one configuration the course has been run on; the default
+  1 to 2 vCPU, 1.8 to 3.7 GB T4 shapes are too small: the server, the tutor
+  and a CUDA Python process run together, and the install builds the page
+  and xDR's reader). 8 GB is untested; the floor is not a measured one.
+  Disk: 60 GB or more (the two Python environments take about
   15 GB, plus the checkout, the course data and the learner's work).
 - **Code:** "I have code files in a git repository":
   `https://github.com/clapeyre/cuphoton-tutor` (public).
