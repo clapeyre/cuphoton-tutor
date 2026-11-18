@@ -551,7 +551,7 @@ export class Tutor {
           this.onActivity();
         } else if (ev.type === "message_end" && ev.message?.role === "assistant") {
           const u = ev.message.usage;
-          if (u) this.onMetric({ kind: "margin", thread: thread.id, lesson: thread.from, ctx: (u.input ?? 0) + (u.cacheRead ?? 0) + (u.cacheWrite ?? 0), out: u.output ?? 0, cost: u.cost?.total ?? 0, ms: ev.message.durationMs ?? null, stop: ev.message.stopReason, error: ev.message.errorMessage ? String(ev.message.errorMessage).slice(0, 300) : undefined });
+          if (u) this.onMetric({ kind: "margin", thread: thread.id, lesson: thread.from, ctx: (u.input ?? 0) + (u.cacheRead ?? 0) + (u.cacheWrite ?? 0), input: u.input ?? 0, cacheRead: u.cacheRead ?? 0, cacheWrite: u.cacheWrite ?? 0, output: u.output ?? 0, out: u.output ?? 0, cost: u.cost?.total ?? 0, ms: ev.message.durationMs ?? null, stop: ev.message.stopReason, error: ev.message.errorMessage ? String(ev.message.errorMessage).slice(0, 300) : undefined });
           // Each finished message goes into the thread, so text written before a tool call isn't lost.
           const said = textOf(ev.message);
           delete this.activity.drafts[key];

@@ -43,6 +43,19 @@ function classify(text: string): { kind: string; lesson: string | null; label: s
   return { kind: "other", lesson: null, label: text.split("\n")[0] };
 }
 
+// Dollars from token counts at the prices in models.json now, not the cost saved with each call (that one used
+// whatever prices were set at the time). Prices are per million tokens; ask the inference host for its rates.
+type Prices = { input: number; output: number; cacheRead: number; cacheWrite: number };
+function prices(): Prices {
+  try {
+    const m = JSON.parse(fs.readFileSync(path.join(config.tutorDir, "pi-agent", "models.json"), "utf8"));
+    const c = m.providers?.[config.provider]?.models?.find((x: any) => x.id === config.model)?.cost;
+    if (c) return { input: +c.input || 0, output: +c.output || 0, cacheRead: +c.cacheRead || 0, cacheWrite: +c.cacheWrite || 0 };
+  } catch {}
+  return { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
+}
+const priced = (u: any, p: Prices) => ((u?.input ?? 0) * p.input + (u?.output ?? 0) * p.output + (u?.cacheRead ?? 0) * p.cacheRead + (u?.cacheWrite ?? 0) * p.cacheWrite) / 1e6;
+
 const PAGE_TOOLS = new Set(["show_figure", "ask", "settle", "reveal"]);
 const textOf = (c: any) => typeof c === "string" ? c : Array.isArray(c) ? c.filter((x: any) => x.type === "text").map((x: any) => x.text).join("\n") : "";
 
@@ -57,12 +70,12 @@ class SessionLog {
   errors: { t: number; where: string; message: string }[] = [];
   private cur: Prompt | null = null;
   private pendingTool = new Map<string, number>(); // toolCallId -> time the call was requested
-  constructor(public file: string, private applied: Applied) {}
+  constructor(public file: string, private applied: Applied, private prices: Prices) {}
 
   refresh() {
     let size: number;
     try { size = fs.statSync(this.file).size; } catch { return; }
-    if (size < this.offset) { Object.assign(this, new SessionLog(this.file, this.applied)); }
+    if (size < this.offset) { Object.assign(this, new SessionLog(this.file, this.applied, this.prices)); }
     if (size === this.offset) return;
     const fd = fs.openSync(this.file, "r");
     const buf = Buffer.alloc(size - this.offset);
@@ -79,7 +92,7 @@ class SessionLog {
   private entry(e: any) {
     const t = Date.parse(e.timestamp);
     if (e.type === "compaction") {
-      this.compactions.push({ t, before: Number(e.tokensBefore) || 0, summaryChars: String(e.summary ?? "").length, cost: e.usage?.cost?.total ?? 0 });
+      this.compactions.push({ t, before: Number(e.tokensBefore) || 0, summaryChars: String(e.summary ?? "").length, cost: priced(e.usage, this.prices) });
       return;
     }
     if (e.type !== "message") return;
@@ -92,7 +105,7 @@ class SessionLog {
       const u = m.usage ?? {};
       const p = this.cur;
       const call: Call = {
-        t, ctx: (u.input ?? 0) + (u.cacheRead ?? 0) + (u.cacheWrite ?? 0), cached: u.cacheRead ?? 0, out: u.output ?? 0, cost: u.cost?.total ?? 0,
+        t, ctx: (u.input ?? 0) + (u.cacheRead ?? 0) + (u.cacheWrite ?? 0), cached: u.cacheRead ?? 0, out: u.output ?? 0, cost: priced(u, this.prices),
         ms: m.durationMs ?? null, stop: m.stopReason ?? "", lesson: p?.lesson ?? null, kind: p?.kind ?? "other",
       };
       if (m.errorMessage) { call.error = String(m.errorMessage).slice(0, 300); this.errors.push({ t, where: "model call", message: call.error }); }
@@ -174,7 +187,7 @@ export class Admin {
     return files.map((f) => {
       const p = path.join(dir, f);
       let l = this.logs.get(p);
-      if (!l) { l = new SessionLog(p, applied); this.logs.set(p, l); }
+      if (!l) { l = new SessionLog(p, applied, prices()); this.logs.set(p, l); }
       l.refresh();
       return l;
     });
@@ -208,7 +221,10 @@ export class Admin {
       tools.set(k, st);
     }
     const metrics = this.metrics();
-    const margin = metrics.filter((m) => m.kind === "margin");
+    // Margin calls: priced from their tokens (older records kept only the prompt size: priced as cache reads).
+    const pr = prices();
+    const margin = metrics.filter((m) => m.kind === "margin")
+      .map((m) => ({ ...m, cost: priced(m.cacheRead !== undefined ? m : { cacheRead: m.ctx, output: m.out }, pr) }));
     for (const m of metrics) if ((m.kind === "retry" || m.kind === "compaction_end") && m.error) errors.push({ t: m.t, where: m.kind === "retry" ? `retry ${m.attempt}/${m.of}` : "compaction", message: m.error });
     for (const m of margin) if (m.error) errors.push({ t: m.t, where: "margin call", message: m.error });
     errors.sort((a, b) => a.t - b.t);
