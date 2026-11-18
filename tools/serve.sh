@@ -7,7 +7,13 @@ port=${PORT:-8765}
 # 127.0.0.1. Listen on that address, looked up at each start: it's reachable by the proxy and not by the
 # instance's public interface. An explicit HOST (environment or .env) wins.
 if [ -z "${HOST:-}" ] && ! grep -qs '^HOST=' .env; then
-  mesh=$(ip -4 -o addr show wt0 2>/dev/null | awk '{print $4}' | cut -d/ -f1)
+  mesh=""
+  # At boot (the @reboot line) NetBird may not be up yet: wait for it, up to two minutes.
+  for i in $(seq 120); do
+    mesh=$(ip -4 -o addr show wt0 2>/dev/null | awk '{print $4}' | cut -d/ -f1)
+    [ -n "$mesh" ] || ! command -v netbird >/dev/null && break
+    sleep 1
+  done
   [ -n "$mesh" ] && export HOST=$mesh
 fi
 if ss -ltn 2>/dev/null | grep -qE "[0-9.*]:$port "; then
