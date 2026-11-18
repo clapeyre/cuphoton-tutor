@@ -138,6 +138,7 @@ export function App() {
           onClick={() => filesOpen ? setFilesOpen(false) : openFile(filesDir === moduleId ? filesPath : null)}>
           Files
         </button>
+        <a className="btn tertiary small admin-link" href="/admin" target="_blank" rel="noopener" title="How the tutor is doing: context, response times, errors, spend">Admin</a>
       </header>
       {filesOpen && panelDir && (
         <FilesPanel dirs={dirs} dir={panelDir} setDir={setFilesDir} files={workFiles[panelDir] ?? []}

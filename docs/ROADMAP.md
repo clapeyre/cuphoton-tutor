@@ -45,6 +45,65 @@ realistic data.
 - 9.1 "Where next", now the course's last module: the full map and a
   conversation about the learner's own work. Walk it after 07 and 08.
 
+## 4. Tutor observability (admin page built 18 Nov)
+
+The tutor's context fills up: in the first five days of the author's own
+run it reached pi's compaction threshold (184k of a 200k window) twice
+(16 Nov, 18 Nov), about every day and a half. The progress survives,
+because it lives on the page, but the tutor loses the detail of how the
+learner answered earlier, which is what it adapts to.
+
+Built: `/admin` (the "Admin" link in the course header). It shows the
+context at every model call with the compactions marked, how long the
+learner waits for a first response and for the whole turn, errors and
+retries (the 429s pi retried silently), per-lesson and per-tool figures,
+spend and cache share, margin threads, GPU memory and disk, and a "Ping
+the model" button. It reads pi's session log; what the log doesn't keep
+(retries as they happen, compactions, margin calls, pings) goes to
+`learner/metrics.jsonl`.
+
+Still to do:
+- **Fresh tutor thread per module.** Start a new main session at each
+  module boundary, seeded with a short learner profile carried forward
+  (how they answer, what they got wrong, what they're working on),
+  instead of relying on pi's generic compaction partway through a lesson.
+  Judge it on the admin page: peak context, waits, cost.
+- Watch the admin page during walkthrough 9 and note anything missing.
+
+## 5. Public launch: a Brev launchable
+
+Public repo prepared: `git@github.com:clapeyre/cuphoton-tutor.git` (not
+pushed yet). cuPhoton itself is public (`github.com/NVIDIA/cuPhoton`) and
+Module 04 downloads its PS1 data from the public archive, so nothing
+internal is needed besides the model endpoint. Licensing goes through the
+SA process, not here. To do, most important first:
+
+1. **First-run setup page for the model.** `tutor/pi-agent/models.json`
+   points at `inference-api.nvidia.com`, which is NVIDIA-internal. On
+   first open the page asks for the provider (build.nvidia.com, any
+   OpenAI-compatible URL such as a local vLLM or NIM, or Anthropic), the
+   key and the model, runs the endpoint ping (`server/endpoint.ts`), and
+   saves to `learner/`, never to the repo. It warns that the course was
+   tuned on Sonnet 5.5 (weaker models mostly fail at the page tools: ask,
+   settle, reveal) and that a local model shares the GPU the lessons use.
+2. **Access control.** The tutor runs shell commands and the page has no
+   login; today it is bound to 127.0.0.1 behind an SSH tunnel. A public
+   link would be a shell on the instance. Use Brev's access-controlled
+   links (check what they offer) or a token the setup step generates; the
+   admin page sits behind the same gate.
+3. **Packaging.** The GPU environment is 11 GB, plus the CPU `.venv` and
+   the native xDR build: a setup script from scratch is probably 15–30
+   minutes per launch (not timed). Prefer a prebuilt container image.
+   Either way: a neutral `CUPHOTON_DIR` default (today it's the author's
+   path), clone cuPhoton at the pinned commit, `npm ci && npm run build`,
+   then `npm run smoke` as the "ready" check.
+4. **Pick and test the GPU.** The course has only ever run on one machine
+   (RTX 4070 Ti SUPER, 16 GB). Run every module once on a fresh instance
+   of the smallest GPU that should pass (4.6 trains with PyTorch; 8.3,
+   7.3 use the GPU) and write the result in the README.
+
+One instance per learner fits the app: progress is one `learner/` folder.
+
 ## Decided out of scope
 
 - **Scale-out (guide ch. 14).** Not taught (17 Nov). By the time a learner

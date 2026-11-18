@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/api": target, "/media": target, "/course-files": target, "/workspace": target,
+      "/api": target, "/admin": target, "/media": target, "/course-files": target, "/workspace": target,
       "/ws": { target: target.replace("http", "ws"), ws: true },
     },
   },

@@ -7,11 +7,15 @@ import { config } from "./config.ts";
 import { courseOutline, loadCourse, publicLesson } from "./content.ts";
 import { QUEUE, Store, type Pointer, type Thread } from "./state.ts";
 import { Tutor } from "./tutor.ts";
+import { Admin } from "./admin.ts";
+import { pingEndpoint } from "./endpoint.ts";
 
 const course = loadCourse();
 const lessonTurns = new Map([...course.lessons].map(([id, l]) => [id, l.turnIds]));
 const store = new Store();
 const tutor = new Tutor(course, store, lessonTurns);
+const admin = new Admin(tutor);
+tutor.onMetric = (m) => admin.record(m);
 
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".json": "application/json",
@@ -111,6 +115,14 @@ const server = http.createServer((req, res) => {
       const r = readWork(url.searchParams.get("path") ?? "");
       return "error" in r ? json(r, 404) : json(r);
     } catch { return json({ error: "can't read that" }, 400); }
+  }
+  // The admin page: how the tutor is doing (context, waits, errors, spend, the machine). Read-only,
+  // except "ping", which spends one small model call.
+  if (p === "/admin") return sendFile(req, res, path.join(import.meta.dirname, "admin.html"));
+  if (p === "/api/admin") { admin.report().then(json, (e) => json({ error: String(e?.message ?? e) }, 500)); return; }
+  if (p === "/api/admin/ping" && req.method === "POST") {
+    pingEndpoint().then((r) => { admin.record({ kind: "ping", ok: r.ok, seconds: r.seconds, detail: r.detail }); json(r); });
+    return;
   }
   if (p === "/api/health") return json({ ok: true, model: `${config.provider}/${config.model}`, lessons: course.order.length });
   if (p.startsWith("/media/") && p.endsWith(".vtt")) { // subtitles: the .srt next to the video, as WebVTT

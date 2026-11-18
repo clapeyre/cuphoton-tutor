@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>cuPhoton Learn · Tutor admin</title>
+<style>
+:root {
+  --bg: #141414; --raised: #1f1f1f; --sunken: #0d0d0d; --subtle: #262626;
+  --ink: #ececec; --ink2: #a3a3a3; --ink3: #737373; --line: #2e2e2e; --line2: #4a4a4a;
+  --brand: #76b900; --series: #76b900; --ref: #8a8a8a;
+  --warn: #e0a526; --bad: #ef5b5b; --good: #76b900;
+  --sans: "NVIDIA Sans", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.5; }
+main { max-width: 1200px; margin: 0 auto; padding: 20px 16px 60px; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-bottom: 16px; }
+h1 { font-size: 20px; margin: 0; font-weight: 600; }
+h1 a { color: var(--ink2); text-decoration: none; font-weight: 400; font-size: 14px; margin-left: 8px; }
+h2 { font-size: 15px; margin: 28px 0 8px; font-weight: 600; }
+.sub { color: var(--ink2); font-size: 13px; }
+.mono { font-family: var(--mono); font-size: 12px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; background: var(--subtle); font-size: 13px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink3); }
+.dot.busy { background: var(--brand); } .dot.warn { background: var(--warn); } .dot.bad { background: var(--bad); }
+button { font: inherit; color: var(--ink); background: var(--subtle); border: 1px solid var(--line2); border-radius: 6px; padding: 4px 12px; cursor: pointer; }
+button:hover { border-color: var(--ref); }
+.spacer { flex: 1; }
+.alerts { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.alert { padding: 8px 12px; border-radius: 6px; background: var(--raised); border-left: 3px solid var(--warn); }
+.alert.bad { border-left-color: var(--bad); }
+.alert b { font-weight: 600; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.tile { background: var(--raised); border-radius: 8px; padding: 12px 14px; min-height: 92px; }
+.tile .k { color: var(--ink2); font-size: 12px; }
+.tile .v { font-size: 22px; font-weight: 600; margin: 2px 0; font-variant-numeric: tabular-nums; }
+.tile .d { color: var(--ink2); font-size: 12px; }
+.bar { height: 6px; background: var(--sunken); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+.bar > div { height: 100%; background: var(--series); border-radius: 3px; }
+.bar > div.warn { background: var(--warn); } .bar > div.bad { background: var(--bad); }
+.chart { background: var(--raised); border-radius: 8px; padding: 10px 12px 4px; position: relative; }
+.chart svg { display: block; width: 100%; height: 220px; }
+.chart .note { color: var(--ink2); font-size: 12px; padding: 0 0 6px; }
+.tip { position: absolute; pointer-events: none; background: var(--sunken); border: 1px solid var(--line2); border-radius: 6px; padding: 6px 9px; font-size: 12px; white-space: nowrap; display: none; z-index: 2; }
+.tbl { overflow-x: auto; background: var(--raised); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--ink2); font-weight: 500; font-size: 12px; position: sticky; top: 0; background: var(--raised); }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.err { color: var(--bad); }
+td.lbl { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink2); }
+tr:last-child td { border-bottom: 0; }
+td:first-child { white-space: nowrap; }
+.scroll { max-height: 420px; overflow-y: auto; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 800px) { .two { grid-template-columns: minmax(0, 1fr); } }
+label { color: var(--ink2); font-size: 13px; }
+.muted { color: var(--ink3); }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Tutor admin<a href="/">← back to the course</a></h1>
+  <span class="pill" id="status"><span class="dot"></span>…</span>
+  <span class="sub" id="model"></span>
+  <span class="spacer"></span>
+  <span class="sub" id="ping-out"></span>
+  <button id="ping" title="Spends one small model call">Ping the model</button>
+  <span class="sub" id="updated"></span>
+</header>
+
+<div class="alerts" id="alerts"></div>
+<div class="tiles" id="tiles"></div>
+
+<h2>Context size at every model call</h2>
+<div class="chart" id="ctx-chart"><div class="note" id="ctx-note"></div><svg></svg><div class="tip"></div></div>
+
+<h2>How long the learner waited</h2>
+<div class="chart" id="wait-chart"><div class="note">Time from a learner action (a reply, opening a lesson) to the tutor's first response, last 100 actions. Hover for the whole turn.</div><svg></svg><div class="tip"></div></div>
+
+<h2>Recent prompts <label style="margin-left:12px"><input type="checkbox" id="learner-only" checked> learner actions only</label></h2>
+<div class="tbl scroll"><table id="prompts"></table></div>
+
+<div class="two">
+  <div><h2>By lesson</h2><div class="tbl scroll"><table id="lessons"></table></div></div>
+  <div><h2>Tools</h2><div class="tbl scroll"><table id="tools"></table></div></div>
+</div>
+
+<div class="two">
+  <div><h2>Errors and retries</h2><div class="tbl scroll"><table id="errors"></table></div></div>
+  <div><h2>Compactions</h2><div class="tbl"><table id="compactions"></table></div>
+       <h2>Margin threads</h2><div class="tbl scroll"><table id="margin"></table></div></div>
+</div>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const k = (n) => n == null ? "–" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? Math.round(n / 1e3) + "k" : String(n);
+const sec = (ms) => ms == null ? "–" : ms < 1000 ? ms + " ms" : ms < 60000 ? (ms / 1000).toFixed(1) + " s" : Math.floor(ms / 60000) + " min " + Math.round((ms % 60000) / 1000) + " s";
+const usd = (x) => x == null ? "–" : "$" + (x < 1 ? x.toFixed(3) : x.toFixed(2));
+const gb = (b) => b == null ? "–" : (b / 2 ** 30).toFixed(b > 10 * 2 ** 30 ? 0 : 1) + " GB";
+const when = (t) => {
+  const d = new Date(t), now = new Date();
+  const hm = d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return d.toDateString() === now.toDateString() ? hm : d.toLocaleDateString([], { month: "short", day: "numeric" }) + " " + hm;
+};
+const ago = (t) => { const s = (Date.now() - t) / 1000; return s < 90 ? Math.round(s) + " s ago" : s < 5400 ? Math.round(s / 60) + " min ago" : s < 129600 ? Math.round(s / 3600) + " h ago" : Math.round(s / 86400) + " days ago"; };
+
+let last = null;
+
+function tiles(r) {
+  const t = r.tutor, ctxNow = t.usage?.tokens || r.context.at(-1)?.[1] || null;
+  const pct = ctxNow != null && t.compactAt ? ctxNow / t.compactAt : null;
+  const lastComp = r.compactions.at(-1);
+  const g = r.machine.gpus[0];
+  const cls = (x, w, b) => x == null ? "" : x >= b ? "bad" : x >= w ? "warn" : "";
+  const tile = (key, v, d, barPct, barCls) => `<div class="tile"><div class="k">${key}</div><div class="v">${v}</div><div class="d">${d}</div>${barPct != null ? `<div class="bar"><div class="${barCls}" style="width:${Math.min(100, barPct * 100).toFixed(1)}%"></div></div>` : ""}</div>`;
+  $("#tiles").innerHTML = [
+    tile("Context now", k(ctxNow), `of ${k(t.compactAt)} before compaction (window ${k(t.contextWindow)})`, pct, cls(pct, 0.75, 0.9)),
+    tile("Compactions", r.compactions.length, lastComp ? `last ${ago(lastComp.t)}, at ${k(lastComp.before)}` : "none yet"),
+    tile("First response", sec(r.wait.firstP50), `median; 90% within ${sec(r.wait.firstP90)} (last ${r.wait.n})`),
+    tile("Whole turn", sec(r.wait.totalP50), `median; 90% within ${sec(r.wait.totalP90)}`),
+    tile("Errors, 24 h", r.totals.errors24h, `${r.errors.length ? "last " + ago(r.errors[0].t) : "none logged"}`),
+    tile("Spend", usd(r.totals.cost), `today ${usd(r.totals.costToday)} · cache ${r.totals.cacheShare == null ? "–" : Math.round(r.totals.cacheShare * 100) + "%"}`),
+    tile("Model calls", k(r.totals.calls), `${k(r.totals.prompts)} prompts · ${r.totals.marginCalls} margin calls since ${r.totals.firstCall ? when(r.totals.firstCall) : "–"}`),
+    g ? tile("GPU memory", `${(g.memUsedMiB / 1024).toFixed(1)} GB`, `of ${(g.memTotalMiB / 1024).toFixed(0)} GB · ${g.utilPct}% busy · ${esc(g.name)}`, g.memUsedMiB / g.memTotalMiB, cls(g.memUsedMiB / g.memTotalMiB, 0.8, 0.95))
+      : tile("GPU", "–", esc(r.machine.gpuError ?? "none found")),
+    tile("Disk", gb(r.machine.disk?.freeBytes), `free · work/ is ${gb(r.machine.workBytes)}`, r.machine.disk ? 1 - r.machine.disk.freeBytes / r.machine.disk.totalBytes : null, cls(r.machine.disk ? 1 - r.machine.disk.freeBytes / r.machine.disk.totalBytes : null, 0.85, 0.95)),
+  ].join("");
+}
+
+function header(r) {
+  const t = r.tutor;
+  let state = "Idle", dot = "";
+  if (t.compacting) { state = "Compacting its context"; dot = "warn"; }
+  else if (t.retrying) { state = "Retrying a failed call"; dot = "warn"; }
+  else if (t.busy) { state = t.busy + (t.queued > 1 ? ` · ${t.queued - 1} queued` : ""); dot = "busy"; }
+  else if (t.preparing) { state = `Preparing ${t.preparing} ahead`; dot = "busy"; }
+  else if (t.streaming) { state = "Working"; dot = "busy"; }
+  $("#status").innerHTML = `<span class="dot ${dot}"></span>${esc(state)}${t.margins ? ` · ${t.margins} margin thread${t.margins > 1 ? "s" : ""} open` : ""}`;
+  $("#model").textContent = `${t.provider}/${t.model} · thinking ${t.thinking} · server up ${ago(r.startedAt).replace(" ago", "")}`;
+  $("#updated").textContent = "updated " + new Date(r.now).toLocaleTimeString();
+}
+
+function alerts(r) {
+  const out = [], t = r.tutor, ctxNow = t.usage?.tokens || r.context.at(-1)?.[1];
+  if (ctxNow && t.compactAt && ctxNow / t.compactAt > 0.85) out.push(["warn", `<b>Compaction soon.</b> The tutor's context is at ${k(ctxNow)} of ${k(t.compactAt)}. When it passes, pi summarises the conversation and the tutor loses the detail of earlier exchanges (your progress itself is kept on the page).`]);
+  const hour = r.errors.filter((e) => Date.now() - e.t < 3600e3);
+  if (hour.length) out.push(["bad", `<b>${hour.length} error${hour.length > 1 ? "s" : ""} in the last hour.</b> Latest: ${esc(hour[0].where)}: ${esc(hour[0].message.slice(0, 160))}`]);
+  if (r.wait.firstP90 > 45000) out.push(["warn", `<b>Slow responses.</b> One learner action in ten waits more than ${sec(r.wait.firstP90)} for a first response.`]);
+  const g = r.machine.gpus[0];
+  if (g && g.memUsedMiB / g.memTotalMiB > 0.9) out.push(["warn", `<b>GPU memory nearly full</b> (${(g.memUsedMiB / 1024).toFixed(1)} of ${(g.memTotalMiB / 1024).toFixed(0)} GB). GPU lessons may fail to allocate.`]);
+  if (r.machine.disk && r.machine.disk.freeBytes < 10 * 2 ** 30) out.push(["bad", `<b>Low disk:</b> ${gb(r.machine.disk.freeBytes)} free.`]);
+  $("#alerts").innerHTML = out.map(([c, h]) => `<div class="alert ${c === "bad" ? "bad" : ""}">${h}</div>`).join("");
+}
+
+// A plain SVG line chart over call index, with reference lines and markers. Hover shows the nearest point.
+function lineChart(box, pts, opts) {
+  const svg = box.querySelector("svg"), tip = box.querySelector(".tip");
+  const W = svg.clientWidth || 800, H = 220, L = 48, R = 10, T = 10, B = 26;
+  const n = pts.length;
+  if (!n) { svg.innerHTML = `<text x="${L}" y="40" fill="var(--ink2)" font-size="13">No data yet.</text>`; return; }
+  const ymax = opts.ymax ?? Math.max(...pts.map((p) => p.y)) * 1.1;
+  const x = (i) => L + (n === 1 ? (W - L - R) / 2 : (i / (n - 1)) * (W - L - R));
+  const y = (v) => T + (1 - v / ymax) * (H - T - B);
+  let s = "";
+  const step = opts.yStep(ymax);
+  for (let v = 0; v <= ymax; v += step) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L - 6}" y="${y(v) + 4}" fill="var(--ink3)" font-size="11" text-anchor="end">${opts.yFmt(v)}</text>`;
+  // x ticks at day boundaries
+  let prevDay = null, lastX = -99;
+  pts.forEach((p, i) => { const d = new Date(p.t).toDateString(); if (d !== prevDay) { prevDay = d; if (x(i) - lastX > 50) { lastX = x(i); s += `<line x1="${x(i)}" x2="${x(i)}" y1="${H - B}" y2="${H - B + 4}" stroke="var(--line2)"/><text x="${x(i)}" y="${H - 6}" fill="var(--ink3)" font-size="11" text-anchor="start">${new Date(p.t).toLocaleDateString([], { month: "short", day: "numeric" })}</text>`; } } });
+  for (const ref of opts.refs ?? []) if (ref.v <= ymax) s += `<line x1="${L}" x2="${W - R}" y1="${y(ref.v)}" y2="${y(ref.v)}" stroke="var(--ref)" stroke-dasharray="4 4"/><text x="${W - R - 4}" y="${y(ref.v) - 5}" fill="var(--ink2)" font-size="11" text-anchor="end">${esc(ref.label)}</text>`;
+  for (const i of opts.marks ?? []) s += `<line x1="${x(i)}" x2="${x(i)}" y1="${T}" y2="${H - B}" stroke="var(--warn)" stroke-width="1.5" stroke-dasharray="2 3"/>`;
+  if (opts.dots) s += pts.map((p, i) => `<circle cx="${x(i)}" cy="${y(Math.min(p.y, ymax))}" r="4" fill="${p.bad ? "var(--bad)" : "var(--series)"}" stroke="var(--raised)" stroke-width="2"/>`).join("");
+  else s += `<path d="${pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.y).toFixed(1)}`).join("")}" fill="none" stroke="var(--series)" stroke-width="2" stroke-linejoin="round"/>`;
+  s += `<line class="xh" y1="${T}" y2="${H - B}" stroke="var(--ink3)" visibility="hidden"/><circle class="hp" r="5" fill="var(--series)" stroke="var(--ink)" stroke-width="2" visibility="hidden"/>`;
+  s += `<rect x="${L}" y="0" width="${W - L - R}" height="${H}" fill="transparent"/>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = s;
+  const xh = svg.querySelector(".xh"), hp = svg.querySelector(".hp");
+  svg.onmousemove = (e) => {
+    const rect = svg.getBoundingClientRect(), mx = (e.clientX - rect.left) * (W / rect.width);
+    const i = Math.max(0, Math.min(n - 1, Math.round(((mx - L) / (W - L - R)) * (n - 1))));
+    const p = pts[i];
+    xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.setAttribute("visibility", "visible");
+    hp.setAttribute("cx", x(i)); hp.setAttribute("cy", y(Math.min(p.y, ymax))); hp.setAttribute("visibility", "visible");
+    tip.innerHTML = opts.tip(p); tip.style.display = "block";
+    const px = (x(i) / W) * rect.width;
+    tip.style.left = Math.min(px + 14, rect.width - tip.offsetWidth) + "px"; tip.style.top = "34px";
+  };
+  svg.onmouseleave = () => { tip.style.display = "none"; xh.setAttribute("visibility", "hidden"); hp.setAttribute("visibility", "hidden"); };
+}
+
+function charts(r) {
+  const t = r.tutor;
+  const pts = r.context.map(([tt, y, lesson]) => ({ t: tt, y, lesson }));
+  const marks = r.compactions.map((c) => pts.findIndex((p) => p.t >= c.t)).filter((i) => i >= 0);
+  $("#ctx-note").innerHTML = `Tokens the model reads on each call, main thread (${pts.length} calls). Dashed: where pi compacts (${k(t.compactAt)}). <span style="color:var(--warn)">Orange</span>: a compaction.`;
+  lineChart($("#ctx-chart"), pts, {
+    ymax: (t.contextWindow ?? 200000) * 1.02, marks,
+    refs: [{ v: t.compactAt, label: "compacts here" }],
+    yStep: (m) => m > 150000 ? 50000 : 25000, yFmt: (v) => k(v),
+    tip: (p) => `<b>${k(p.y)}</b> tokens · ${when(p.t)}${p.lesson ? ` · lesson ${esc(p.lesson)}` : ""}`,
+  });
+  const w = r.prompts.filter((p) => ["reply", "open", "return"].includes(p.kind) && p.firstMs != null).slice(0, 100).reverse()
+    .map((p) => ({ t: p.t, y: p.firstMs / 1000, p, bad: !!p.error }));
+  const ymax = Math.max(30, Math.min(180, (Math.max(0, ...w.map((d) => d.y)) * 1.1)));
+  lineChart($("#wait-chart"), w, {
+    dots: true, ymax, yStep: (m) => m > 90 ? 30 : m > 40 ? 10 : 5, yFmt: (v) => v + " s",
+    tip: (d) => `<b>${sec(d.p.firstMs)}</b> to first response · whole turn ${sec(d.p.totalMs)}<br>${when(d.t)} · ${esc(d.p.lesson ?? "")} ${esc(d.p.kind)} · ${d.p.calls} calls, ${d.p.tools} tools${d.p.error ? `<br><span style="color:var(--bad)">${esc(d.p.error.slice(0, 80))}</span>` : ""}`,
+  });
+}
+
+function table(sel, cols, rows, empty = "Nothing yet.") {
+  $(sel).innerHTML = `<thead><tr>${cols.map((c) => `<th class="${c.n ? "n" : ""}">${c.h}</th>`).join("")}</tr></thead><tbody>${rows.length ? rows.map((r) => `<tr>${cols.map((c) => `<td class="${c.n ? "n" : ""} ${c.cls?.(r) ?? ""}" ${c.title ? `title="${esc(c.title(r))}"` : ""}>${c.f(r)}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}" class="muted">${empty}</td></tr>`}</tbody>`;
+}
+
+function tables(r) {
+  const learnerOnly = $("#learner-only").checked;
+  const ps = r.prompts.filter((p) => !learnerOnly || ["reply", "open", "return"].includes(p.kind)).slice(0, 60);
+  table("#prompts", [
+    { h: "When", f: (p) => when(p.t) }, { h: "Lesson", f: (p) => esc(p.lesson ?? "–") }, { h: "Kind", f: (p) => esc(p.kind) },
+    { h: "What", f: (p) => esc(p.label), cls: () => "lbl", title: (p) => p.label },
+    { h: "First response", n: 1, f: (p) => sec(p.firstMs) }, { h: "Whole turn", n: 1, f: (p) => sec(p.totalMs) },
+    { h: "Calls", n: 1, f: (p) => p.calls }, { h: "Tools", n: 1, f: (p) => p.tools + (p.toolErrors ? ` (${p.toolErrors} failed)` : "") },
+    { h: "Context", n: 1, f: (p) => k(p.ctx) }, { h: "Cost", n: 1, f: (p) => usd(p.cost) },
+    { h: "", f: (p) => p.error ? "error" : "", cls: (p) => p.error ? "err" : "", title: (p) => p.error ?? "" },
+  ], ps);
+  table("#lessons", [
+    { h: "Lesson", f: (l) => esc(l.id) }, { h: "Prompts", n: 1, f: (l) => l.prompts }, { h: "Calls", n: 1, f: (l) => l.calls },
+    { h: "Median wait", n: 1, f: (l) => sec(l.waitP50) }, { h: "Longest", n: 1, f: (l) => sec(l.waitMax) },
+    { h: "Peak context", n: 1, f: (l) => k(l.maxCtx) }, { h: "Cost", n: 1, f: (l) => usd(l.cost) },
+  ], r.lessons);
+  table("#tools", [
+    { h: "Tool", f: (t) => esc(t.name) }, { h: "Calls", n: 1, f: (t) => t.n }, { h: "Failed", n: 1, f: (t) => t.errors || "", cls: (t) => t.errors ? "err" : "" },
+    { h: "Median", n: 1, f: (t) => sec(t.msP50) }, { h: "90%", n: 1, f: (t) => sec(t.msP90) }, { h: "Longest", n: 1, f: (t) => sec(t.msMax) }, { h: "Total", n: 1, f: (t) => sec(t.msTotal) },
+  ], r.tools);
+  table("#errors", [
+    { h: "When", f: (e) => when(e.t) }, { h: "Where", f: (e) => esc(e.where) },
+    { h: "Message", f: (e) => esc(e.message.slice(0, 140)), cls: () => "lbl", title: (e) => e.message },
+  ], r.errors, "No errors logged.");
+  table("#compactions", [
+    { h: "When", f: (c) => when(c.t) }, { h: "Context before", n: 1, f: (c) => k(c.before) }, { h: "Summary", n: 1, f: (c) => k(c.summaryChars) + " chars" }, { h: "Cost", n: 1, f: (c) => usd(c.cost) },
+  ], r.compactions.slice().reverse(), "None yet.");
+  table("#margin", [
+    { h: "When", f: (m) => when(m.t) }, { h: "Lesson", f: (m) => esc(m.lesson) }, { h: "Time", n: 1, f: (m) => sec(m.ms) },
+    { h: "Context", n: 1, f: (m) => k(m.ctx) }, { h: "Cost", n: 1, f: (m) => usd(m.cost) },
+  ], r.margin, "None recorded since the admin page was added.");
+}
+
+function render(r) { last = r; header(r); alerts(r); tiles(r); charts(r); tables(r); }
+
+async function load() {
+  try {
+    const r = await fetch("/api/admin").then((x) => x.json());
+    if (r.error) throw new Error(r.error);
+    render(r);
+  } catch (e) { $("#updated").textContent = "can't reach the server: " + e.message; }
+}
+$("#learner-only").onchange = () => last && tables(last);
+window.onresize = () => last && charts(last);
+$("#ping").onclick = async () => {
+  $("#ping-out").textContent = "pinging…";
+  const r = await fetch("/api/admin/ping", { method: "POST" }).then((x) => x.json()).catch((e) => ({ ok: false, detail: e.message }));
+  $("#ping-out").innerHTML = `<span style="color:var(${r.ok ? "--good" : "--bad"})">${r.ok ? "✓" : "✗"}</span> ${esc(r.detail)}`;
+};
+load();
+setInterval(load, 10000);
+</script>
+</body>
+</html>

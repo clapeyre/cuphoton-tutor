@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { config } from "../server/config.ts";
 import { loadCourse, normKey } from "../server/content.ts";
+import { pingEndpoint } from "../server/endpoint.ts";
 
 let failed = 0;
 const ok = (name: string, detail = "") => console.log(`  ok    ${name}${detail ? "  " + detail : ""}`);
@@ -64,26 +65,8 @@ const tracks = spawnSync(gpy, ["-c", "import cuphoton.ximage.workflows, cuphoton
 tracks.status === 0 ? ok("tracks", "xBeam, xRay and xImage (ximage extra) import in the GPU env") : bad("tracks", `an import failed in ${gpy}; rerun tools/setup-gpu-env.sh. Needed for Modules 06-08.`);
 
 // 4. Endpoint: the configured model answers a tool call.
-try {
-  const models = JSON.parse(fs.readFileSync(path.join(config.tutorDir, "pi-agent", "models.json"), "utf8"));
-  const prov = models.providers?.[config.provider];
-  if (!prov) throw new Error(`provider ${config.provider} not in models.json`);
-  const key = String(prov.apiKey ?? "").replace(/^\$\{?(\w+)\}?$/, (_: string, k: string) => process.env[k] ?? "");
-  const t0 = Date.now();
-  const res = await fetch(`${prov.baseUrl}/chat/completions`, {
-    method: "POST",
-    headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
-    body: JSON.stringify({
-      model: config.model, max_tokens: 2000,
-      messages: [{ role: "user", content: "Call the ping tool with n=7." }],
-      tools: [{ type: "function", function: { name: "ping", description: "ping", parameters: { type: "object", properties: { n: { type: "integer" } }, required: ["n"] } } }],
-    }),
-    signal: AbortSignal.timeout(60000),
-  });
-  const j: any = await res.json();
-  const call = j.choices?.[0]?.message?.tool_calls?.[0];
-  call?.function?.name === "ping" ? ok("endpoint", `${config.provider}/${config.model} · tool call in ${((Date.now() - t0) / 1000).toFixed(1)} s`) : bad("endpoint", `HTTP ${res.status}: ${JSON.stringify(j).slice(0, 200)}`);
-} catch (e: any) { bad("endpoint", e.message); }
+const ping = await pingEndpoint();
+ping.ok ? ok("endpoint", ping.detail) : bad("endpoint", ping.detail);
 
 // 5. Learner dir is writable.
 try { fs.mkdirSync(path.join(config.learnerDir, "work"), { recursive: true }); fs.accessSync(config.learnerDir, fs.constants.W_OK); ok("learner dir", config.learnerDir); }

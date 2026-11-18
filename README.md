@@ -33,6 +33,11 @@ http://localhost:8765. For page development, run `npm run dev:server` and
 | `PORT`, `HOST` | `8765`, `127.0.0.1` | |
 | `PI_OFFLINE` | `1` | no pi network activity besides the endpoint |
 
+`/admin` (the "Admin" link in the course header) shows how the tutor is
+doing: context size and compactions, response times, errors and retries,
+spend, GPU memory and disk. It reads `learner/sessions/` and
+`learner/metrics.jsonl`.
+
 To use another endpoint or self-hosted model, add a provider to
 `tutor/pi-agent/models.json` and set `TUTOR_PROVIDER`/`TUTOR_MODEL`.
 

@@ -244,3 +244,4 @@ pre.files-code { margin: 0; flex: 1; min-width: 0; padding: 8px 10px; border-rad
 .guide-link + .files-btn { margin-left: 0; }
 /* the current lesson's square in the course map, ringed like the top bar's */
 .map .sq.cur { box-shadow: 0 0 0 2px var(--background-color-surface-base), 0 0 0 3.5px var(--text-color-primary); }
+.admin-link { text-decoration: none; color: var(--text-color-secondary); }

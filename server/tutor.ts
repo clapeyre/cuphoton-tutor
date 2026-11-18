@@ -37,6 +37,8 @@ export class Tutor {
   activity: Activity = { main: null, turn: null, threads: {}, drafts: {} };
   onActivity: () => void = () => {};
   onNote: (n: { kind: string; summary: string }) => void = () => {};
+  /** Events the session log doesn't keep (retries, compactions as they happen, margin calls), for the admin page. */
+  onMetric: (m: Record<string, unknown>) => void = () => {};
 
   constructor(private course: Course, private store: Store, private lessonTurns: Map<string, string[]>) {}
 
@@ -115,6 +117,10 @@ export class Tutor {
     });
     if (kind === "main") {
       session.subscribe((ev: any) => {
+        if (ev.type === "auto_retry_start") this.onMetric({ kind: "retry", attempt: ev.attempt, of: ev.maxAttempts, delayMs: ev.delayMs, error: String(ev.errorMessage ?? "").slice(0, 300) });
+        else if (ev.type === "auto_retry_end") this.onMetric({ kind: "retry_end", ok: ev.success, attempt: ev.attempt, error: ev.finalError ? String(ev.finalError).slice(0, 300) : undefined });
+        else if (ev.type === "compaction_start") this.onMetric({ kind: "compaction_start", reason: ev.reason });
+        else if (ev.type === "compaction_end") this.onMetric({ kind: "compaction_end", reason: ev.reason, aborted: ev.aborted, error: ev.errorMessage });
         if (ev.type === "tool_execution_start") {
           this.recorder.start(ev.toolCallId, ev.toolName, ev.args);
           const label = ev.toolName === "bash" ? "Running" : ev.toolName === "show_figure" ? "Placing a figure" : ev.toolName === "read" ? "Reading" : "Working";
@@ -276,6 +282,21 @@ export class Tutor {
 
   // ---------- main thread ----------
 
+  /** What the admin page shows about the live tutor. */
+  status() {
+    const m = this.main;
+    let reserve = 16384;
+    try { reserve = m.settingsManager.getCompactionReserveTokens(this.model); } catch {}
+    return {
+      provider: config.provider, model: config.model, thinking: config.thinking,
+      contextWindow: this.model?.contextWindow ?? null, compactAt: (this.model?.contextWindow ?? 0) - reserve,
+      usage: m?.getContextUsage() ?? null,
+      busy: this.activity.main, preparing: this.background, queued: this.foreground,
+      streaming: m?.isStreaming ?? false, compacting: m?.isCompacting ?? false, retrying: m?.isRetrying ?? false,
+      margins: this.margins.size, sessionFile: m?.sessionManager.getSessionFile() ?? null,
+    };
+  }
+
   private setMain(label: string | null) { this.activity.main = label; this.onActivity(); }
 
   private foreground = 0; // learner-driven prompts queued or running
@@ -418,6 +439,8 @@ export class Tutor {
           this.activity.drafts[key] = textOf(ev.message);
           this.onActivity();
         } else if (ev.type === "message_end" && ev.message?.role === "assistant") {
+          const u = ev.message.usage;
+          if (u) this.onMetric({ kind: "margin", thread: thread.id, lesson: thread.from, ctx: (u.input ?? 0) + (u.cacheRead ?? 0) + (u.cacheWrite ?? 0), out: u.output ?? 0, cost: u.cost?.total ?? 0, ms: ev.message.durationMs ?? null, stop: ev.message.stopReason, error: ev.message.errorMessage ? String(ev.message.errorMessage).slice(0, 300) : undefined });
           // Each finished message goes into the thread, so text written before a tool call isn't lost.
           const said = textOf(ev.message);
           delete this.activity.drafts[key];
