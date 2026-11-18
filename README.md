@@ -1,4 +1,4 @@
-# cuPhoton Learn
+# cuPhoton Tutor
 
 An interactive textbook for cuPhoton. Lessons read like a book; an LLM tutor
 (pi SDK, any OpenAI- or Anthropic-style endpoint) runs real work in the
