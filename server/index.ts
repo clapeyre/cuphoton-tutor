@@ -8,6 +8,7 @@ import { courseOutline, loadCourse, publicLesson } from "./content.ts";
 import { QUEUE, Store, type Pointer, type Thread } from "./state.ts";
 import { Tutor } from "./tutor.ts";
 import { Admin } from "./admin.ts";
+import { accessLink, allow, allowSocket } from "./access.ts";
 import { isConfigured, loadEndpoint, pingEndpoint, PRESETS, saveEndpoint, type Endpoint } from "./endpoint.ts";
 
 const course = loadCourse();
@@ -98,6 +99,7 @@ function snapshot() {
 }
 
 const server = http.createServer((req, res) => {
+  if (!allow(req, res)) return; // the first browser owns the course (server/access.ts)
   const url = new URL(req.url ?? "/", "http://x");
   const p = url.pathname;
   const json = (o: unknown, code = 200) => { res.writeHead(code, { "content-type": "application/json" }).end(JSON.stringify(o)); };
@@ -127,6 +129,7 @@ const server = http.createServer((req, res) => {
       fromEnv: !e && ready ? `${config.provider}/${config.model} (from .env and tutor/pi-agent/models.json)` : null });
   }
   if (p === "/api/setup" && req.method === "POST") { setup(req).then((r) => json(r, r.ok ? 200 : 400), (e) => json({ ok: false, detail: String(e?.message ?? e) }, 500)); return; }
+  if (p === "/api/admin/access") return json({ link: accessLink(req), open: process.env.ACCESS === "open" });
   if (p === "/admin") return sendFile(req, res, path.join(import.meta.dirname, "admin.html"));
   if (p === "/api/admin") { admin.report().then(json, (e) => json({ error: String(e?.message ?? e) }, 500)); return; }
   if (p === "/api/admin/ping" && req.method === "POST") {
@@ -166,7 +169,7 @@ const server = http.createServer((req, res) => {
   sendFile(req, res, f);
 });
 
-const wss = new WebSocketServer({ server, path: "/ws" });
+const wss = new WebSocketServer({ server, path: "/ws", verifyClient: ({ req }: { req: http.IncomingMessage }) => allowSocket(req) });
 const clients = new Set<WebSocket>();
 let pending: NodeJS.Timeout | null = null;
 const broadcast = () => {

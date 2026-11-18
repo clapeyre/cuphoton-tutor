@@ -102,11 +102,17 @@ SA process, not here. To do, most important first:
    in the environment, through to the tutor filling 0.1's figure. Not
    tested: the Anthropic API and build.nvidia.com presets (no keys here),
    and which build.nvidia.com models handle the page tools.
-2. **Access control.** The tutor runs shell commands and the page has no
-   login; today it is bound to 127.0.0.1 behind an SSH tunnel. A public
-   link would be a shell on the instance. Use Brev's access-controlled
-   links (check what they offer) or a token the setup step generates; the
-   admin page sits behind the same gate.
+2. **Access control (built 18 Nov).** The first browser to open a page
+   claims the course (`server/access.ts`): a random token in
+   `learner/access.json`, set as an HttpOnly cookie; every request and the
+   WebSocket need it; cross-site POSTs and WebSockets are refused. The
+   access link for another browser is in `learner/access-link.txt`, the
+   server log and the admin page. `ACCESS=open` turns it off. This doesn't
+   depend on Brev: its docs say secure links add "Brev authentication" but
+   not who passes it, and new launchables default to "anyone with the
+   link". To check on Brev: whether a secure link reaches a server bound to
+   127.0.0.1 or needs `HOST=0.0.0.0` (fine behind the token, but then the
+   port must not also be opened as a raw TCP port).
 3. **Packaging.** The GPU environment is 11 GB, plus the CPU `.venv` and
    the native xDR build: a setup script from scratch is probably 15–30
    minutes per launch (not timed). Prefer a prebuilt container image.

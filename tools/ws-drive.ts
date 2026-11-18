@@ -1,7 +1,11 @@
 // Drive the page over its WebSocket, for tests: tsx tools/ws-drive.ts '<json msg>' ... [--wait-idle]
 import WebSocket from "ws";
 const port = process.env.PORT ?? "8765";
-const ws = new WebSocket(`ws://127.0.0.1:${port}/ws`);
+// The server lets in only the browser that claimed the course (server/access.ts): send its cookie.
+import fs from "node:fs";
+let token = "";
+try { token = JSON.parse(fs.readFileSync(`${process.env.LEARNER_DIR ?? "learner"}/access.json`, "utf8")).token; } catch {}
+const ws = new WebSocket(`ws://127.0.0.1:${port}/ws`, { headers: token ? { cookie: `cpl_access_${port}=${token}` } : {} });
 const msgs = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 let last: any = null, sent = false, busySeen = false;
 ws.on("message", (raw) => {

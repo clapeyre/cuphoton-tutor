@@ -37,6 +37,18 @@ apply); the admin page links to it. Without that file, the server uses
 `TUTOR_PROVIDER`/`TUTOR_MODEL` from `tutor/pi-agent/models.json` and the key
 from the environment, as below.
 
+## Who can use it
+
+The tutor runs shell commands on this machine, so the course belongs to the
+first browser that opens it: the server makes a random token
+(`learner/access.json`) and sets it as a cookie; every page, API call and
+the WebSocket need it, and requests from other sites are refused. To open
+the course in another browser, use the access link in
+`learner/access-link.txt` (also printed in the server log, and copyable from
+the admin page). To hand the course to a new browser, delete
+`learner/access.json` and restart. `ACCESS=open` turns the check off, for a
+machine only you can reach.
+
 ## Configuration (environment or `.env`)
 
 | variable | default | |
@@ -50,6 +62,7 @@ from the environment, as below.
 | `CUPHOTON_LEARN_FEEDBACK_URL` | | where consented feedback notes are POSTed |
 | `PORT`, `HOST` | `8765`, `127.0.0.1` | |
 | `PI_OFFLINE` | `1` | no pi network activity besides the endpoint |
+| `ACCESS` | | `open`: no access check (see "Who can use it") |
 
 `/admin` (the "Admin" link in the course header) shows how the tutor is
 doing: context size and compactions, response times, errors and retries,

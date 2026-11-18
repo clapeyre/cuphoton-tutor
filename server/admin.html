@@ -74,6 +74,7 @@ label { color: var(--ink2); font-size: 13px; }
 </header>
 
 <div class="alerts" id="alerts"></div>
+<p class="sub" id="access" style="margin:0 0 12px"></p>
 <div class="tiles" id="tiles"></div>
 
 <h2>Context size at every model call</h2>
@@ -280,6 +281,12 @@ $("#ping").onclick = async () => {
   const r = await fetch("/api/admin/ping", { method: "POST" }).then((x) => x.json()).catch((e) => ({ ok: false, detail: e.message }));
   $("#ping-out").innerHTML = `<span style="color:var(${r.ok ? "--good" : "--bad"})">${r.ok ? "✓" : "✗"}</span> ${esc(r.detail)}`;
 };
+fetch("/api/admin/access").then((x) => x.json()).then((a) => {
+  $("#access").innerHTML = a.open ? "Access check is off (ACCESS=open): anyone who reaches this port can use the course."
+    : a.link ? `To open the course in another browser, use its access link (keep it private): <button id="copy-link">Copy access link</button>` : "";
+  const b = $("#copy-link");
+  if (b) b.onclick = () => navigator.clipboard.writeText(a.link).then(() => (b.textContent = "Copied"), () => prompt("Access link:", a.link));
+}).catch(() => {});
 load();
 setInterval(load, 10000);
 </script>
