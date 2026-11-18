@@ -5,8 +5,8 @@
 An interactive textbook for cuPhoton. Lessons read like a book; an LLM tutor
 (pi SDK, any OpenAI- or Anthropic-style endpoint) runs real work in the
 learner's workspace behind the page and talks to the learner in "Your turn"
-blocks and in the margin. One server per learner, on the GPU machine. See
-`PLAN.md` for the design and milestones, and `docs/M0-harness-spike.md` for M0.
+blocks and in the margin. One server per learner, on the GPU machine. What's
+next is in `docs/ROADMAP.md`, parked ideas in `docs/BACKLOG.md`.
 
 ## Run it
 

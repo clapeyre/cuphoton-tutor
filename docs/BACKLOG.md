@@ -8,6 +8,13 @@ copied here, so this file stands on its own.
 
 ## Course content
 
+- **Re-pin cuPhoton.** The course pins `ff4d260` (`course/course.yaml`); newer
+  commits on main add small fixes. Do it with the next full rerun of the
+  modules: bump the commit, rebuild both environments (`tools/install.sh`),
+  rerun every lesson's runs and update the tutor notes' "Facts (real run…)"
+  blocks. Expect Module 02 to move most (below). Decide then whether the
+  course pins main or the release a lab would install (the `v0.2.x` tags sit
+  on a release branch). Done when every module runs clean on the new pin.
 - **Predictions that hinge on trivia** (walkthrough 4, 3.3, second pass).
   Some Your-turn predictions can't be reasoned out (a library default, a
   format's rules). The tutor now treats "I can't tell, I'd check X" as a
@@ -38,9 +45,9 @@ copied here, so this file stands on its own.
 
 ## Coverage (cuPhoton beyond the optical chain)
 
-From the 16 Nov coverage review. The low-hanging fruit (re-pin, a map
-lesson, Module 05 on the shipped transient chain, error budget and xLens) is
-planned in `docs/EXPANSION-PLAN.md`; coverage status is in `docs/ROADMAP.md`.
+From the 16 Nov coverage review. Its first items (a map lesson, Module 05 on
+the shipped transient chain, error budget and xLens) are built; the re-pin is
+above; coverage status is in `docs/ROADMAP.md`.
 
 - **Component tracks and scale-out** moved to `docs/ROADMAP.md` (17 Nov):
   the tracks are required before the course is shown; scale-out is out of

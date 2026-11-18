@@ -31,3 +31,8 @@ __pycache__/
 
 # The author's walkthrough notes stay local
 docs/walkthrough-*.md
+# Working documents: the original plan, the expansion review, the harness spike and the sim reports stay local
+/PLAN.md
+docs/EXPANSION-PLAN.md
+docs/M0-harness-spike.md
+docs/sim-*.md
