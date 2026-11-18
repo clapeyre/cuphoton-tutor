@@ -117,7 +117,10 @@ are dead: 0 counts in every frame, laser on and off.
   The strongest mode's frequency is unchanged (median error 0.002 THz);
   the extra entries are small fits to noise. Mention it if they didn't set
   the order themselves or ask about the default.
-- Speed, if asked (3.4's habits: whole command, said plainly): 2,048 row
+- Speed, if asked (3.4's habits: whole command, said plainly): quote the
+  manifest's `elapsed_s` from the learner's own run, not the numbers here,
+  which are from the course author's RTX 4070 Ti SUPER (a Tesla T4 takes
+  37–61 s for the same run). There, 2,048 row
   fits took 13–17 s per run (several runs; each command is a fresh process
   and reads both files). A 512 × 512 detector, 16,384 row fits, took
   102 s. For comparison, `linear_prediction_numpy` on one 95-sample trace
