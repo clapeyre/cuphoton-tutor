@@ -128,7 +128,7 @@ function tiles(r) {
     tile("First response", sec(r.wait.firstP50), `median; 90% within ${sec(r.wait.firstP90)} (last ${r.wait.n})`),
     tile("Whole turn", sec(r.wait.totalP50), `median; 90% within ${sec(r.wait.totalP90)}`),
     tile("Errors, 24 h", r.totals.errors24h, `${r.errors.length ? "last " + ago(r.errors[0].t) : "none logged"}`),
-    tile("Spend", usd(r.totals.cost), `today ${usd(r.totals.costToday)} · cache ${r.totals.cacheShare == null ? "–" : Math.round(r.totals.cacheShare * 100) + "%"}`),
+    tile("Spend, estimated", usd(r.totals.cost), `today ${usd(r.totals.costToday)} · cache ${r.totals.cacheShare == null ? "–" : Math.round(r.totals.cacheShare * 100) + "%"} · tokens × the prices in models.json, not your bill`),
     tile("Model calls", k(r.totals.calls), `${k(r.totals.prompts)} prompts · ${r.totals.marginCalls} margin calls since ${r.totals.firstCall ? when(r.totals.firstCall) : "–"}`),
     g ? tile("GPU memory", `${(g.memUsedMiB / 1024).toFixed(1)} GB`, `of ${(g.memTotalMiB / 1024).toFixed(0)} GB · ${g.utilPct}% busy · ${esc(g.name)}`, g.memUsedMiB / g.memTotalMiB, cls(g.memUsedMiB / g.memTotalMiB, 0.8, 0.95))
       : tile("GPU", "–", esc(r.machine.gpuError ?? "none found")),
