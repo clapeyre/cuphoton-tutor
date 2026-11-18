@@ -300,6 +300,15 @@ async function setup(req: http.IncomingMessage) {
 }
 
 if (isConfigured()) await startTutor();
+
+// A background ping, so the admin page shows how the endpoint responds through the day, not only when the
+// learner is working (shared endpoints get busy). PING_EVERY_MIN=0 turns it off.
+const pingEvery = Number(process.env.PING_EVERY_MIN ?? 10);
+if (pingEvery > 0) setInterval(() => {
+  if (!ready) return;
+  pingEndpoint().then((r) => admin.record({ kind: "ping", auto: true, ok: r.ok, seconds: r.seconds, detail: r.detail }));
+}, pingEvery * 60_000).unref();
+
 server.listen(config.port, config.host, () => {
   console.log(ready
     ? `cuPhoton Learn on http://${config.host}:${config.port}  (tutor ${config.provider}/${config.model}; ${course.order.length} lessons)`

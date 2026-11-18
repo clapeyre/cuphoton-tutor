@@ -224,6 +224,8 @@ export class Admin {
       .map((m) => ({ ...m, cost: priced(m.cacheRead !== undefined ? m : { cacheRead: m.ctx, output: m.out }, pr) }));
     for (const m of metrics) if ((m.kind === "retry" || m.kind === "compaction_end") && m.error) errors.push({ t: m.t, where: m.kind === "retry" ? `retry ${m.attempt}/${m.of}` : "compaction", message: m.error });
     for (const m of margin) if (m.error) errors.push({ t: m.t, where: "margin call", message: m.error });
+    const pings = metrics.filter((m) => m.kind === "ping");
+    for (const m of pings) if (!m.ok) errors.push({ t: m.t, where: m.auto ? "background ping" : "ping", message: String(m.detail ?? "failed") });
     errors.sort((a, b) => a.t - b.t);
 
     // What the learner waits for: anything they did (a reply, opening or returning to a lesson).
@@ -279,6 +281,8 @@ export class Admin {
         .sort((a, b) => b.msTotal - a.msTotal),
       errors: errors.slice(-100).reverse(),
       retries: metrics.filter((m) => m.kind === "retry").slice(-50).reverse(),
+      // Endpoint pings (background every PING_EVERY_MIN, the button, the setup page): one small tool call each.
+      pings: pings.slice(-300).map((m) => ({ t: m.t, s: m.seconds, ok: !!m.ok, auto: !!m.auto, detail: m.detail })),
       margin: margin.slice(-50).reverse(),
       // One thread per module: when each started, and the profile the threads hand on.
       threads: metrics.filter((m) => m.kind === "thread").map((m) => ({ t: m.t, from: m.from, to: m.to })),

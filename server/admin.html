@@ -80,6 +80,9 @@ label { color: var(--ink2); font-size: 13px; }
 <h2>Context size at every model call</h2>
 <div class="chart" id="ctx-chart"><div class="note" id="ctx-note"></div><svg></svg><div class="tip"></div></div>
 
+<h2>Endpoint response</h2>
+<div class="chart" id="ping-chart"><div class="note">One small tool call to the model: in the background every 10 minutes (PING_EVERY_MIN), and from the button. Red: it failed (often a 429, the shared endpoint at capacity). Last 300.</div><svg></svg><div class="tip"></div></div>
+
 <h2>How long the learner waited</h2>
 <div class="chart" id="wait-chart"><div class="note">Time from a learner action (a reply, opening a lesson) to the tutor's first response, last 100 actions. Hover for the whole turn.</div><svg></svg><div class="tip"></div></div>
 
@@ -129,6 +132,8 @@ function tiles(r) {
     tile("Compactions", r.compactions.length, lastComp ? `last ${ago(lastComp.t)}, at ${k(lastComp.before)}` : "none yet"),
     tile("First response", sec(r.wait.firstP50), `median; 90% within ${sec(r.wait.firstP90)} (last ${r.wait.n})`),
     tile("Whole turn", sec(r.wait.totalP50), `median; 90% within ${sec(r.wait.totalP90)}`),
+    (() => { const day = r.pings.filter((p) => Date.now() - p.t < 864e5), ok = day.filter((p) => p.ok).map((p) => p.s * 1000).sort((a, b) => a - b), lp = r.pings.at(-1);
+      return tile("Endpoint", lp ? (lp.ok ? sec(lp.s * 1000) : "failed") : "–", lp ? `last ping ${ago(lp.t)} · 24 h: median ${sec(ok[Math.floor(ok.length / 2)])}, ${day.length - ok.length} of ${day.length} failed` : "no pings yet"); })(),
     tile("Errors, 24 h", r.totals.errors24h, `${r.errors.length ? "last " + ago(r.errors[0].t) : "none logged"}`),
     r.totals.priced === false ? tile("Spend", "–", "no prices set for this model: add them on the setup page (/setup) to see a cost") :
     tile("Spend, estimated", usd(r.totals.cost), `today ${usd(r.totals.costToday)} · cache ${r.totals.cacheShare == null ? "–" : Math.round(r.totals.cacheShare * 100) + "%"} · tokens × the prices in models.json`),
@@ -213,6 +218,11 @@ function charts(r) {
     refs: [{ v: t.compactAt, label: "compacts here" }],
     yStep: (m) => m > 150000 ? 50000 : 25000, yFmt: (v) => k(v),
     tip: (p) => `<b>${k(p.y)}</b> tokens · ${when(p.t)}${p.lesson ? ` · lesson ${esc(p.lesson)}` : ""}`,
+  });
+  const pg = r.pings.map((p) => ({ t: p.t, y: p.s, p, bad: !p.ok }));
+  lineChart($("#ping-chart"), pg, {
+    dots: true, ymax: Math.max(5, Math.min(60, Math.max(0, ...pg.map((d) => d.y)) * 1.1)), yStep: (m) => m > 30 ? 10 : m > 10 ? 5 : 1, yFmt: (v) => v + " s",
+    tip: (d) => `<b>${d.p.ok ? sec(d.p.s * 1000) : "failed"}</b> · ${when(d.t)} · ${d.p.auto ? "background" : "button or setup"}${d.p.ok ? "" : `<br><span style="color:var(--bad)">${esc(String(d.p.detail ?? "").slice(0, 120))}</span>`}`,
   });
   const w = r.prompts.filter((p) => ["reply", "open", "return"].includes(p.kind) && p.firstMs != null).slice(0, 100).reverse()
     .map((p) => ({ t: p.t, y: p.firstMs / 1000, p, bad: !!p.error }));

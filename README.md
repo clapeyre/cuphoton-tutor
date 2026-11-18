@@ -63,10 +63,12 @@ machine only you can reach.
 | `PORT`, `HOST` | `8765`, `127.0.0.1` | |
 | `PI_OFFLINE` | `1` | no pi network activity besides the endpoint |
 | `ACCESS` | | `open`: no access check (see "Who can use it") |
+| `PING_EVERY_MIN` | `10` | background endpoint ping for the admin page; `0` turns it off |
 
 `/admin` (the "Admin" link in the course header) shows how the tutor is
 doing: context size and compactions, response times, errors and retries,
-spend, GPU memory and disk. It reads `learner/sessions/` and
+spend, GPU memory and disk, and the endpoint's response to a small ping
+every 10 minutes (shared endpoints get busy at times). It reads `learner/sessions/` and
 `learner/metrics.jsonl`.
 
 To use another endpoint or self-hosted model, add a provider to

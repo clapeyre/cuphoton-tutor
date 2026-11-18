@@ -14,7 +14,7 @@
           "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 } },
         { "id": "openai/openai/gpt-6.1-sol", "name": "gpt-6.1-sol", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 16000,
           "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 } },
-        { "id": "nvidia/nvidia/nemotron-3.5-super-vl", "name": "nemotron-3.5-super-vl", "reasoning": true, "input": ["text", "image"], "contextWindow": 128000, "maxTokens": 16000,
+        { "id": "nvidia/nvidia/nemotron-3.5-super-vl", "name": "nemotron-3.5-super-vl", "reasoning": true, "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 16000,
           "cost": { "input": 0, "output": 0, "cacheRead": 0, "cacheWrite": 0 } }
       ]
     }
