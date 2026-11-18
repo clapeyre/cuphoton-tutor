@@ -22,6 +22,8 @@ media/renders/*/*.srt
 media/renders/*/*.png
 media/**/__pycache__/
 .envs/
+# cuPhoton checkout made by tools/install.sh
+.cuphoton/
 
 # cuFile (used by xDR) writes this into the working directory
 cufile.log

@@ -5,7 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { config } from "../server/config.ts";
 import { loadCourse, normKey } from "../server/content.ts";
-import { pingEndpoint } from "../server/endpoint.ts";
+import { isConfigured, pingEndpoint } from "../server/endpoint.ts";
 
 let failed = 0;
 const ok = (name: string, detail = "") => console.log(`  ok    ${name}${detail ? "  " + detail : ""}`);
@@ -65,8 +65,10 @@ const tracks = spawnSync(gpy, ["-c", "import cuphoton.ximage.workflows, cuphoton
 tracks.status === 0 ? ok("tracks", "xBeam, xRay and xImage (ximage extra) import in the GPU env") : bad("tracks", `an import failed in ${gpy}; rerun tools/setup-gpu-env.sh. Needed for Modules 06-08.`);
 
 // 4. Endpoint: the configured model answers a tool call.
-const ping = await pingEndpoint();
-ping.ok ? ok("endpoint", ping.detail) : bad("endpoint", ping.detail);
+if (isConfigured()) {
+  const ping = await pingEndpoint();
+  ping.ok ? ok("endpoint", ping.detail) : bad("endpoint", ping.detail);
+} else ok("endpoint", "none set yet: the page asks for one on first visit (/setup)");
 
 // 5. Learner dir is writable.
 try { fs.mkdirSync(path.join(config.learnerDir, "work"), { recursive: true }); fs.accessSync(config.learnerDir, fs.constants.W_OK); ok("learner dir", config.learnerDir); }
