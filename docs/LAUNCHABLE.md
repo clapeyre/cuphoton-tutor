@@ -17,8 +17,9 @@ this course needs from them.
   and xDR's reader). 8 GB is untested; the floor is not a measured one.
   Disk: 60 GB or more (the two Python environments take about
   15 GB, plus the checkout, the course data and the learner's work).
-- **Code:** "I have code files in a git repository":
-  `https://github.com/clapeyre/cuphoton-tutor` (public).
+- **Code:** none. Leave the source empty: the setup script clones the
+  public repository itself (`https://github.com/clapeyre/cuphoton-tutor`).
+  No launch parameters.
 - **Setup script:** `tools/brev-setup.sh`, which clones the course, runs
   `tools/install.sh` (starting the server) and adds an `@reboot` line. Paste
   it, or this, which fetches it:
@@ -28,7 +29,7 @@ this course needs from them.
   bash -c "$(curl -fsSL https://raw.githubusercontent.com/clapeyre/cuphoton-tutor/main/tools/brev-setup.sh)"
   ```
 
-  If Brev clones the repository itself, run `tools/brev-setup.sh` from that
+  If you do set Brev's code source instead, run `tools/brev-setup.sh` from that
   clone with `CUPHOTON_LEARN_DIR` set to it.
 - **Network:** one **secure link** on port **8765**, named "cuPhoton Learn",
   shown as the call to action. Do **not** also open 8765 as a TCP port: the
