@@ -24,6 +24,7 @@ const port = Number(arg("port", "8811"));
 const maxSteps = Number(arg("max-steps", "45"));
 const actionTimeout = Number(arg("action-timeout-min", "15")) * 60_000;
 const tag = arg("tag", "");
+const historyLimit = Number(arg("history", "80"));
 
 const persona = fs.readFileSync(personaFile, "utf8");
 const rules = fs.readFileSync(path.join(ROOT, "sim", "learner_rules.md"), "utf8");
@@ -78,7 +79,7 @@ async function settle(): Promise<number> {
 }
 
 // ---------- what the learner sees ----------
-const strip = (s: string) => s.replace(/\[\[(.*?)(\|.*?)?\]\]/g, "$1");
+const strip = (s: string) => s.replace(/\[\[([^\]|]*)\|?([^\]]*)\]\]/g, (_m, t, shown) => shown || t.replace(/^@/, ""));
 function srt(src: string) {
   const f = path.join(ROOT, "media", "videos", path.basename(src).replace(/\.mp4$/, ".srt"));
   if (!fs.existsSync(f)) return "";
@@ -111,7 +112,7 @@ function lessonPage(l: any): string {
     else if (p.kind === "video") out.push(`[Video: "${p.title}" (${p.duration}). What it says: ${srt(p.src) || "(no transcript)"}]`);
     else if (p.kind === "figure") out.push(figureLine(p, false));
     else if (p.kind === "slot") out.push(st.slots[p.id] ? figureLine(st.slots[p.id], true) : `[A figure will appear here: ${p.title}]`);
-    else if (p.kind === "chain") out.push(`[Diagram of the chain of stages${p.hi ? `, highlighting ${p.hi}` : ""}: ${strip(p.caption ?? "")}]`);
+    else if (p.kind === "chain") out.push(`[Diagram of the chain of stages: ${course.chain.map((c: any) => c.id === p.hi ? `**${c.id}** (${c.does})` : `${c.id} (${c.does})`).join(" → ")}. ${strip(p.caption ?? "")}]`);
     else if (p.kind === "ref") out.push(`[Reference: ${p.label}: ${strip(p.text ?? "")}]`);
     else if (p.kind === "turn") {
       const t = st.turns[p.id];
@@ -158,6 +159,26 @@ function markAllSeen(l: any) {
   seen.set(l.id, s);
 }
 
+// ---------- bug signals: things that look wrong whatever the tutoring quality ----------
+const signalsFile = fs.createWriteStream(path.join(run, "signals.jsonl"));
+const signal = (kind: string, detail: unknown) => { signalsFile.write(JSON.stringify({ t: Date.now(), step: steps, lesson: current, kind, detail }) + "\n"); };
+function leaving(id: string) {
+  const l = lessons.get(id), st = state.page.lessons[id] ?? { turns: {}, slots: {} };
+  const empty = l.parts.filter((p: any) => p.kind === "slot" && !st.slots[p.id]).map((p: any) => p.id);
+  const open = l.parts.filter((p: any) => p.kind === "turn" && st.turns[p.id]?.status !== "settled").map((p: any) => p.id);
+  if (empty.length) signal("slots_empty_on_leave", empty);
+  if (open.length) signal("turns_open_on_leave", open);
+  if (l.closure && !st.revealed && !open.length) signal("closure_not_revealed", "every box settled but the closing never showed");
+}
+function checkTurns(id: string) {
+  const st = state.page.lessons[id];
+  for (const [tid, t] of Object.entries<any>(st?.turns ?? {})) {
+    const tutorTexts = t.log.filter((m: any) => m.who === "tutor").map((m: any) => m.text.trim());
+    const dup = tutorTexts.find((x: string, i: number) => x && tutorTexts.indexOf(x) !== i);
+    if (dup) signal("duplicate_tutor_message", { turn: tid, text: dup.slice(0, 200) });
+  }
+}
+
 // ---------- the session ----------
 const usage: Usage = { input: 0, output: 0, calls: 0 };
 const history: Msg[] = [{ role: "system", content: `${rules}\n\n# Your persona\n\n${persona}` }];
@@ -176,6 +197,8 @@ async function learnerTurn(text: string) {
   for (const f of images.splice(0)) parts.push(imagePart(f));
   history.push({ role: "user", content: parts.length > 1 ? parts : text });
   // keep images only in the latest message: older screenshots are history the learner has already seen
+  // A whole-course run is hundreds of steps: keep the persona and the most recent exchanges.
+  if (history.length > historyLimit) { let cut = history.length - historyLimit; while (history[cut]?.role !== "user") cut++; history.splice(1, cut - 1, { role: "user", content: "(Earlier lessons: done; you remember them in outline.)" }, { role: "assistant", content: '{"action":"next"}' }); }
   for (const m of history.slice(1, -1)) if (Array.isArray(m.content)) m.content = m.content.filter((p) => p.type === "text").map((p: any) => p.text).join("\n");
   for (let i = 0; i < 3; i++) {
     const reply = await chat(learnerModel, history, { usage, maxTokens: 800 });
@@ -207,6 +230,7 @@ try {
     if (a.action !== "side" && openThread) { send({ type: "thread.close", id: openThread }); openThread = null; }
     if (a.action === "end") { log(`## [${steps}] Learner ends\n\n${a.text ?? ""}`); endReason = "learner_ended"; break; }
     if (a.action === "next") {
+      leaving(current); checkTurns(current);
       const i = lessonIds.indexOf(current);
       if (i === lessonIds.length - 1) { log(`## [${steps}] Learner moves on past the last lesson`); endReason = "finished"; break; }
       open(lessonIds[i + 1]);
@@ -220,6 +244,7 @@ try {
       const st = state.page.lessons[current]?.turns[a.turn];
       if (!l.parts.some((p: any) => p.kind === "turn" && p.id === a.turn) || st?.status === "settled") {
         view = `(Nothing happened: there's no open Your-turn box "${a.turn}" in this lesson.)`;
+        signal("learner_bad_box", a.turn);
         log(`## [${steps}] Learner tries to answer in "${a.turn}" (no such open box)\n\n${a.text}`);
         waits.push(0);
         continue;
@@ -238,6 +263,11 @@ try {
     }
     waits.push(await settle());
     view = changes(l) || "(Nothing new on the page.)";
+    const w = waits.at(-1)!;
+    if (view === "(Nothing new on the page.)") signal("silent", { action: a.action, turn: a.turn, wait_s: w });
+    if (/lost my train of thought|couldn't reach the model/.test(view)) signal("fallback_reply", view.slice(0, 200));
+    if (w * 1000 >= actionTimeout) signal("timeout", { wait_s: w });
+    else if (w > 120) signal("slow", { wait_s: Math.round(w) });
     log(`### Tutor (${waits.at(-1)!.toFixed(0)} s)\n\n${view}`);
     if (waits.at(-1)! * 1000 >= actionTimeout) log("_(the tutor was still working when the action timed out)_");
   }
@@ -247,7 +277,12 @@ try {
 }
 
 // ---------- results ----------
+if (endReason !== "learner_ended" && endReason !== "finished") { leaving(current); checkTurns(current); }
 const admin: any = await (await fetch(`${base}/api/admin`)).json().catch(() => ({}));
+for (const line of fs.readFileSync(path.join(run, "server.log"), "utf8").split("\n"))
+  if (/\[(tutor|ws|margin|content)\]|Error|failed|Traceback|warn/i.test(line)) signal("server_log", line.slice(0, 300));
+for (const e of admin.errors ?? []) if (!/Request (was )?aborted/.test(e.message)) signalsFile.write(JSON.stringify({ t: e.t, kind: "admin_error", detail: `${e.where}: ${String(e.message).slice(0, 300)}` }) + "\n");
+signalsFile.end();
 fs.writeFileSync(path.join(run, "admin.json"), JSON.stringify(admin, null, 1));
 ws.close();
 stopServer();
@@ -262,7 +297,8 @@ for (const f of fs.existsSync(sessDir) ? fs.readdirSync(sessDir).filter((x) => x
     let e: any; try { e = JSON.parse(line); } catch { continue; }
     if (e.type !== "message") continue;
     const m = e.message, c = Array.isArray(m.content) ? m.content : [];
-    if (m.role === "user") tl.push(`## → tutor\n${c.filter((b: any) => b.type === "text").map((b: any) => b.text.replace(/<lesson\.md>[\s\S]*?<\/tutor\.md>/, "(lesson.md and tutor.md)")).join("\n").slice(0, 3000)}`);
+    const ts = String(e.timestamp ?? "").slice(11, 19);
+    if (m.role === "user") tl.push(`## → tutor [${ts}]\n${c.filter((b: any) => b.type === "text").map((b: any) => b.text.replace(/<lesson\.md>[\s\S]*?<\/tutor\.md>/, "(lesson.md and tutor.md)")).join("\n").slice(0, 3000)}`);
     if (m.role === "assistant" && m.stopReason === "aborted") { tl.push("(call cancelled: the learner acted while the tutor was preparing a lesson ahead; this is on purpose, not an error)"); continue; }
     if (m.role === "assistant") for (const b of c) {
       if (b.type === "text" && b.text.trim()) tl.push(`tutor says (not on the page unless in a tool): ${b.text.trim().slice(0, 1500)}`);
@@ -289,7 +325,7 @@ const meta = {
   wait_s: { median: sorted[Math.floor(sorted.length / 2)] ?? null, p90: sorted[Math.floor(sorted.length * 0.9)] ?? null, max: sorted.at(-1) ?? null },
   tutor: { calls: admin.totals?.calls, cost_usd_est: admin.totals?.cost,
     // "Request was aborted": preparing the next lesson ahead, cancelled on purpose when the learner acts
-    errors: admin.errors?.filter((e: any) => !/Request was aborted/.test(e.message)).length, retries: admin.retries?.length, compactions: admin.compactions?.length,
+    errors: admin.errors?.filter((e: any) => !/Request (was )?aborted/.test(e.message)).length, retries: admin.retries?.length, compactions: admin.compactions?.length,
     tool_calls: admin.tools?.reduce((a: number, t: any) => a + t.n, 0), tool_errors: admin.tools?.reduce((a: number, t: any) => a + t.errors, 0),
     peak_context: Math.max(0, ...(admin.context ?? []).map((c: any) => c[1])) },
   learner_usage: usage,

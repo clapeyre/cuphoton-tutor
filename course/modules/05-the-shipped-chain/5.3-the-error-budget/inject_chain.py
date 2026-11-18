@@ -9,6 +9,7 @@ tgt=fits.getdata(D+"target.fits").astype(np.float64); th=fits.getheader(D+"targe
 tvar=fits.getdata(D+"target.var.fits").astype(np.float64); tvh=fits.getheader(D+"target.var.fits")
 rm,tm=fits.getdata(D+"reference.mask.fits"),fits.getdata(D+"target.mask.fits")
 ref=fits.getdata(D+"reference.fits")
+os.makedirs("inj",exist_ok=True)
 use=np.isfinite(ref)&np.isfinite(tgt)&np.isfinite(tvar)&((rm&8575)==0)&((tm&8575)==0)&(tvar>0)
 # keep fakes off existing sources: |target| below 3 sigma in the neighbourhood
 quiet=np.abs(np.nan_to_num(tgt))<3*np.sqrt(np.nan_to_num(tvar,nan=1e30))

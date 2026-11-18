@@ -40,7 +40,7 @@ question still stands.
 - Collect the prediction (where, and which sign). Most will say 7; the sign
   is the real question. If they can't predict the sign, accept "I'd check
   the guide's convention" and give it after the run.
-- Run `python <course>/modules/07-time-series/7.1-a-known-delay/delays.py known 8.1_delay.png`
+- Run `python <course>/modules/07-time-series/7.1-a-known-delay/delays.py known 7.1_delay.png`
   from `work/07/`, then `show_figure(slot="delay")`.
 - Facts (real run, GPU; signals made like the guide's: 8,192 samples at
   1,024 Hz, noise of half the signal's size; 2 results of 4 windows):

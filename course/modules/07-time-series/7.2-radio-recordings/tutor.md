@@ -41,7 +41,7 @@ the job's clocks are all 0. 20% of each recording is the shared sky.
   cuphoton xbeam inspect-vdif AA.vdif --json        # headers only: station_codes ["AA"], 500 frames of 32,000 samples, 2 bits, real, invalid_sample_count 0, sampled_monotonic true
   cuphoton xbeam build-vdif-sidecar AA.vdif BB.vdif CC.vdif --index-dir sidecars --backend posix
   cuphoton xbeam correlate job.json --output run1 --backend cupy --index-dir sidecars
-  python <course>/.../visibilities.py ../8.2_fringes.png run1
+  python <course>/.../visibilities.py ../7.2_fringes.png run1
   ```
   `--backend posix` for the sidecars: GPUDirect Storage isn't available on
   this machine (3.3: no nvidia-fs); the default is `cufile`. Correlate
@@ -77,7 +77,7 @@ the job's clocks are all 0. 20% of each recording is the shared sky.
 - Make the change in a copy, `job-fixed.json` (show the diff), and run:
   ```
   cuphoton xbeam correlate job-fixed.json --output run2 --backend cupy --index-dir sidecars
-  python <course>/.../visibilities.py ../8.2_fixed.png run1 run2
+  python <course>/.../visibilities.py ../7.2_fixed.png run1 run2
   ```
   `show_figure(slot="fixed")`. Facts:
   ```

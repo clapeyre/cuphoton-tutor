@@ -127,5 +127,6 @@ elif step == "background":
     ax[1].set_title(f"background ({off.size}), and the event (orange)", fontsize=9)
     fig.text(0.99, 0.005, "LIGO strain data for GW150914, from GWOSC (gwosc.org)", ha="right", fontsize=7, style="italic", color="0.4")
     fig.tight_layout()
-    fig.savefig(sys.argv[3], dpi=110)
-    print("wrote", sys.argv[3])
+    if len(sys.argv) > 3:  # the figure is optional: tutor.md runs `background raw` for its numbers only
+        fig.savefig(sys.argv[3], dpi=110)
+        print("wrote", sys.argv[3])

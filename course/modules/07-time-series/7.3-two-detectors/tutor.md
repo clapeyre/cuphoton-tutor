@@ -31,7 +31,7 @@ via GWOSC (gwosc.org)".
   ask: give it; it's in the lesson text), a peak somewhere inside it, and
   any idea of sign or of preprocessing. Don't suggest whitening yet.
 - Run raw first, as asked: `python <gw_delay.py> correlate raw`, then the
-  figure: `python <gw_delay.py> look 8.3_look.png`, `show_figure(slot="look")`.
+  figure: `python <gw_delay.py> look 7.3_look.png`, `show_figure(slot="look")`.
   ```
   raw: peak over all lags at +39 samples (+9.52 ms); within ±10 ms at +39 samples (+9.52 ms), correlation negative
   ```
@@ -66,7 +66,7 @@ via GWOSC (gwosc.org)".
   there's no event (other stretches of the 32 s), normalized so values are
   comparable; count how many are as loud. Time-shifting one detector
   (LIGO's method) is also right; the script does off-source stretches.
-- Run `python <gw_delay.py> background whitened 8.3_background.png`, then
+- Run `python <gw_delay.py> background whitened 7.3_background.png`, then
   `show_figure(slot="background")`; and `background raw` (text is enough).
   ```
   whitened: event's quarter second: peak at -30 samples (-7.32 ms), rho -0.66. Background: 112 quarter seconds, median |rho| 0.18, loudest 0.58; 0 as loud as the event or louder.
