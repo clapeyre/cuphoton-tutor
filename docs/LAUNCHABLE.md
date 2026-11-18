@@ -94,9 +94,9 @@ $0.63/h), setup script above run as is:
 - The first version of the script failed on its last line (an empty crontab
   makes `grep -v` exit 1 under `pipefail`); fixed above.
 
-## Still to do
+## The launchable
 
-- Create the launchable itself in the Brev console from the settings above
-  (there's no CLI command for it), deploy it once from its link, and open
-  the course from a second device with the access link.
+Created 18 Nov: https://brev.nvidia.com/launchable/deploy/now?launchableID=env-3MIQOk5cSPomP8XOGTZTa79S9mO
+(the README's "Launch on Brev" button). Still to do: deploy it once from
+that link as a learner would, end to end.
 

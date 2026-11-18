@@ -1,5 +1,7 @@
 # cuPhoton Tutor
 
+[![Launch on Brev](https://brev-assets.s3.us-west-1.amazonaws.com/nv-lb-dark.svg)](https://brev.nvidia.com/launchable/deploy/now?launchableID=env-3MIQOk5cSPomP8XOGTZTa79S9mO)
+
 An interactive textbook for cuPhoton. Lessons read like a book; an LLM tutor
 (pi SDK, any OpenAI- or Anthropic-style endpoint) runs real work in the
 learner's workspace behind the page and talks to the learner in "Your turn"
@@ -11,6 +13,11 @@ blocks and in the margin. One server per learner, on the GPU machine. See
 You need an NVIDIA GPU with 16 GB (a T4 is enough), Linux, about 20 GB of
 disk, and a key for a model that can call tools (see "The model" below).
 The page asks for the model on first visit.
+
+**On Brev, in one click:** the "Launch on Brev" button above ([this link](https://brev.nvidia.com/launchable/deploy/now?launchableID=env-3MIQOk5cSPomP8XOGTZTa79S9mO))
+deploys a GPU instance with the course installed (about 5 minutes after the
+instance is up). Then open the instance's secure link to port 8765, from its
+page in the Brev console.
 
 **On Brev, from your laptop** (needs the [Brev CLI](https://docs.nvidia.com/brev),
 logged in with `brev login`):
