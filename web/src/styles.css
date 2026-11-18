@@ -111,6 +111,12 @@ video { width: 100%; border-radius: 8px; background: #000; display: block; }
 .check { display: flex; gap: 10px; align-items: baseline; font-size: 15px; }
 .check .tick { color: var(--brand); font-weight: 700; flex: none; }
 textarea.input { width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border-color-interaction-base); background: var(--background-color-surface-sunken); resize: vertical; font: inherit; color: inherit; }
+.msg-table { overflow-x: auto; max-width: 100%; white-space: normal; margin: 4px 0; }
+.msg-table table { border-collapse: collapse; font-size: 14px; }
+.msg-table th, .msg-table td { padding: 4px 12px 4px 0; border-bottom: 1px solid var(--border-color-base); vertical-align: top; text-align: left; }
+.msg-table th { font-weight: 600; color: var(--text-color-secondary); font-size: 13px; }
+.msg-table tr:last-child td { border-bottom: 0; }
+.msg-table td { font-variant-numeric: tabular-nums; }
 .typing { font-size: 13px; color: var(--text-color-secondary); }
 .typing::after { content: "…"; animation: blink 1.2s infinite; }
 @keyframes blink { 50% { opacity: 0.2; } }

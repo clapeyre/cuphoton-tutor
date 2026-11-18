@@ -127,11 +127,18 @@ export function MessageText({ text, where }: { text: string; where: string }) {
 }
 
 const ITEM = /^\s*(?:[-*•]|(\d+)[.)])\s+(.*)$/;
+const ROW = /^\s*\|.*\|\s*$/;
+const RULE = /^\s*\|?(\s*:?-+:?\s*\|)*\s*:?-+:?\s*\|?\s*$/;
+/** The cells of a markdown table row (an escaped \| stays in its cell). */
+const cells = (row: string) => row.trim().replace(/^\|/, "").replace(/(?<!\\)\|$/, "").split(/(?<!\\)\|/).map((c) => c.trim().replace(/\\\|/g, "|"));
 
-/** Paragraphs, bulleted and numbered lists, and short headings (#, ##, ###), from plain text. A list may
- *  follow its lead-in line directly, without a blank line; an indented line continues the item above. */
+/** Paragraphs, bulleted and numbered lists, short headings (#, ##, ###) and markdown tables, from plain
+ *  text. A list may follow its lead-in line directly, without a blank line; an indented line continues the
+ *  item above. A table is a run of lines starting and ending with |; a |---| line under the first makes it
+ *  the header, and colons in that line align the columns. */
 function TextBlocks({ text, where }: { text: string; where: string }) {
-  type B = { kind: "p" | "h"; text: string } | { kind: "ul" | "ol"; items: string[]; start: number };
+  type B = { kind: "p" | "h"; text: string } | { kind: "ul" | "ol"; items: string[]; start: number }
+    | { kind: "table"; head: string[] | null; rows: string[][]; align: ("left" | "center" | "right" | undefined)[] };
   const out: B[] = [];
   let para: string[] = [];
   const flush = () => { if (para.length) out.push({ kind: "p", text: para.join("\n") }); para = []; };
@@ -140,6 +147,19 @@ function TextBlocks({ text, where }: { text: string; where: string }) {
     const it = line.match(ITEM);
     const h = line.match(/^\s*#{1,4}\s+(.*)$/);
     if (!line.trim()) { flush(); continue; }
+    // Inside a table, a row still being typed (no closing | yet) is a row too.
+    const tbl = last?.kind === "table" && !para.length ? last : null;
+    const isRule = !!tbl && !tbl.head && tbl.rows.length === 1 && RULE.test(line); // only right under the first row
+    if (isRule || (ROW.test(line) && !RULE.test(line)) || (tbl && /^\s*\|/.test(line) && !RULE.test(line))) {
+      flush();
+      if (tbl) {
+        if (isRule) {
+          tbl.head = tbl.rows.pop()!;
+          tbl.align = cells(line).map((c) => (c.startsWith(":") && c.endsWith(":") ? "center" : c.endsWith(":") ? "right" : c.startsWith(":") ? "left" : undefined));
+        } else tbl.rows.push(cells(line));
+      } else out.push({ kind: "table", head: null, rows: [cells(line)], align: [] });
+      continue;
+    }
     if (h) { flush(); out.push({ kind: "h", text: h[1] }); continue; }
     if (it) {
       flush();
@@ -165,6 +185,19 @@ function TextBlocks({ text, where }: { text: string; where: string }) {
     <>
       {merged.map((b, j) => {
         const w = `${where}-${j}`;
+        if (b.kind === "table") {
+          const row = (r: string[], k: number, Cell: "th" | "td") => (
+            <tr key={k}>{r.map((c, i) => <Cell key={i} style={{ textAlign: b.align[i] }}><Inline text={c} where={`${w}-${k}-${i}`} /></Cell>)}</tr>
+          );
+          return (
+            <div key={j} className="msg-table">
+              <table>
+                {b.head && <thead>{row(b.head, -1, "th")}</thead>}
+                <tbody>{b.rows.map((r, k) => row(r, k, "td"))}</tbody>
+              </table>
+            </div>
+          );
+        }
         if ("text" in b) return <p key={j} className={b.kind === "h" ? "msg-h" : "msg-p"}><Inline text={b.text.trim()} where={w} /></p>;
         const items = b.items.map((t, k) => <li key={k}><Inline text={t} where={`${w}-${k}`} /></li>);
         return b.kind === "ul" ? <ul key={j} className="msg-list">{items}</ul> : <ol key={j} className="msg-list" start={b.start}>{items}</ol>;
