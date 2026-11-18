@@ -113,12 +113,16 @@ SA process, not here. To do, most important first:
    link". To check on Brev: whether a secure link reaches a server bound to
    127.0.0.1 or needs `HOST=0.0.0.0` (fine behind the token, but then the
    port must not also be opened as a raw TCP port).
-3. **Packaging.** The GPU environment is 11 GB, plus the CPU `.venv` and
-   the native xDR build: a setup script from scratch is probably 15–30
-   minutes per launch (not timed). Prefer a prebuilt container image.
-   Either way: a neutral `CUPHOTON_DIR` default (today it's the author's
-   path), clone cuPhoton at the pinned commit, `npm ci && npm run build`,
-   then `npm run smoke` as the "ready" check.
+3. **Packaging (built 18 Nov).** `tools/install.sh` installs everything on
+   a fresh Linux GPU machine: uv and Node if missing, xDR's build tools if
+   sudo allows, cuPhoton at the pinned commit in `.cuphoton/`, the CPU
+   environment (CPU PyTorch from PyTorch's index, no CuPy), the GPU
+   environment, the app, the smoke test, then the server. Tested from a
+   fresh clone on the author's machine (warm uv cache). `docs/LAUNCHABLE.md`
+   has the launchable's settings and setup script, and what to check on the
+   first real one. Not done: `config.ts` still defaults `CUPHOTON_DIR` to the
+   author's path (the installer writes it to `.env` instead); change the
+   default to `.cuphoton/` when no sim run is using the server code.
 4. **Pick and test the GPU.** The course has only ever run on one machine
    (RTX 4070 Ti SUPER, 16 GB). Run every module once on a fresh instance
    of the smallest GPU that should pass (4.6 trains with PyTorch; 6.3,

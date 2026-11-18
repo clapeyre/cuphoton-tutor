@@ -67,8 +67,8 @@ say "4. CPU environment (Modules 00-02)"
 (cd "$checkout" && uv sync --locked --inexact --no-dev --extra ximage --extra catalog)
 torch_v=$("$checkout/.venv/bin/python" -c "import torch; print(torch.__version__.split('+')[0])")
 if ! "$checkout/.venv/bin/python" -c "import torch, sys; sys.exit(0 if torch.__version__.endswith('+cpu') else 1)"; then
-  uv pip install --python "$checkout/.venv/bin/python" --reinstall-package torch "torch==$torch_v+cpu" --index-url https://download.pytorch.org/whl/cpu \
-    --extra-index-url https://pypi.org/simple
+  # The same version as the lock, from PyTorch's CPU index (its "+cpu" build); its dependencies are already there.
+  uv pip install --python "$checkout/.venv/bin/python" --reinstall-package torch --no-deps "torch==$torch_v" --index-url https://download.pytorch.org/whl/cpu
 fi
 uv pip install --python "$checkout/.venv/bin/python" matplotlib==3.11.2
 "$checkout/.venv/bin/python" -c "import numpy, scipy, matplotlib, cuphoton, torch; print('CPU environment ready: cuphoton', cuphoton.__version__, '· torch', torch.__version__)"
