@@ -28,3 +28,6 @@ media/**/__pycache__/
 # cuFile (used by xDR) writes this into the working directory
 cufile.log
 __pycache__/
+
+# The author's walkthrough notes stay local
+docs/walkthrough-*.md

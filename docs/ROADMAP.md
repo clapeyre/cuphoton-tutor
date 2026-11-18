@@ -28,7 +28,7 @@ pinned commit) has 15 chapters. Where the course stands:
 
 3.3 made honest (xDR built by `tools/setup-gpu-env.sh`; the compression
 trap), 4.5 (a deeper reference: stacking), 4.6 (teach a classifier: xScan;
-the module exit moved here from 4.4). Notes go in `docs/walkthrough-7.md`.
+the module exit moved here from 4.4).
 
 ## 2. Component tracks (built 17 Nov; walked 17–18 Nov)
 

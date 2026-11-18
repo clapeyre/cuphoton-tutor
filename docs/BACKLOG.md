@@ -2,8 +2,9 @@
 
 Parked requests, ideas and concerns: things we agreed matter but aren't doing
 now. Newest at the top of each section. When an item is done, delete it here
-and mention it in the commit. Walkthrough notes stay in `docs/walkthrough-*.md`;
-anything parked from them is copied here with a pointer back.
+and mention it in the commit. The author's walkthrough notes are kept locally
+(`docs/walkthrough-*.md`, not in the repository); anything parked from them is
+copied here, so this file stands on its own.
 
 ## Course content
 
