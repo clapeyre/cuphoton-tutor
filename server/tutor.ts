@@ -12,6 +12,7 @@ import {
 } from "@earendil-works/pi-coding-agent";
 import { config, learnerPath } from "./config.ts";
 import type { Course, Lesson } from "./content.ts";
+import { modelsPath } from "./endpoint.ts";
 import { Recorder } from "./recorder.ts";
 import { QUEUE, Store, type FigureOnPage, type Pointer, type Thread } from "./state.ts";
 
@@ -50,10 +51,10 @@ export class Tutor {
   async init() {
     this.runtime = await ModelRuntime.create({
       authPath: path.join(config.learnerDir, ".pi-auth.json"),
-      modelsPath: path.join(config.tutorDir, "pi-agent", "models.json"),
+      modelsPath: modelsPath(),
     });
     this.model = this.runtime.getModel(config.provider, config.model);
-    if (!this.model) throw new Error(`model ${config.provider}/${config.model} not in tutor/pi-agent/models.json`);
+    if (!this.model) throw new Error(`model ${config.provider}/${config.model} not found (tutor/pi-agent/models.json, or learner/endpoint.json from /setup)`);
     const pyBin = config.pythonBin || path.join(config.cuphotonDir, ".venv", "bin");
     if (fs.existsSync(pyBin) && !process.env.PATH?.startsWith(pyBin)) process.env.PATH = `${pyBin}:${process.env.PATH}`;
     if (config.offline) process.env.PI_OFFLINE = "1";
@@ -408,6 +409,7 @@ export class Tutor {
     // Anything the learner does comes first: interrupt a lesson being prepared ahead (it's retried later).
     if (this.background && !this.rotating) { this.interrupted = this.background; this.main.abort().catch(() => {}); }
     const run = async () => {
+      if (!this.thread) { const m = this.moduleOf(lessonId); if (m) this.saveThread({ module: m, startedAt: Date.now() }); } // a new learner's first prompt
       if (!this.rotating && this.thread && this.moduleOf(lessonId) !== this.thread.module) { this.setMain("Starting the module"); await this.ensureThread(lessonId); }
       this.promptLesson = lessonId;
       this.streamTurn = streamTurn;

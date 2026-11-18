@@ -43,10 +43,11 @@ titles say what the module is about (walkthrough 9).
 
 ## 3. Walk what's left
 
-- 9.1, the course's last module: the full map and a conversation about the
-  learner's own work.
 - A second look at 8.3 after its rework (the tiles figure, the turns on the
-  dispersion curve), and at 8.1's maths.
+  dispersion curve), and at 8.1's maths, when convenient.
+- 9.1 is parked (18 Nov): its turn is a conversation about the learner's own
+  data, and the author has no lab's data to bring for now. Walk it with
+  someone who does.
 
 ## 4. Tutor observability (admin page built 18 Nov)
 
@@ -92,14 +93,15 @@ Module 04 downloads its PS1 data from the public archive, so nothing
 internal is needed besides the model endpoint. Licensing goes through the
 SA process, not here. To do, most important first:
 
-1. **First-run setup page for the model.** `tutor/pi-agent/models.json`
-   points at `inference-api.nvidia.com`, which is NVIDIA-internal. On
-   first open the page asks for the provider (build.nvidia.com, any
-   OpenAI-compatible URL such as a local vLLM or NIM, or Anthropic), the
-   key and the model, runs the endpoint ping (`server/endpoint.ts`), and
-   saves to `learner/`, never to the repo. It warns that the course was
-   tuned on Sonnet 5.5 (weaker models mostly fail at the page tools: ask,
-   settle, reveal) and that a local model shares the GPU the lessons use.
+1. **First-run setup page for the model (built 18 Nov).** With no model
+   configured, `/` redirects to `/setup`: Anthropic API, NVIDIA API
+   catalog, NVIDIA inference hub, or any OpenAI-compatible server; key,
+   model, context window, images, optional prices. One tool call tests it
+   (`server/endpoint.ts`), then it's saved to `learner/endpoint.json` (mode
+   600) and the tutor starts. Tested on a fresh learner folder with no key
+   in the environment, through to the tutor filling 0.1's figure. Not
+   tested: the Anthropic API and build.nvidia.com presets (no keys here),
+   and which build.nvidia.com models handle the page tools.
 2. **Access control.** The tutor runs shell commands and the page has no
    login; today it is bound to 127.0.0.1 behind an SSH tunnel. A public
    link would be a shell on the instance. Use Brev's access-controlled

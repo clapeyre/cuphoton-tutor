@@ -6,6 +6,7 @@ import { execFile } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { config, learnerPath } from "./config.ts";
+import { current } from "./endpoint.ts";
 import type { Tutor } from "./tutor.ts";
 
 type Call = { t: number; ctx: number; cached: number; out: number; cost: number; ms: number | null; stop: string; error?: string; lesson: string | null; kind: string };
@@ -47,12 +48,8 @@ function classify(text: string): { kind: string; lesson: string | null; label: s
 // whatever prices were set at the time). Prices are per million tokens; ask the inference host for its rates.
 type Prices = { input: number; output: number; cacheRead: number; cacheWrite: number };
 function prices(): Prices {
-  try {
-    const m = JSON.parse(fs.readFileSync(path.join(config.tutorDir, "pi-agent", "models.json"), "utf8"));
-    const c = m.providers?.[config.provider]?.models?.find((x: any) => x.id === config.model)?.cost;
-    if (c) return { input: +c.input || 0, output: +c.output || 0, cacheRead: +c.cacheRead || 0, cacheWrite: +c.cacheWrite || 0 };
-  } catch {}
-  return { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
+  const c = current()?.cost;
+  return c ? { input: +c.input || 0, output: +c.output || 0, cacheRead: +c.cacheRead || 0, cacheWrite: +c.cacheWrite || 0 } : { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 };
 }
 const priced = (u: any, p: Prices) => ((u?.input ?? 0) * p.input + (u?.output ?? 0) * p.output + (u?.cacheRead ?? 0) * p.cacheRead + (u?.cacheWrite ?? 0) * p.cacheWrite) / 1e6;
 
@@ -264,6 +261,7 @@ export class Admin {
         firstCall: calls[0]?.t ?? null,
         errors24h: errors.filter((e) => now - e.t < day).length,
         // Share of the prompt read from the provider's cache, last 50 calls: low means every call pays full price.
+        priced: (() => { const c = current()?.cost; return !!c && (c.input > 0 || c.output > 0); })(),
         cacheShare: (() => { const xs = cached.filter((c) => c.ctx); return xs.length ? sum(xs.map((c) => c.cached)) / sum(xs.map((c) => c.ctx)) : null; })(),
       },
       wait: {

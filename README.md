@@ -25,6 +25,18 @@ restart cuts off a tutor turn in progress; the conversation survives. For
 hot reload of the page, `npm run dev:server` with `npm run dev:web` (Vite on
 :5173, proxied to the server).
 
+## The model
+
+On first start with no model configured, the page opens a setup form
+(`/setup`): pick a provider (Anthropic API, NVIDIA API catalog, the NVIDIA
+inference hub, or any OpenAI-compatible server such as vLLM or NIM), paste a
+key, name the model. It makes one tool call to test it, then saves it to
+`learner/endpoint.json` (readable by you only; `learner/` is never
+committed) and starts the tutor. `/setup` changes it later (restart to
+apply); the admin page links to it. Without that file, the server uses
+`TUTOR_PROVIDER`/`TUTOR_MODEL` from `tutor/pi-agent/models.json` and the key
+from the environment, as below.
+
 ## Configuration (environment or `.env`)
 
 | variable | default | |
