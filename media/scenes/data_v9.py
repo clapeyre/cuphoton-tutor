@@ -1,4 +1,4 @@
-"""Data for v9 (many frames, one scene): a bundle like the user guide's, but not its scene (8.1 asks the
+"""Data for v9 (many frames, one scene): a bundle like the user guide's, but not its scene (6.1 asks the
 learner to predict that one): three frames of a close pair of sources and a third, each frame with its own
 Gaussian PSF (1.2, 1.6, 2.0 px, wide enough to blend the pair), reconstructed with the checkout's L2 example stopped after 1, 3, 10, 30 and 75
 steps, and the loss per step. Writes v9.npz to the output dir (argv[1], default .)."""

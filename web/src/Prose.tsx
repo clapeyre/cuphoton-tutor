@@ -13,11 +13,11 @@ function Maths({ tex, display }: { tex: string; display: boolean }) {
 }
 
 /** Inline markup: [[term]] or [[term|shown text]], [text](https://…), [text](#/1.4) (a lesson), **bold**, *italic*, `code`,
- *  $$display maths$$ and $inline maths$ (LaTeX; a $ followed by a space or digit-free text isn't maths). */
+ *  $$display maths$$ (may span lines) and $inline maths$ (LaTeX; a $ followed by a space or digit-free text isn't maths). */
 export function Inline({ text, where }: { text: string; where: string }) {
   const ctx = useCtx();
   const out: ReactNode[] = [];
-  const re = /\[\[(.+?)\]\]|\[([^\]]+)\]\((https?:\/\/(?:[^()\s]|\([^()\s]*\))+|#\/[\w.-]+|\/workspace\/[\w./-]+\.html)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\$\$(.+?)\$\$|\$(?=\S)([^$\n]+?)(?<=\S)\$(?!\d)/g;
+  const re = /\[\[(.+?)\]\]|\[([^\]]+)\]\((https?:\/\/(?:[^()\s]|\([^()\s]*\))+|#\/[\w.-]+|\/workspace\/[\w./-]+\.html)\)|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|\$\$([\s\S]+?)\$\$|\$(?=\S)([^$\n]+?)(?<=\S)\$(?!\d)/g;
   let i = 0, m: RegExpExecArray | null, n = 0;
   while ((m = re.exec(text))) {
     if (m.index > i) out.push(text.slice(i, m.index));

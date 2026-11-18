@@ -156,7 +156,7 @@ class V8(Scene):
             g = VGroup(label(num, 26, ACC), label(txt, 26)).arrange(DOWN, buff=0.2).move_to(box)
             return VGroup(box, g)
 
-        cards = VGroup(card("7.1", "One trace"), card("7.2", "A mode goes missing"), card("7.3", "Every row on the GPU")).arrange(RIGHT, buff=0.4)
+        cards = VGroup(card("8.1", "One trace"), card("8.2", "A mode goes missing"), card("8.3", "Every row on the GPU")).arrange(RIGHT, buff=0.4)
         t.at("fit one trace"); t.play(FadeIn(cards[0]), run_time=0.4)
         t.at("how a mode can go missing"); t.play(FadeIn(cards[1]), run_time=0.4)
         t.at("fit a whole detector"); t.play(FadeIn(cards[2]), run_time=0.4)

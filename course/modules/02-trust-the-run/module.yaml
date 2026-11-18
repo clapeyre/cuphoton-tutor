@@ -1,5 +1,5 @@
 id: "02"
-title: Trust, but read the receipt
+title: Reading what a run recorded
 question: A run finished without an error. Where did it actually run, and how would you know?
 needs: linux_cpu   # cuPhoton CPU profile; the exercise brings a GPU run as a file
 objectives: [O3, O2]

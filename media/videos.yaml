@@ -56,7 +56,7 @@ v3-kernel:
     - [51.7, read the kernel]
     - [75.7, ask]
 v7-two-receivers:
-  title: Two receivers, one signal
+  title: Correlating two receivers
   duration: "1:51"
   chapters:
     - [0, "one wave, two dishes"]
@@ -65,7 +65,7 @@ v7-two-receivers:
     - [69.0, "why line them up"]
     - [88.9, "this module"]
 v8-pump-and-probe:
-  title: Pump and probe
+  title: X-ray pump-probe traces
   duration: "1:30"
   chapters:
     - [0, "a crystal rings"]
@@ -74,7 +74,7 @@ v8-pump-and-probe:
     - [55.8, "what xRay fits"]
     - [69.0, "every row, and this module"]
 v9-many-frames:
-  title: Many frames, one scene
+  title: Combining many images
   duration: "1:14"
   chapters:
     - [0, "many frames"]

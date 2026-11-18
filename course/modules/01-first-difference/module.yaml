@@ -1,5 +1,5 @@
 id: "01"
-title: Your first difference
+title: A first difference with cuPhoton
 question: Module 00's plan, run for real. Does cuPhoton find the two changes we put in, and how would you know its answer is right?
 needs: linux_cpu   # cuPhoton CPU profile; no GPU needed
 objectives: [O1, O2, O3]

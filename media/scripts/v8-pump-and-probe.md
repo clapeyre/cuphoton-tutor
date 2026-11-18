@@ -1,12 +1,12 @@
 # v8 — Pump and probe
 
-Opens Module 07 (top of 7.1). The picture the module needs before any code:
+Opens Module 08 (top of 8.1). The picture the module needs before any code:
 why a crystal "rings", how two pulses (pump, then probe) film something too
 fast for a camera, how laser-on and laser-off frames become a trace, and
 what xRay fits to it. Gives away no checkpoint: it never states an amplitude
-or mentions the reference shift (7.1 `predict-fit`), never names a model
-order (7.1 `order`), never shows a missing mode, a residual or a delay step
-(7.2), and never shows a dead row or a status code (7.3). Data:
+or mentions the reference shift (8.1 `predict-fit`), never names a model
+order (8.1 `order`), never shows a missing mode, a residual or a delay step
+(8.2), and never shows a dead row or a status code (8.3). Data:
 media/scenes/data_v8.py: the guide's sample pair, reduced and fitted by
 xRay (NumPy), and a 64-row detector fitted row by row.
 

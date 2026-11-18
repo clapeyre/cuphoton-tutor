@@ -103,7 +103,7 @@ class V9(Scene):
             g = VGroup(label(num, 26, ACC), label(txt, 26)).arrange(DOWN, buff=0.2).move_to(box)
             return VGroup(box, g)
 
-        cards = VGroup(cardf("8.1", "A known scene"), cardf("8.2", "A star that\nwasn't there"), cardf("8.3", "Four nights of M101")).arrange(RIGHT, buff=0.4)
+        cards = VGroup(cardf("6.1", "A known scene"), cardf("6.2", "A star that\nwasn't there"), cardf("6.3", "Four nights of M101")).arrange(RIGHT, buff=0.4)
         t.at("reconstruct a scene you know"); t.play(FadeIn(cards[0]), run_time=0.4)
         t.at("look for what went wrong"); t.play(FadeIn(cards[1]), run_time=0.4)
         t.at("reconstruct the nights"); t.play(FadeIn(cards[2]), run_time=0.4)

@@ -1,5 +1,5 @@
 id: "09"
-title: Where next
+title: Your work and the rest of cuPhoton
 question: You've run four kinds of data through cuPhoton. What does your own work look like, and which part of cuPhoton would you start from?
 needs: none   # no runs; the tutor answers from the component briefs in 9.1/tutor.md
 objectives: [O7]
@@ -8,8 +8,9 @@ source: docs/guide/index.qmd ("Find your task") and the guide chapters in the pi
 time: 20–30 min
 intro: |
   You've followed two pictures of the sky from raw images to a catalog you
-  can defend, then taken three other parts of cuPhoton through their own
-  kind of data: two receivers, a pump-probe scan, many frames of one scene.
+  can defend, combined many images of one scene into one, then taken two other parts of
+  cuPhoton through their own kind of data: two receivers, and an X-ray
+  pump-probe scan.
   This last module puts them on one map, with the parts you haven't run.
 
   Then it's a conversation about your own work: what you measure, in what

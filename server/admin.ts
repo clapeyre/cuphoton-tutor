@@ -16,10 +16,18 @@ type Prompt = {
 };
 type ToolStat = { n: number; errors: number; ms: number[] };
 
-// Lesson ids were renumbered on 17 Nov 2026 (tools/renumber-learner.py): older log lines use the
-// old ids. Map them, so per-lesson figures add up under today's names.
-const RENUMBER_MARK = () => learnerPath(".renumbered-2026-11-18");
-const renumber = (id: string) => id === "6.1" ? "9.1" : /^7\.\d$/.test(id) ? "6." + id.slice(2) : id;
+// Lesson ids were renumbered twice on 17-18 Nov 2026 (tools/renumber-learner.py, which leaves a marker
+// file per migration): log lines older than a marker use the ids from before it. Map them, so per-lesson
+// figures add up under today's names.
+const MIGRATIONS: { marker: string; map: Record<string, string> }[] = [
+  { marker: ".renumbered-2026-11-18", map: { "6.1": "9.1", "7.1": "6.1", "7.2": "6.2", "7.3": "6.3" } },
+  { marker: ".renumbered-2026-11-18b", map: Object.fromEntries([1, 2, 3].flatMap((i) => [[`6.${i}`, `7.${i}`], [`7.${i}`, `8.${i}`], [`8.${i}`, `6.${i}`]])) },
+];
+type Applied = { at: number; map: Record<string, string> }[];
+function migrationsApplied(): Applied {
+  return MIGRATIONS.flatMap((m) => { try { return [{ at: fs.statSync(learnerPath(m.marker)).mtimeMs, map: m.map }]; } catch { return []; } });
+}
+const renumber = (id: string, t: number, applied: Applied) => applied.reduce((x, m) => (t < m.at ? m.map[x] ?? x : x), id);
 
 /** Which kind of prompt a user message is, from the markers the server writes (tutor.ts). */
 function classify(text: string): { kind: string; lesson: string | null; label: string } {
@@ -49,12 +57,12 @@ class SessionLog {
   errors: { t: number; where: string; message: string }[] = [];
   private cur: Prompt | null = null;
   private pendingTool = new Map<string, number>(); // toolCallId -> time the call was requested
-  constructor(public file: string, private renumberBefore: number) {}
+  constructor(public file: string, private applied: Applied) {}
 
   refresh() {
     let size: number;
     try { size = fs.statSync(this.file).size; } catch { return; }
-    if (size < this.offset) { Object.assign(this, new SessionLog(this.file, this.renumberBefore)); }
+    if (size < this.offset) { Object.assign(this, new SessionLog(this.file, this.applied)); }
     if (size === this.offset) return;
     const fd = fs.openSync(this.file, "r");
     const buf = Buffer.alloc(size - this.offset);
@@ -66,7 +74,7 @@ class SessionLog {
     for (const l of lines) { if (l.trim()) try { this.entry(JSON.parse(l)); } catch {} }
   }
 
-  private lessonId(id: string | null, t: number) { return id && t < this.renumberBefore ? renumber(id) : id; }
+  private lessonId(id: string | null, t: number) { return id ? renumber(id, t, this.applied) : id; }
 
   private entry(e: any) {
     const t = Date.parse(e.timestamp);
@@ -162,12 +170,11 @@ export class Admin {
   private sessionLogs(): SessionLog[] {
     const dir = learnerPath("sessions", "main");
     const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".jsonl")).sort() : [];
-    let mark = 0;
-    try { mark = fs.statSync(RENUMBER_MARK()).mtimeMs; } catch {}
+    const applied = migrationsApplied();
     return files.map((f) => {
       const p = path.join(dir, f);
       let l = this.logs.get(p);
-      if (!l) { l = new SessionLog(p, mark); this.logs.set(p, l); }
+      if (!l) { l = new SessionLog(p, applied); this.logs.set(p, l); }
       l.refresh();
       return l;
     });

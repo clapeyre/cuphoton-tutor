@@ -1,5 +1,5 @@
 id: "00"
-title: What changed in the sky?
+title: "Difference imaging: the idea"
 question: When so much else differs between two nights, how do you find what really changed in the sky?
 needs: none   # Python with NumPy and Matplotlib in the learner workspace is enough
 objectives: [O1]

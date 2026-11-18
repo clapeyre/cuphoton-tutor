@@ -21,17 +21,18 @@ candidates as real or bogus with a network trained on your own cutouts
 error budget for every flux, and **xLens** watches its runs. Chapters
 "Read FITS images" to "Monitor".
 
-**Two receivers** (Module 06, **xBeam**). What two recordings of one
+**Many images of one scene** (Module 06, **xImage**). One sharp scene
+from frames with their own PSF and noise: telescopes, microscopes, adaptive
+optics. Chapter "Reconstruct".
+
+**Two receivers** (Module 07, **xBeam**). What two recordings of one
 source share, and at what delay: arrays, HDF5 or VDIF radio recordings.
 Chapter "Correlate".
 
-**Pump and probe** (Module 07, **xRay**). Laser-on and laser-off X-ray
-detector frames, reduced to traces and fitted as damped oscillations, row
-by row on the GPU. Chapter "X-ray traces".
-
-**Many frames, one scene** (Module 08, **xImage**). One sharp scene from
-frames with their own PSF and noise: telescopes, microscopes, adaptive
-optics. Chapter "Reconstruct".
+**Time-resolved X-ray traces** (Module 08, **xRay**). Laser-on and
+laser-off X-ray detector frames from a pump-probe scan, reduced to traces
+and fitted as damped oscillations, row by row on the GPU. Chapter "X-ray
+traces".
 
 **What you haven't.** **Scale-out** spreads whole work items over many GPUs
 and nodes, under MPI or Dragon: image pairs, cutouts, detector tiles

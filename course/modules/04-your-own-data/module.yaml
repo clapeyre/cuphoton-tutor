@@ -1,5 +1,5 @@
 id: "04"
-title: Your own data
+title: "Real data: M101 from Pan-STARRS"
 question: On real data, with no answer key, how do you adapt the pipeline and know whether to trust what it finds?
 needs: linux_gpu   # the GPU environment; data/ ships with the course (Pan-STARRS1, public)
 objectives: [O5, O3]

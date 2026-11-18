@@ -1,5 +1,5 @@
 id: "03"
-title: Onto the GPU
+title: Running on the GPU
 question: How do you move the pipeline onto the GPU, prove it's there, and say honestly how much faster it is?
 needs: linux_gpu   # the GPU environment, .envs/cuphoton-gpu (tools/setup-gpu-env.sh)
 objectives: [O4, O3, O2]

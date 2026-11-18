@@ -18,9 +18,9 @@ pinned commit) has 15 chapters. Where the course stands:
 | 8 Classify (xScan) | 4.6 | taught: train, evaluate, score, test unseen bogus |
 | 9 Transient chain | Module 05 | taught |
 | 10 Uncertainty | 4.4, 5.3 | taught |
-| 11 Reconstruct (xImage) | Module 08 (track) | taught: a known scene, faults validation misses, the M101 nights |
-| 12 X-ray traces (xRay) | Module 07 (track) | taught: one trace, a lost mode and uneven steps, the detector on the GPU |
-| 13 Correlate (xBeam) | Module 06 (track) | taught: time series, radio jobs, real data (GW150914) |
+| 11 Reconstruct (xImage) | Module 06 (track) | taught: a known scene, faults validation misses, the M101 nights |
+| 12 X-ray traces (xRay) | Module 08 (track) | taught: one trace, a lost mode and uneven steps, the detector on the GPU |
+| 13 Correlate (xBeam) | Module 07 (track) | taught: time series, radio jobs, real data (GW150914) |
 | 14 Scale out | 9.1 map | out of scope by decision (below) |
 | 15 Monitor (xLens) | 5.4 | taught |
 
@@ -30,20 +30,23 @@ pinned commit) has 15 chapters. Where the course stands:
 trap), 4.5 (a deeper reference: stacking), 4.6 (teach a classifier: xScan;
 the module exit moved here from 4.4). Notes go in `docs/walkthrough-7.md`.
 
-## 2. Component tracks (built 17 Nov; Module 06 walked)
+## 2. Component tracks (built 17 Nov; walked 17–18 Nov)
 
-The tracks follow the image modules in stride (walkthrough 8): Module 06
-xBeam "Two receivers, one signal" (walked 17 Nov: "good"), Module 07 xRay
-"Pump and probe", Module 08 xImage "Many frames, one scene", each with a
-video. Each follows the course's pattern: a known answer first, the
-receipt, the component's silent-error trap found by testing, then real or
-realistic data.
+After the image modules (walkthroughs 8 and 9): Module 06 xImage
+"Combining many images" (it ends on the M101 nights of Module 04, so it
+follows the image modules), Module 07 xBeam "Correlating two receivers"
+(walked 17 Nov: "good"), Module 08 xRay "Time-resolved X-ray traces"
+(walked 18 Nov; 8.3 reworked), each with a video. Each follows the
+course's pattern: a known answer first, the receipt, the component's
+silent-error trap found by testing, then real or realistic data. Module
+titles say what the module is about (walkthrough 9).
 
 ## 3. Walk what's left
 
-- Modules 07 and 08 (`docs/walkthrough-9.md`).
-- 9.1 "Where next", now the course's last module: the full map and a
-  conversation about the learner's own work. Walk it after 07 and 08.
+- 9.1, the course's last module: the full map and a conversation about the
+  learner's own work.
+- A second look at 8.3 after its rework (the tiles figure, the turns on the
+  dispersion curve), and at 8.1's maths.
 
 ## 4. Tutor observability (admin page built 18 Nov)
 
@@ -99,8 +102,8 @@ SA process, not here. To do, most important first:
    then `npm run smoke` as the "ready" check.
 4. **Pick and test the GPU.** The course has only ever run on one machine
    (RTX 4070 Ti SUPER, 16 GB). Run every module once on a fresh instance
-   of the smallest GPU that should pass (4.6 trains with PyTorch; 8.3,
-   7.3 use the GPU) and write the result in the README.
+   of the smallest GPU that should pass (4.6 trains with PyTorch; 6.3,
+   8.3 use the GPU) and write the result in the README.
 
 One instance per learner fits the app: progress is one `learner/` folder.
 

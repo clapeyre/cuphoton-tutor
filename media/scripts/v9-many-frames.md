@@ -1,13 +1,13 @@
 # v9 — Many frames, one scene
 
-Opens Module 08 (top of 8.1). The picture the module needs: why stacking
+Opens Module 06 (top of 6.1). The picture the module needs: why stacking
 keeps the blur, and how xImage works backwards from a guessed scene, blurred
 by each frame's PSF and compared with that frame, step by step. Gives away
-no checkpoint: it uses its own scene, not the guide's (8.1 asks for a
+no checkpoint: it uses its own scene, not the guide's (6.1 asks for a
 prediction of that one), shows no brightness numbers, never mentions the
-evaluation's scores or the receipt's stop condition (8.1 `how-know`), never
-shows a bad pixel, a wrong PSF or a robust loss (8.2), and never a
-changing source (8.3). Data: media/scenes/data_v9.py: three frames of a
+evaluation's scores or the receipt's stop condition (6.1 `how-know`), never
+shows a bad pixel, a wrong PSF or a robust loss (6.2), and never a
+changing source (6.3). Data: media/scenes/data_v9.py: three frames of a
 close pair and a third source, reconstructed by xImage (L2, CPU) after 1,
 3, 10, 30 and 75 steps.
 

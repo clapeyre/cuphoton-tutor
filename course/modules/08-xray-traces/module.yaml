@@ -1,0 +1,28 @@
+id: "08"
+title: Time-resolved X-ray traces (xRay)
+question: A laser sets a crystal ringing and X-rays watch it. How do you read the ringing's frequencies, and how do you know none is missing?
+needs: linux_gpu   # the GPU environment (8.1 and 8.2 run on the CPU too; 8.3's detector fit needs CuPy and a GPU)
+objectives: [O2, O3, O7]
+misconceptions: [M-ORDER-FINDS-ALL, M-EVEN-STEPS, M-STATUS-MEANS-DATA]
+source: docs/guide/xray-traces.qmd, docs/xray/README.md, docs/xray/LINEAR-PREDICTION-VALIDATION.md in the pinned checkout
+time: 60–80 min
+intro: |
+  Strike a bell and it rings at its own notes. Strike a crystal with a
+  laser pulse a few femtoseconds long and its atoms ring too, at terahertz
+  frequencies: trillions of times a second, far too fast for any camera.
+
+  Beamlines at synchrotrons and X-ray lasers catch it with **pump-probe**:
+  the laser pulse (the pump) starts the ringing, and an X-ray pulse (the
+  probe) a set delay later takes one snapshot of the crystal, as the
+  pattern of X-rays it scatters onto a detector. Step the delay and repeat,
+  and the snapshots make a movie, one detector frame per delay. Frames taken
+  without the laser (laser off) show the crystal at rest, so comparing the
+  two isolates what the laser changed: a trace over delay that rings and
+  dies away.
+
+  cuPhoton's **xRay** reduces the laser-on and laser-off frame stacks to
+  traces and fits each one as a sum of damped oscillations: each mode's
+  frequency, how fast it dies, and how strong it is. On a GPU it fits every
+  row of the detector. The video in the first lesson shows it in a minute
+  and a half. You'll fit one trace whose answer you know, find out
+  how a fit can lose a mode without a word, then fit a whole detector.

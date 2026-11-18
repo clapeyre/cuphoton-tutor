@@ -1,0 +1,31 @@
+id: "07"
+title: Correlating two receivers (xBeam)
+question: When two receivers record the same source, how do you find the delay between them, and how do you know the answer is real?
+needs: linux_gpu   # the GPU environment; data/ ships with the course (LIGO GW150914 strain, public, from GWOSC)
+objectives: [O2, O3, O7]
+misconceptions: [M-PEAK-IS-SIGNAL, M-DELAY-SIGN, M-WEIGHT-MEANS-RIGHT, M-RAW-CORRELATES]
+source: docs/guide/correlate.qmd, docs/xbeam/README.md, docs/xbeam/time-series.md, docs/xbeam/data-contract.md, docs/xbeam/sidecars.md, examples/xbeam/correlate_series.py in the pinned checkout; NVIDIA Technical Blog, "Run GPU-powered black hole interferometry with NVIDIA cuPhoton" (13 Nov 2026)
+time: 75–100 min
+intro: |
+  The modules so far all worked on images. This module and the next each
+  take another part of cuPhoton, on its own kind of data; this one is
+  **xBeam**. They need nothing from the image modules except their habits:
+  predict before you run, read the receipt, test against a known answer.
+
+  Clap your hands in a room with two microphones, and the nearer one hears
+  the clap first. Any two receivers that pick up the same source hear it at
+  slightly different times, and that gap, the **delay**, tells you about
+  where the source is. xBeam finds the delay by comparing the two
+  recordings, a calculation called correlation. The video below shows it in
+  under two minutes.
+
+  Why astronomers care: radio telescopes on different continents record the
+  same distant galaxy or black hole. Lined up by their delays and
+  correlated, they work like a single telescope as wide as the distance
+  between them. That's how the Event Horizon Telescope imaged black holes,
+  and xBeam does this correlation on GPUs.
+
+  You'll find a delay you know, then correlate the recordings of three
+  radio telescopes (made up, with a known answer), then measure the delay
+  of a real gravitational wave between the two LIGO detectors. Each run
+  hands you a number; the question each time is when to believe it.

@@ -4,7 +4,7 @@
 which part takes their data (or none), where its guide chapter starts, how
 it would fit in their workflow, and the first evidence they'd check on its
 first run. Course exit (O7). It closes the course: by now they've run the
-image chain (01–05) and the three tracks (06 xBeam, 07 xRay, 08 xImage);
+image chain (01–05) and the three tracks (06 xImage, 07 xBeam, 08 xRay);
 check `progress` for any they skipped, and if one fits their work, send
 them there ([6.1](#/6.1), [7.1](#/7.1), [8.1](#/8.1)). No runs in this
 lesson: answer from the briefs below, and read the cited file in the
@@ -26,9 +26,9 @@ pinned checkout only when a question goes beyond them.
 - Ask what they'd check on its first run. Steer with the course's habits, on
   that component's terms: the receipt or summary that says what ran (Module
   02), what the step should give back (O2), the noise model (4.1), and a test
-  with a known answer (4.4's injection test; for xBeam a known delay (6.1),
-  for xRay planted modes at their own step size (7.2), for xImage planted
-  fakes at their settings (8.3)). Give them the component's silent-error
+  with a known answer (4.4's injection test; for xBeam a known delay (7.1),
+  for xRay planted modes at their own step size (8.2), for xImage planted
+  fakes at their settings (6.3)). Give them the component's silent-error
   trap from its brief once they've named their checks, as the thing to add.
 - Then the wider question, if they want it: what would they still need
   that cuPhoton doesn't do, and what would they ask an agent to show them
@@ -40,7 +40,7 @@ pinned checkout only when a question goes beyond them.
   shipped (no xScan checkpoint ships; HDF5 via Legate was removed), say so.
   Don't claim speedups the tracks didn't measure: on this machine xImage
   was 5× faster on the GPU at 600 × 600 × 3 frames, and xRay's detector fit
-  was not faster than a NumPy loop at 2,048 rows (7.3's notes).
+  was not faster than a NumPy loop at 2,048 rows (8.3's notes).
 
 ## Component briefs (pinned checkout ff4d260)
 
@@ -63,9 +63,9 @@ and command was checked against `src/cuphoton/` on 16 Nov 2026.
 - **Needs:** the `ximage` extra (PyTorch, Photutils, Zarr). Runs on CPU or CUDA (`device: auto`). Needs the checkout for the example configs. Frames must already share one pixel grid (`:7-9`).
 - **Silent trap:** "An empty list does not check every pixel value" (`:49`). Also, the evaluation compares against a median coadd made from the same frames, so "Similarity or sharpness alone therefore does not show that a reconstruction is accurate" (`:138`). The output image keeps a PSF border that you must crop, and it is in exposure-time-normalised units (`:122`).
 - **Evidence:** a run directory holding `config.yaml` (resolved), `summary.json` (backend, device, dtype, version, input store, region, saved paths, `trace_summary`, timings), `artifacts/image.npy` and `trace/`. `evaluate-reconstruction` also writes `evaluation/evaluation_summary.json` (`:117-120`, `:247`).
-- **Track:** Module 08, "Many frames, one scene" (a known scene; a cosmic
+- **Track:** Module 06, "Combining many images (xImage)" (a known scene; a cosmic
   ray and a wrong PSF that pass validation; the M101 nights, fakes and the
-  supernova). Link [8.1](#/8.1).
+  supernova). Link [6.1](#/6.1).
 
 ### xRay: X-ray detector traces (`G/xray-traces.qmd`)
 - **For:** pump-probe experiments. It turns laser-on and laser-off detector frame stacks into a trace over delay, then fits that trace as a sum of damped oscillations, optionally for every detector row.
@@ -74,9 +74,9 @@ and command was checked against `src/cuphoton/` on 16 Nov 2026.
 - **Needs:** the CPU profile (NumPy, h5py) for trace fitting. The default `detector-artifacts` backend needs the `gpu` profile, CuPy and a GPU. The structured backends need the native extension (`CUPHOTON_XRAY_BUILD_EXT=1`, Linux, C++17). `phonon-viz` needs `viz` (`:7-8`, `:325-330`).
 - **Silent trap:** "A fast mode is missing from the fit… This can discard high-frequency modes even without noise" (`:329`). Also, `--components` defaults to 30, not the order the sweep chose (`:210`). Detector fits smooth and integrate, so they "differ from a fit of the tile trace" (`:190`). The fit assumes uniformly increasing delays: "check that condition" (`:111`).
 - **Evidence:** `manifest.json` (inputs, ROI, settings, fit and failure counts), `fit_status.npy` (0 not processed, 1 fitted, 2 skipped, 3 failed) and `fit_diagnostics.npz` (`:218-224`). `extract-trace` writes an NPZ with a `summary` entry (`:304`).
-- **Track:** Module 07, "Pump and probe" (one trace with known modes; a
+- **Track:** Module 08, "Time-resolved X-ray traces (xRay)" (one trace with known modes; a
   mode lost at 0.1 ps steps and a scan with uneven steps; a whole detector
-  where dead rows came back "fitted"). Link [7.1](#/7.1).
+  where dead rows came back "fitted"). Link [8.1](#/8.1).
 
 ### xBeam: correlate (`G/correlate.qmd`)
 - **For:** measures how much two recordings of one source share, and at what delay, frequency by frequency (cross-spectra and lag correlations). Examples: two microphones, two radio telescopes.
@@ -84,9 +84,9 @@ and command was checked against `src/cuphoton/` on 16 Nov 2026.
 - **First run:** `correlate_series(source, spec)` (`:52`). CLI: `cuphoton xbeam correlate-series series.json --output results.h5 --backend numpy` (`:224`). Radio: `cuphoton xbeam inspect-vdif AA.vdif --json` (`:260`).
 - **Needs:** no extra on CPU. The GPU path needs `gpu` (or `io`) plus a GPU. `io_backend="cufile"` needs working GPUDirect Storage. `build-vdif-sidecar` defaults to `cufile`, so pass `--backend posix` without GDS (`:7-8`, `:199`, `:269`).
 - **Silent trap:** "The lag peak is at the wrong place. The delay can exceed the window" (`:289`). Products are raw: "xBeam applies no taper, mean removal or normalization" (`:68`). "Do not average shard outputs" (`:161`).
-- **Track:** Module 06, "Two receivers, one signal", teaches xBeam end to
+- **Track:** Module 07, "Correlating two receivers (xBeam)", teaches xBeam end to
   end (a known delay, three radio stations with a wrong clock, GW150914 in
-  the two LIGO detectors). If xBeam fits their data, link [6.1](#/6.1).
+  the two LIGO detectors). If xBeam fits their data, link [7.1](#/7.1).
 - **Evidence:** in `results.h5`, the attributes `schema` and `complete` (false after an interrupted write) and `/results/<result_index>` (`:238-247`). Per result: `lag_valid_samples`, `contributing_windows` and `valid` (`:64-65`). Radio output: `metadata.jsonl`, `spectra.c64` and `ingest-manifest.json` (`:271`).
 
 ### Core executors / scale-out (`G/scale.qmd`)

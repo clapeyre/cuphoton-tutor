@@ -60,7 +60,7 @@ planned in `docs/EXPANSION-PLAN.md`; coverage status is in `docs/ROADMAP.md`.
   the course finds the same shape. Concretely, when the occasion comes up:
   - **Structure:** its chapters are task-first (read FITS, align, subtract,
     measure, classify, the transient chain, uncertainty, then the other
-    components). Lessons could name and link "their" chapter (Module 06 already
+    components). Lessons could name and link "their" chapter (Module 07 already
     does); module order already roughly follows it.
   - **Data:** the guide's examples use its synthetic sample pair
     (`docs/guide/_sample-pair.qmd`), which Module 01 already uses via
@@ -105,7 +105,7 @@ planned in `docs/EXPANSION-PLAN.md`; coverage status is in `docs/ROADMAP.md`.
 ## Upstream (cuPhoton)
 
 - **xRay: the detector command is slower than a NumPy loop here** (found
-  building 7.3). `detector-artifacts` took 13–17 s for 2,048 row fits
+  building 8.3). `detector-artifacts` took 13–17 s for 2,048 row fits
   (256 × 128 detector, 97 frames) and 102 s for 16,384 (512 × 512) on an
   RTX 4070 Ti SUPER, about 6 ms per row; `linear_prediction_numpy` takes
   about 1 ms per 95-sample trace on the CPU. The guide makes no speed
@@ -113,11 +113,11 @@ planned in `docs/EXPANSION-PLAN.md`; coverage status is in `docs/ROADMAP.md`.
   Python?) and reporting.
 - **xRay: excluded rows still feed their neighbours.** With `--exclude-y`
   the dead rows are skipped, but rows within `--integrate` of them still sum
-  their zeros (amplitudes 55–87% of typical in 7.3). Without it, dead rows
+  their zeros (amplitudes 55–87% of typical in 8.3). Without it, dead rows
   come back status 1 with their neighbours' frequency. Neither is in the
   guide.
 - **xImage: photometry on the scene depends on when it stopped.** On the
-  M101 nights (8.3), fakes measured 1.15× planted at the default stop, 1.08×
+  M101 nights (6.3), fakes measured 1.15× planted at the default stop, 1.08×
   at 300 steps; with a constant pedestal added to the sky-subtracted frames,
   1.06× and 0.85×. The guide says the run returns no variance or effective
   PSF; a note on calibrating fluxes (and on sky-subtracted inputs to a

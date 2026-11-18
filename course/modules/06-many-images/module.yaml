@@ -1,0 +1,29 @@
+id: "06"
+title: Combining many images (xImage)
+question: "Many blurred, noisy frames of one scene: what does a reconstruction give back, and when does it invent or erase something?"
+needs: linux_gpu   # the GPU environment with the ximage extra (PyTorch, pydantic, Zarr: tools/setup-gpu-env.sh); 6.3 reads Module 04's data/
+objectives: [O2, O3, O5, O7]
+misconceptions: [M-SHARP-MEANS-RIGHT, M-VALID-MEANS-USABLE, M-ONE-SCENE]
+source: docs/guide/reconstruct.qmd, docs/components/ximage.md, examples/ximage/ in the pinned checkout
+time: 60–80 min
+intro: |
+  Modules 04 and 05 compared two nights of the sky to find what changed.
+  This module stays with images, and with M101 at the end, but asks a
+  different question: given many pictures of the same scene, what is the
+  one scene they all show?
+
+  Take many pictures of the same thing and each comes out a little
+  different: the blur changes from one to the next (the atmosphere, a
+  microscope's focus, a shaking mount), and so does the noise. Stacking
+  them, as in 4.5, averages the noise but keeps the blur.
+
+  cuPhoton's **xImage** does something else with them. Given each frame's
+  blur, its PSF, and its noise, it fits one sharp scene that, blurred by
+  each frame's own PSF, matches every frame. It's used for telescope
+  images, microscopy and adaptive optics. It runs on PyTorch, on a CPU or a
+  GPU, and every run writes a receipt. The video in the first lesson shows
+  how it works backwards from a guess.
+
+  You'll reconstruct a scene you know, then two bundles where something is
+  wrong that the validation doesn't catch, then the M101 nights from
+  Module 04, supernova included.

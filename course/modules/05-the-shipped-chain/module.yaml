@@ -1,5 +1,5 @@
 id: "05"
-title: The shipped chain
+title: The transient chain pipeline
 question: cuPhoton ships the whole chain as one pipeline. On your M101 pair, can you trust what it writes?
 needs: linux_gpu   # the GPU environment with the catalog extra and examples/transient-chain installed (tools/setup-gpu-env.sh)
 objectives: [O6, O3, O5]

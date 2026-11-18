@@ -29,5 +29,5 @@ prompt: Can you trust what a shipped pipeline writes on new data, and what does 
 :::closure
 found: A few numbers from each image's summary would have caught both silent problems of this module on every image of a long run: the PSF width's source and the error terms left out, the kernel fit's χ²/dof and how many pixels it used. Rules on them turn into flags on a dashboard, next to the read receipts and the candidate counts. Writing them took one small function.
 matters: The habits of this course were all done by hand, once. A pipeline runs them thousands of times. What scales is to write each check you did by hand as a rule that runs on every image, and to read the flags before the catalog. A rule only exists, though, once someone has found the problem by looking.
-raises: Your data may not be two nights of M101. cuPhoton has parts for other kinds of signal; the next three modules take one each, starting with two receivers that hear the same source.
+raises: Every image so far was one exposure per night, compared with another night. What if you have many exposures of the same scene, each blurred differently: can they be combined into one scene sharper than any of them?
 :::

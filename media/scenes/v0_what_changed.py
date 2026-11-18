@@ -298,7 +298,7 @@ class V0(Scene):
             w = x - t.used
             if w > 0: t.wait(w)
         t.play(*[FadeOut(m) for m in (ri, ti, l1, l2, s1_, s2_)], run_time=0.6)
-        title = label("Module 00: What changed in the sky?", 40, WHITE).to_edge(UP, buff=0.5)
+        title = label("Module 00: Difference imaging, the idea", 40, WHITE).to_edge(UP, buff=0.5)
         t.play(FadeIn(title), run_time=0.7)
         X0, X1 = -5.8, -3.7
         def row(name, color, y):

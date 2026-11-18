@@ -35,11 +35,12 @@ modules:
   - 03-onto-the-gpu
   - 04-your-own-data
   - 05-the-shipped-chain
-  # The component tracks: each stands on its own after Module 05.
-  - 06-two-receivers   # xBeam
-  - 07-pump-and-probe  # xRay
-  - 08-many-frames     # xImage
-  - 09-where-next      # the map, and the learner's own work
+  # After the image modules: xImage continues with the same sky, then the
+  # components for other kinds of data.
+  - 06-many-images   # xImage: many images of one scene
+  - 07-time-series   # xBeam: correlating time series
+  - 08-xray-traces   # xRay: time-resolved X-ray data
+  - 09-where-next    # the map, and the learner's own work
 
 # The stage chain drawn by :::chain. `does` is the box text; `definition`
 # opens beneath the box when the learner clicks it.
