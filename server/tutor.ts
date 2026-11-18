@@ -18,7 +18,10 @@ import { QUEUE, Store, type FigureOnPage, type Pointer, type Thread } from "./st
 
 // drafts: text the tutor is streaming right now, keyed "turn:<lesson>/<turn>" or "thread:<id>".
 // turn: the Your turn ("lesson/turn") the main thread is answering right now, so the page can say it is still working there.
-export type Activity = { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
+import { describeStep, type Step } from "./steps.ts";
+
+export type Activity = { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string>; steps: Step[]; since: number | null; retry: { attempt: number; of: number; delayMs: number; at: number; error: string } | null };
+
 
 /** Text blocks of an assistant message so far (thinking and tool calls excluded). */
 const textOf = (m: any) => (Array.isArray(m?.content) ? m.content : []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("").trim();
@@ -40,7 +43,7 @@ export class Tutor {
   private thread: { module: string; startedAt: number } | null = null;
   private rotating = false;
   recorder = new Recorder();
-  activity: Activity = { main: null, turn: null, threads: {}, drafts: {} };
+  activity: Activity = { main: null, turn: null, threads: {}, drafts: {}, steps: [], since: null, retry: null };
   onActivity: () => void = () => {};
   onNote: (n: { kind: string; summary: string }) => void = () => {};
   /** Events the session log doesn't keep (retries, compactions as they happen, margin calls), for the admin page. */
@@ -214,10 +217,13 @@ export class Tutor {
       tools: kind === "main" ? ["read", "bash", "edit", "write", "show_figure", "ask", "settle", "reveal", "file_feedback"] : ["read", "bash"],
       customTools: kind === "main" ? this.pageTools() : [],
       sessionManager: sm,
-      settingsManager: SettingsManager.inMemory({ compaction: { enabled: true }, retry: { enabled: true, maxRetries: 4 } } as any),
+      settingsManager: SettingsManager.inMemory({ compaction: { enabled: true }, retry: { enabled: true, maxRetries: 6 } } as any),
     });
     if (kind === "main") {
       session.subscribe((ev: any) => {
+        // The page says the model's server is refusing and when the next try is, rather than going quiet.
+        if (ev.type === "auto_retry_start") { this.activity.retry = { attempt: ev.attempt, of: ev.maxAttempts, delayMs: ev.delayMs, at: Date.now(), error: /\b429\b|rate limit/i.test(String(ev.errorMessage)) ? "rate limit" : String(ev.errorMessage ?? "").slice(0, 80) }; this.onActivity(); }
+        if (ev.type === "auto_retry_end" && this.activity.retry) { this.activity.retry = null; this.onActivity(); }
         if (ev.type === "auto_retry_start") this.onMetric({ kind: "retry", attempt: ev.attempt, of: ev.maxAttempts, delayMs: ev.delayMs, error: String(ev.errorMessage ?? "").slice(0, 300) });
         else if (ev.type === "auto_retry_end") this.onMetric({ kind: "retry_end", ok: ev.success, attempt: ev.attempt, error: ev.finalError ? String(ev.finalError).slice(0, 300) : undefined });
         else if (ev.type === "compaction_start") this.onMetric({ kind: "compaction_start", reason: ev.reason });
@@ -228,9 +234,15 @@ export class Tutor {
           // Preparing ahead, and the old thread writing the profile at a module change, are invisible to the
           // learner. (Rotation can run from prepareAhead before `background` is set; labelling it here left the
           // page saying "Working" after the module was done, since nothing cleared it.)
-          if (!this.background && !this.rotating) this.setMain(label);
+          if (!this.background && !this.rotating) {
+            const d = describeStep(ev.toolName, ev.args);
+            if (d) this.activity.steps = [...this.activity.steps, { id: ev.toolCallId, ...d, at: Date.now() }].slice(-8);
+            this.setMain(label);
+          }
         } else if (ev.type === "tool_execution_end") {
           this.recorder.end(ev.toolCallId, ev.isError, ev.durationMs);
+          const st = this.activity.steps.find((x) => x.id === ev.toolCallId);
+          if (st) { st.ms = Date.now() - st.at; st.error = !!ev.isError; this.onActivity(); }
         } else if (this.streamTurn && ev.type === "message_update" && ev.assistantMessageEvent?.type === "text_delta") {
           // In a Your-turn conversation the tutor's text is its reply: stream it into the turn.
           this.activity.drafts[`turn:${this.streamTurn}`] = textOf(ev.message);
@@ -417,6 +429,8 @@ export class Tutor {
       this.promptLesson = lessonId;
       this.streamTurn = streamTurn;
       this.activity.turn = streamTurn;
+      this.activity.steps = [];
+      this.activity.since = Date.now();
       this.setMain(label);
       this.spokeIn.clear();
       const notes = this.pendingNotes.splice(0);
@@ -434,6 +448,9 @@ export class Tutor {
       } finally {
         this.streamTurn = null;
         this.activity.turn = null;
+        this.activity.steps = [];
+        this.activity.since = null;
+        this.activity.retry = null;
         this.activity.drafts = Object.fromEntries(Object.entries(this.activity.drafts).filter(([k]) => !k.startsWith("turn:")));
         this.foreground--;
         this.setMain(null);

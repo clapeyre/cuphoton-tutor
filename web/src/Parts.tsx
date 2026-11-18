@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fmtTime, useCtx, useDraft } from "./ctx.tsx";
 import { Code } from "./Code.tsx";
 import { Inline, Typed } from "./Prose.tsx";
@@ -132,6 +132,44 @@ function Slot({ part }: { part: Extract<Part, { kind: "slot" }> }) {
   return null;
 }
 
+const clock = (ms: number) => { const s = Math.max(0, Math.round(ms / 1000)); return s < 60 ? `${s} s` : `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+
+const PAST: Record<string, string> = { Running: "Ran", Training: "Trained", "Looking at": "Looked at", Reading: "Read", Writing: "Wrote", "Placing a figure": "Placed" };
+
+/** While the tutor works on a turn: what it is doing, step by step, with times. A long run (training a model,
+ *  a big reduction) then reads as progress rather than silence. Times are counted from when this page first
+ *  saw each step, not from the server's clock (the two machines' clocks may differ). */
+function Progress({ doing }: { doing: string }) {
+  const { steps = [], since, retry } = useCtx().state.activity;
+  const seen = useRef(new Map<string, number>());
+  const first = (k: string) => { if (!seen.current.has(k)) seen.current.set(k, Date.now()); return seen.current.get(k)!; };
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => { const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
+  const running = steps.find((x) => x.ms === undefined);
+  const total = since ? now - first(`since:${since}`) : 0;
+  return (
+    <div className="progress">
+      {steps.length > 0 && (
+        <ol className="steps">
+          {steps.map((x) => (
+            <li key={x.id} className={x.ms === undefined ? "step-run" : x.error ? "step-err" : ""}>
+              <span className="what">{x.ms === undefined ? x.what : PAST[x.what] ?? x.what}</span> <code>{x.detail}</code>
+              <span className="t">{x.ms === undefined ? clock(now - first(x.id)) : clock(x.ms)}{x.error ? " · failed" : ""}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+      {retry && (
+        <span className="retry" role="status">
+          The model's server {retry.error === "rate limit" ? "is busy (rate limit)" : `refused: ${retry.error}`}; trying again
+          {(() => { const left = retry.delayMs - (now - first(`retry:${retry.at}`)); return left > 1000 ? ` in ${clock(left)}` : ""; })()} ({retry.attempt} of {retry.of})
+        </span>
+      )}
+      <span className="typing" aria-live="polite">The tutor is {running ? (running.what === "Training" ? "training" : doing) : "thinking"}{total >= 5000 ? ` · ${clock(total)}` : ""}</span>
+    </div>
+  );
+}
+
 function Chain({ part, idx }: { part: Extract<Part, { kind: "chain" }>; idx: number }) {
   const ctx = useCtx();
   const where = `chain${idx}`;
@@ -224,7 +262,7 @@ function Turn({ part }: { part: Extract<Part, { kind: "turn" }> }) {
                 {m.who === "tutor" ? <Typed text={m.text} where={`${where}-m${i}`} animate={i >= seenAtMount.current} /> : m.text}
               </div>
             ))}
-            {working && <span className="typing" aria-live="polite">The tutor is {doing}</span>}
+            {working && <Progress doing={doing} />}
             {settled && unrolled && !working && !streaming && (
               <div className="btn-row">
                 <button type="button" className="link" onClick={() => {

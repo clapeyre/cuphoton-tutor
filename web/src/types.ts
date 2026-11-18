@@ -35,9 +35,12 @@ export interface PageState { current: string | null; lessons: Record<string, Les
 export interface ServerState {
   page: PageState;
   boxes: Record<string, "empty" | "half" | "full">;
-  activity: { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string> };
+  activity: { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string>; steps?: Step[]; since?: number | null; retry?: { attempt: number; of: number; delayMs: number; at: number; error: string } | null };
   notes: { ts: string; kind: string; summary: string }[];
 }
 
 /** A file in the learner's work folder (the Files panel). */
 export interface WorkFile { path: string; size: number; kind: "text" | "image" | "html" | "other" }
+
+/** One thing the tutor did in the current request (server/steps.ts). */
+export type Step = { id: string; what: string; detail: string; at: number; ms?: number; error?: boolean };
