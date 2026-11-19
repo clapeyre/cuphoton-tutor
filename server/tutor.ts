@@ -389,6 +389,8 @@ export class Tutor {
           if (!lesson) throw new Error(`no lesson ${p.lesson_id}`);
           const open = lesson.turnIds.filter((x) => s.lesson(lesson.id).turns[x]?.status !== "settled");
           if (open.length) throw new Error(`not yet: open turns ${open.join(", ")}`);
+          const empty = lesson.slotIds.filter((x) => !s.lesson(lesson.id).slots[x]);
+          if (empty.length) throw new Error(`not yet: fill ${empty.join(", ")} first (show_figure with slot); the closing can't sit under an empty figure`);
           s.lesson(lesson.id).revealed = true;
           s.save(this.lessonTurns);
           return text("Revealed.");
