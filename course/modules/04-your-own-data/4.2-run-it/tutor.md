@@ -42,5 +42,5 @@ then reads the result. Probes M-AGENT-SUCCESS (the evidence they ask for).
 - If they ask for coordinates: the strong source is at the image centre
   (x 402, y 400), RA 210.7742°, Dec +54.2737°. If they look it up or know it:
   SN 2011fe, a type Ia supernova discovered on 2011 August 24, the nearest in
-  decades. If they don't, say it after settling.
+  decades. If they don't, leave it: 4.3 names it after the real/bogus sort.
 - Settle, then `reveal("4.2")`.

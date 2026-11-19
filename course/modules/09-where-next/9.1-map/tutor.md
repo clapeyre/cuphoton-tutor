@@ -25,7 +25,8 @@ pinned checkout only when a question goes beyond them.
   there, in their words if you have them.
 - Ask what they'd check on its first run. Steer with the course's habits, on
   that component's terms: the receipt or summary that says what ran (Module
-  02), what the step should give back (O2), the noise model (4.1), and a test
+  02; always ask for this one if they don't name it, above all when their
+  goal is speed: a silent CPU fallback makes a speed claim wrong), what the step should give back (O2), the noise model (4.1), and a test
   with a known answer (4.4's injection test; for xBeam a known delay (7.1),
   for xRay planted modes at their own step size (8.2), for xImage planted
   fakes at their settings (6.3)). Give them the component's silent-error
@@ -80,7 +81,7 @@ and command was checked against `src/cuphoton/` on 16 Nov 2026.
   ([1.5](#/1.5)). Link [1.4](#/1.4).
 
 ### xFit: measure (`G/measure.qmd`)
-- **For:** measures each candidate on a difference image: one fitted source (new, brightened or faded), a forced PSF flux at a known position, or a dipole (two opposite lobes, from a moved source or a misaligned star) (`:3`, `:68-75`).
+- **For:** measures each candidate on a difference image: one fitted source (new, brightened or faded), a forced PSF flux at a known position, or a dipole (two opposite lobes, from a moved source or a misaligned star) (`:3`, `:68-75`). `fit_single_sources` with `psf_sigma` fits a round lobe of that width (amplitude, x, y); without it the lobe is an elliptical Gaussian with free widths and orientation (`:81`; `src/cuphoton/xfit/single.py:106-119`). The model has no constant background term: a stamp sitting on a pedestal needs it subtracted first.
 - **Input:** cutouts as NumPy (or CuPy) arrays `(batch, y, x)` cut from the difference image, with a per-pixel variance of the same shape, finite and strictly positive on the pixels the `mask` includes (`:52`, `:256`; `src/cuphoton/xfit/io.py:250-255`). Positions are (x, y) from the cutout centre (`:64`). `fit_single_sources` and `forced_psf_photometry` take the variance as a required argument; `fit_dipoles` takes it as optional, scaling the covariance by the reduced chi-square without it (`:257`). The command reads an NPZ with `candidate_id` and `images`, optionally `initial`, `mask`, `variance` and `stamp_basis` (`:301`).
 - **First run:** `fit_single_sources(cutouts, cutout_variance, start, psf_sigma, mask=usable, sign=1)` (`:88`). CLI: `cuphoton xfit data-validate --input sample/cutouts.npz --model gaussian --mode difference`, then `cuphoton xfit fit-dipoles --input sample/cutouts.npz --model gaussian --backend numpy --output-dir runs/dipoles` (`:311-312`).
 - **Needs:** the CPU profile. `gpu` for `cupy`; `cutile` and `native` fit Gaussian models only (`:5`, `:284`). The command line fits dipoles only (`:344`).

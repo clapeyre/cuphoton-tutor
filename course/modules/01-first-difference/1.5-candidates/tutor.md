@@ -14,11 +14,12 @@ changes, and doesn't read z > 5 as a calibrated probability.
 - Figure `work/01/1.5_hotspots.png`: z in grey scale centred on zero, ±6,
   each hotspot circled and lettered A, B. **Never print `peak_yx`, coordinates
   or "(y, x)" labels** anywhere (hold-back for 1.7, the axis-order bug).
-  That includes the code: figure scripts are shown in run records, so don't
-  name variables after the axis order (`cy, cx = r["centroid_yx"]`,
-  `[::-1]`), and keep the key names out of it too: do the lookup in a
-  separate helper (`work/01/hotspots.py`, writing plain positions to a file)
-  that the figure script reads. Same in 1.6.
+  That includes the code: run records show the scripts behind a figure and
+  the earlier runs it drew on. Do the lookup in `work/01/hotspots.py`
+  (writing plain positions to a file) and make its first line
+  `# hold-back: 1.7 axis order`; the run record then names the file without
+  showing its code. Keep the figure script itself free of axis-order names.
+  Same in 1.6.
   `show_figure(slot="hotspots")`.
 - Now open the answer key: a star was made 3× brighter (difference flux
   +12,120 DN) and a new source of 4,000 DN was added. Ask them which letter is

@@ -34,7 +34,8 @@ prediction) or mention queuing (3.4): don't fill those in when discussing it.
   yourself.
 - **Pass:** (a) hardware present, software missing (no CuPy / CPU PyTorch in
   the default environment); (b) they looked at the new receipt and it shows the
-  GPU was used. Settle as soon as both are there: no extra "say it in one
+  GPU was used, in a reply of theirs after you show it (don't show, settle
+  and reveal in one go). Settle as soon as both are there: no extra "say it in one
   sentence", no field names. Mention `--require-gpu` as the guard yourself if
   they didn't.
 - Settle, then `reveal("3.1")`.

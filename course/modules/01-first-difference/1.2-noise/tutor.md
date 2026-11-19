@@ -17,7 +17,8 @@ side, grey scale, colour bars ("counts (DN)" and "variance (DN²)").
   "Error bar ×4" is a common first answer: ask what an error bar is in units of
   (DN, the same as the noise, not DN²).
 - If they get only one half, accept a reasoned guess for the other and say it
-  will be tested in 1.6. Don't confirm or correct the numbers before 1.6 runs:
+  will be tested in 1.6. Don't confirm or correct the numbers before 1.6 runs,
+  nor the reasoning ("clean", "right"): say it's recorded for 1.6.
   settle with their prediction as the summary ("Prediction: …").
 - Avoid the "df.var()" / spread-of-values analogy (wrong mental model).
 - After settling, `reveal("1.2")`.

@@ -25,7 +25,9 @@ One script, `work/00/two_nights.py`, seed 2, 96×96:
 ## Your turn `what-changed`
 - When they ask for zooms, crops, profiles or pixel values, make them (annotated,
   colour bar, say any offset or stretch) and `show_figure(turn_id=...)` them into
-  the conversation.
+  the conversation. Crop only the sources they ask about; if their pick is an
+  unchanged star, ask them to pick another to compare, rather than cropping
+  the changed one for them (which source changed is theirs to find).
 - **Pass:** pointing, PSF and background, each with a piece of evidence the
   learner names, and at least one real change. Being on the list in the lesson
   text isn't evidence. If they only see the new source, ask about one source in

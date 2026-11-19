@@ -48,7 +48,8 @@ drives it. It names no trap: don't add one when discussing it.
   the identity keys; set these yourself, don't make them a question.
 - Don't raise the PSF width or kernel settings here: they're the next turn
   and 5.3.
-- Write the config, show the diff against the shipped file, run:
+- Write the config, paste the diff against the shipped file in a code block
+  in your reply (keep `config.shipped.yaml` if you point to Files), run:
   `python launch.py --executor local --selections selections.json --config config.yaml --output-dir run1`
   from `work/05/`. Settle on the run (~45 s cold: startup and compilation).
   Facts: `success 12`, `catalog: run1/catalog.parquet`.

@@ -22,7 +22,8 @@ question at a time:
   affects one source. Both give the same two-lobe shape
   (docs/guide/measure.qmd), so the lobes alone can't decide. 3 is read off the
   chain (xFit).
-- If 2 needed a hint, set a variant before settling, e.g. "a single negative
+- If 2 needed a hint, set a variant before settling (a leading prompt counts
+  as a hint: "anything else in it?", "suppose every other star is clean"), e.g. "a single negative
   residual, with no positive lobe: what could cause it, and what would you
   measure?"
 - Hold-back: the dipole's causes are this checkpoint. Don't state them anywhere

@@ -22,8 +22,11 @@ Writes `radio/AA.vdif`, `BB.vdif`, `CC.vdif` (4 MB each: 1 s, 16 MHz real
 sampling, 2 bits, one 8 MHz band at 1.4 GHz, 500 frames of 8,032 bytes) and
 `radio/job.json`. Run every xBeam command **from `radio/`**: the job's
 `source_files` resolve against the working directory, not the job file.
-The learner can read `job.json` in Files; point to `stations[].clock` and
-`scans[0].station_models[].delay_coefficients_s`.
+The learner can read `job.json` in Files; point to
+`stations[i].clock.coefficients_s` (stations carry `identifier` and `name`:
+BB is identifier 1) and `scans[0].station_models[i].delay_coefficients_s`
+(keyed by `station_id`). Print BB's two entries from the file before quoting
+any of it; don't write job lines from memory.
 
 The truth (don't tell): the wavefront reaches CC 0.9 µs before AA and BB
 2.3 µs after AA; the job has these right (BB `delay_coefficients_s`

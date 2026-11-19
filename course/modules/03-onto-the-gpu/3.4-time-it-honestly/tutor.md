@@ -13,7 +13,7 @@ block, exactly as in the script (no comments added, nothing pointed at):
 
 ```python
 start = time.perf_counter()
-reproject_masked_array(image, np.ones_like(image), np.zeros(image.shape, bool), spec, backend="cpu")
+reproject_array(image, spec, backend="cpu")
 cpu_seconds = time.perf_counter() - start
 
 on_gpu = cp.asarray(image)

@@ -9,7 +9,8 @@ directs one complete small run in one instruction (module exit, O3).
   input"). Expect at least: backend/device/dtype from the receipt against the
   request; exit status (and stderr, not just stdout: see 2.2); fit status or
   convergence counts; a plot; a new output directory per run. Discuss what's
-  missing with one question each; don't dictate items.
+  missing with one question each, before settling (dtype and convergence
+  counts are the ones most often left out); don't dictate items.
 - Then the single instruction. **Pass:** it names a component (e.g.
   `--component xpois`), the hardware on purpose, a new output directory, and
   the evidence expected back. The runner has no backend flag: `--profile auto`

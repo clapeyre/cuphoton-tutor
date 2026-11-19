@@ -21,7 +21,7 @@ prompt: Write your standing instruction, in your own words: what must the agent 
 :::
 
 :::closure
-found: Your list, compared with cuPhoton's troubleshooting guide, covers where the run happened (backend, device and dtype from the receipt, against what you asked for), whether it worked (exit status, fit status or convergence counts), whether it's right (a plot, and a comparison with what you expected), and where the evidence lives (a new output directory per run).
+found: cuPhoton's troubleshooting guide checks where the run happened (backend, device and dtype from the receipt, against what you asked for), whether it worked (exit status, fit status or convergence counts), whether it's right (a plot, and a comparison with what you expected), and where the evidence lives (a new output directory per run).
 matters: This is the job that's left to you when an agent does the typing: deciding what counts as evidence, and asking for it every time. The next modules move the work onto the GPU, where every item on your list gets used.
 raises: Module 03 moves the pipeline onto the GPU. How do you get it there, and prove it's there?
 :::

@@ -81,6 +81,10 @@ are dead: 0 counts in every frame, laser on and off.
   ```
   Typical amplitude 0.10–0.11. The detector's amplitudes aren't on 8.1's
   scale: integration and smoothing change the trace's amplitude (guide).
+  The edge rows dip too (row 0 0.062, 1 0.074, 254 0.083, 255 0.062): the
+  ±3-row sum runs off the detector, so row 0 sums 4 rows instead of 7, the
+  same effect as next to the dead band. Frequencies there are right. If the
+  learner points it out, they're right: credit it and link it to the band.
 - Show a few manifest lines (`backend`, `device`, `components`,
   `fit_status_codes`, `failures`). Settle `first-look` on what they see
   first, in that reply, and stop: the page then opens `every-row` with its

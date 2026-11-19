@@ -18,7 +18,7 @@ several thousand. You can ask to see the script: the tutor will show
 you the part that does the timing.
 
 :::your-turn the-claim
-title: Ten thousand times?
+title: Several thousand times?
 prompt: Ask the tutor to run the colleague's script. Do you believe the number? Ask for any evidence or variation you like. Then say (a) what's wrong, if anything, (b) a speedup you'd stand behind and what it measures, and (c) what you'd ask any agent that reports a GPU speedup.
 :::
 

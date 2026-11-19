@@ -18,7 +18,8 @@ remake them with `work/00/two_nights.py`.
   **dipole**. Don't give its causes (held back to 0.4).
 
 ## Slot `aligned-difference`
-- Fill it once `predict-plain` is settled: align night 2 onto night 1's grid
+- Fill it in the same reply that settles `predict-plain` (before `your-plan`
+  is answered: the plan rests on it): align night 2 onto night 1's grid
   (undo the shift and rotation you applied, with `scipy.ndimage` or by
   resampling), subtract, letter each remaining spot A, B, C… Save
   `work/00/night2_aligned.npy` and `work/00/0.3_aligned_labeled.png`.

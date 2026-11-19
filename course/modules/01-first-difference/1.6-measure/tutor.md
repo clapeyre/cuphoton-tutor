@@ -7,9 +7,10 @@ injected ones with error bars, and tests their 1.2 prediction.
 - **Hold-back (1.7, axis order):** run the guide's stamp code but don't show it
   or its comments, and never mention `peak_yx` or that hotspot peaks come as
   (y, x). Listen for whether *they* raise coordinate order; don't correct them
-  either way. Write the script so it isn't shown in a run record before 1.7:
-  keep the fit in `work/01/measure.py` but put the figure in a separate
-  `work/01/plot_fluxes.py` that loads saved results.
+  either way. Keep the fit in `work/01/measure.py`, first line
+  `# hold-back: 1.7 axis order` (run records then don't show its code), and
+  put the figure in a separate `work/01/plot_fluxes.py` that loads saved
+  results and names no axis order.
 - Pass (prediction): from the difference image (and its variance), centred on
   each hotspot's peak, a size that holds the whole PSF (the guide uses 21 px;
   PSFSIG is 1.8 px). Probe M-FIT-TWO-IMAGES if they say "from both images".

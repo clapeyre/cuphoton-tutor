@@ -33,7 +33,11 @@ did; on their own survey, nights won't share a grid.
 - Run `stack_compare.py`, next to these notes. Copy it to `work/04/` and run
   `python stack_compare.py 4.5_stack.png single weighted mean samevar`
   from `work/04/` with the GPU environment (13 s; env `DATA` if the data
-  isn't in `work/04/data`). Include their recipe if it matches a config:
+  isn't in `work/04/data`). Always all four: the closing quotes the plain
+  mean and samevar rows. This script builds its own chain, so its `single`
+  row won't match the learner's 4.2 counts exactly (10–19 hotspots,
+  depending on mask and basis choices); if they compare, say so and compare
+  references within this one table. Include their recipe if it matches a config:
   weighted = inverse-variance weighted mean over each pixel's usable
   nights, variance 1/Σ(1/var); mean = plain mean (a pixel missing in any
   night is lost); samevar = weighted but keeping the single night's variance
