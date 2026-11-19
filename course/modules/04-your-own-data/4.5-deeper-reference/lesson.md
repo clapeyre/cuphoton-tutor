@@ -1,7 +1,7 @@
 ---
 id: "4.5"
 title: A deeper reference?
-question: Would stacking more nights into the reference let you see fainter changes?
+question: Would stacking more exposures into the reference let you see fainter changes?
 terms: [stack, seeing]
 guide: [align]
 ---
@@ -19,12 +19,12 @@ doesn't combine them: how to add up the pixels is your choice. This is the
 
 :::your-turn recipe
 title: Your recipe, and your prediction
-prompt: How should the three nights be combined into one reference? Say what to do with a pixel that one night doesn't cover, and what the stack's variance is. Then predict what the stack buys you, using the 4.4 injection test as the measure. How much fainter will it reach?
+prompt: How should the three reference exposures (two from 22 April 2011, one from 11 May) be combined into one reference? Say what to do with a pixel that one exposure doesn't cover, and what the stack's variance is. Then predict what the stack buys you, using the 4.4 injection test as the measure. How much fainter will it reach?
 :::
 
 :::slot stack
-title: Three nights and their stacks
-caption: Top, the usable pixels of each night, with its seeing (the width of a star, as a FWHM in pixels), and how many nights cover each pixel. Bottom, z for the single reference and for each stack; circles mark hotspots outside the single night's usable area.
+title: Three exposures and their stacks
+caption: Top, the usable pixels of each exposure, with its seeing (the width of a star, as a FWHM in pixels), and how many exposures cover each pixel. Bottom, z for the single reference and for each stack; circles mark hotspots outside the single exposure's usable area.
 :::
 
 :::your-turn what-it-bought
@@ -33,7 +33,7 @@ prompt: Compare the single reference with the stacks, and the injection numbers.
 :::
 
 :::closure
-found: Almost no depth. In our run, with all three nights, the fakes of 1,000 counts had the same median flux error (81 counts) and the same number came back (30 of 75) as with one. The reason is where the difference's noise comes from. The matching kernel blurs the reference, which averages its noise down, so the reference supplied only 5% of the difference's variance. The target's own noise is the rest, and stacking references can't touch it. What the stack did buy is area. The nights' chip gaps differ, so 86% of the image became usable instead of 70%. But that new area is covered only by 11 May, the blurriest night (4.65 pixels, against the target's 3.59). All 11 hotspots found there are residues on stars, positive and negative: a reference blurrier than the target can't be matched by blurring it. Two shortcuts go wrong silently: a plain mean loses area (57% in our run), because a pixel missing in any night is lost, and keeping the single night's variance throws the new area away and finds fewer fakes.
-matters: More data making a better reference is a prediction, and on this pair it was mostly wrong. Only the injection test said so: every stack ran without complaint. The same arithmetic says when stacking pays. Stacking N nights divides the reference's share of the noise by N. Here that share was 5%, so three nights could gain at most 2%. Where the reference supplies half the noise, as it does when it is no sharper than the target and about as deep, three nights cut the difference's noise by 18% and reach about 0.2 magnitudes fainter; ten nights, 26% and 0.3 magnitudes. That is why surveys build deep references from many nights. So measure the share before you stack. Then choose the nights by seeing, never blurrier than the target, put them on one grid and one flux scale, weight them, carry the variance, and check where the coverage changes, because a stack can have a different blur in each patch.
+found: Almost no depth. In our run, with all three exposures, the fakes of 1,000 counts had the same median flux error (81 counts) and the same number came back (30 of 75) as with one. The reason is where the difference's noise comes from. The matching kernel blurs the reference, which averages its noise down, so the reference supplied only 5% of the difference's variance. The target's own noise is the rest, and stacking references can't touch it. What the stack did buy is area. The two nights' chip gaps differ, so 86% of the image became usable instead of 70%. But that new area is covered only by 11 May, the blurriest night (4.65 pixels, against the target's 3.59). All 11 hotspots found there are residues on stars, positive and negative: a reference blurrier than the target can't be matched by blurring it. Two shortcuts go wrong silently: a plain mean loses area (57% in our run), because a pixel missing in any exposure is lost, and keeping the single exposure's variance throws the new area away and finds fewer fakes.
+matters: More data making a better reference is a prediction, and on this pair it was mostly wrong. Only the injection test said so: every stack ran without complaint. The same arithmetic says when stacking pays. Stacking N nights divides the reference's share of the noise by N. Here that share was 5%, so three exposures could gain at most 2%. Where the reference supplies half the noise, as it does when it is no sharper than the target and about as deep, three exposures cut the difference's noise by 18% and reach about 0.2 magnitudes fainter; ten nights, 26% and 0.3 magnitudes. That is why surveys build deep references from many nights. So measure the share before you stack. Then choose the nights by seeing, never blurrier than the target, put them on one grid and one flux scale, weight them, carry the variance, and check where the coverage changes, because a stack can have a different blur in each patch.
 raises: The stack's new candidates were all bogus, and so were three of 4.3's four. Sorting them by eye works for a handful. Could something sort them for you?
 :::

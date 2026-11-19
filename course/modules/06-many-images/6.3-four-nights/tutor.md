@@ -81,13 +81,13 @@ in it.** It finds Module 04's data itself (or `DATA=...`).
     update score is relative). We did not find a setting that is right
     without calibration; don't recommend one.
   - Speed: this cut takes about a second on either device. A 600 × 600
-    cut of the same three nights (`HALF=300 ... --pedestal 300`): GPU
+    cut of the same three exposures (`HALF=300 ... --pedestal 300`): GPU
     3.2 s, CPU 16.1 s (28 threads), same 26 iterations and loss. xImage's
     `benchmark-devices` command times whole workflows the same way.
 
 ## Your turn `supernova` (prediction)
 - Collect the prediction for each scene. Common: L2 shows it at a quarter
-  of its brightness (one night in four); rho removes it.
+  of its brightness (one exposure in four); rho removes it.
 - Run:
   ```
   python <course>/.../nights.py run m101 all --nights all --fakes 0

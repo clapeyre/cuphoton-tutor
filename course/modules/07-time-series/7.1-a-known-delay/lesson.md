@@ -12,7 +12,7 @@ guide: [correlate]
 The video found the delay by sliding one recording past the other. xBeam
 gets the same sums faster, through Fourier transforms: it cuts both
 recordings into windows, turns each window into its frequencies, multiplies
-the two frequency by frequency, and averages over the windows. That product
+one by the complex conjugate of the other, frequency by frequency, and averages over the windows. That product
 is the [[cross-spectrum]]. Turned back into a function of the shift, it's the
 [[cross-correlation]] from the video, one value per [[lag]], the shift in
 samples.

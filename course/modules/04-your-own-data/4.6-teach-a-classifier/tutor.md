@@ -22,9 +22,10 @@ in `work/04/data`). Its docstring describes every choice.
   (`--with-rays-and-trails`) and adapt the `never-seen` turn: ask what else is
   missing (variable stars; asteroids; other surveys' bogus). Facts for that
   case are under "Retrained" below.
-- Run, showing commands and outputs in code blocks:
+- Write `cands.json` first (see "Score their candidates" below): the build
+  keeps those positions out of training. Run, showing commands and outputs in code blocks:
   ```
-  python classify.py build ps1
+  python classify.py build ps1 --candidates cands.json
   cuphoton xscan data-validate --dataset-dir ps1
   cuphoton xscan data-check-training-labels --dataset-dir ps1 --require-ok
   cuphoton xscan train-inada-triplet --config ps1/train.yaml > ps1-train.json
@@ -73,7 +74,7 @@ in `work/04/data`). Its docstring describes every choice.
   same kinds as training; (c) the fix: put those kinds in the bogus class
   and test again on fresh ones. Then run it:
   ```
-  python classify.py build ps1-rays-trails --with-rays-and-trails
+  python classify.py build ps1-rays-trails --with-rays-and-trails --candidates cands.json
   cuphoton xscan data-check-training-labels --dataset-dir ps1-rays-trails --require-ok
   cuphoton xscan train-inada-triplet --config ps1-rays-trails/train.yaml > ps1-rays-trails-train.json
   python classify.py stress ps1-rays-trails runs/ps1-rays-trails 4.6_stress_after.png

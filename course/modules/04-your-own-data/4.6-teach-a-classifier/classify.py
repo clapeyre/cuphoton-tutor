@@ -1,7 +1,7 @@
 """4.6: teach xScan a real/bogus classifier from this pair alone, score the candidates, and test it on
 kinds of bogus it has never seen.  GPU environment; run each step from the same working directory.
 
-    python classify.py build <dataset dir> [--with-rays-and-trails]
+    python classify.py build <dataset dir> [--with-rays-and-trails] [--candidates cands.json]
         Real (label 1): 480 point sources planted in the target (the 4.4 recipe; flux 800 to 8,000
         counts, log-uniform; 8 realisations of 60). Bogus (label 0): the 88 sources of the reference
         brighter than 20 counts after a 1.5 px smoothing (stars and knots of M101, on both nights),
@@ -47,6 +47,10 @@ use = np.isfinite(ref) & np.isfinite(tgt) & np.isfinite(rv) & np.isfinite(tv) & 
     & ((tm & BAD) == 0) & (rv > 0) & (tv > 0)
 basis = [GaussianBasisComponent(0.7, 4), GaussianBasisComponent(1.4, 2), GaussianBasisComponent(2.8, 2)]
 CANDS = {"A": (640, 403), "B": (246, 46), "C": (400, 402), "D": (84, 274)}  # 4.3's four, (y, x)
+# The learner's own 4.3 list ({"A": [y, x], ...}): kept out of training too, and scored instead of CANDS.
+OWN = ({k: tuple(int(round(v)) for v in yx) for k, yx in
+        json.loads(pathlib.Path(sys.argv[sys.argv.index("--candidates") + 1]).read_text()).items()}
+       if "--candidates" in sys.argv else {})
 YY, XX = np.mgrid[:800, :800]
 
 
@@ -106,7 +110,7 @@ good[:H + 2] = good[-H - 2:] = False
 good[:, :H + 2] = good[:, -H - 2:] = False
 yy, xx = np.ogrid[:800, :800]
 keep_out = ((yy - 400) ** 2 + (xx - 402) ** 2) < 40 ** 2
-for y, x in CANDS.values():
+for y, x in [*CANDS.values(), *OWN.values()]:
     keep_out |= ((yy - y) ** 2 + (xx - x) ** 2) < 15 ** 2
 sm = gaussian_filter(np.nan_to_num(ref), 1.5)
 local_max = (sm == maximum_filter(sm, 9)) & good & ~keep_out
@@ -190,8 +194,8 @@ elif step == "score":
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     score = load_model(sys.argv[3])
-    if "--candidates" in sys.argv:
-        CANDS = {k: tuple(int(round(v)) for v in yx) for k, yx in json.loads(pathlib.Path(sys.argv[sys.argv.index("--candidates") + 1]).read_text()).items()}
+    if OWN:
+        CANDS = OWN
     p = {k: float(score([triplet(tgt, tv, diff0, mv0, *v)])[0]) for k, v in CANDS.items()}
     print("4.3's candidates, p(real):", "  ".join(f"{k} {v:.3f}" for k, v in p.items()))
     regs = identify_residual_hotspots(z0, robust_sigma=1.0, threshold_sigma=5.0, max_regions=None)
