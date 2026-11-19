@@ -147,7 +147,7 @@ function changes(l: any): string {
     for (const m of th.messages.slice(n)) if (m.who === "tutor") out.push(`In the margin, the tutor answers your side question: ${m.text}`);
     s.thread[th.id] = th.messages.length;
   }
-  if (st.revealed && !s.revealed && l.closure) { s.revealed = true; out.push(`The lesson's closing appeared.\nWe found: ${strip(l.closure.found)}\nWhich raises: ${strip(l.closure.raises)}`); }
+  if (st.revealed && !s.revealed && l.closure) { s.revealed = true; out.push(`The lesson's closing appeared.\nWe found: ${strip(l.closure.found)}${l.closure.matters ? `\nWhy it matters: ${strip(l.closure.matters)}` : ""}\nWhich raises: ${strip(l.closure.raises)}`); }
   return out.join("\n\n");
 }
 function markAllSeen(l: any) {
