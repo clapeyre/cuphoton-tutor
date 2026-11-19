@@ -309,6 +309,7 @@ export class Tutor {
           const rel = path.relative(config.learnerDir, abs);
           const fig: FigureOnPage = { id: `${rel}@${fs.statSync(abs).mtimeMs}`, src: `/workspace/${rel}?v=${Math.round(fs.statSync(abs).mtimeMs)}`, title: p.title ?? "", caption: p.caption ?? "", run: this.recorder.recordFor(rel) };
           if (p.turn_id) {
+            if (!fig.title.trim()) throw new Error("a figure in a conversation needs a short title (what it shows); call show_figure again with title");
             const t = resolveTurn(p.turn_id);
             t.turn.log.push({ who: "tutor", text: "", figure: fig, at: Date.now() });
             this.spokeIn.add(`${t.lessonId}/${t.tid}`);
