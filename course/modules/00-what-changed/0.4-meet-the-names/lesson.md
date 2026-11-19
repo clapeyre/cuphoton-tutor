@@ -22,7 +22,7 @@ caption: Each stage, with the difference it removes or the job it does.
 title: Two lobes, two stories
 image: dipole.png
 image-caption: An example made for this question, not from our pair.
-lead: Here is a [[dipole]] in a difference image. What could cause it?
+lead: Here is a [[dipole]] in a difference image. The video blamed the pointing for the ones in our pair. What else could make one, and how would you tell which it is?
 :::
 
 :::closure

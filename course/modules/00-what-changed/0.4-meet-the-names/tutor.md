@@ -12,11 +12,13 @@ of the cuPhoton README if asked.
 ## Your turn `two-lobes` (checkpoint)
 The figure is an example made for this question, not from our pair. Ask one
 question at a time:
-1. What could cause it?
+1. Misalignment is a given (the video says so, and 0.3's aligned difference
+   showed alignment removing them): what else could make one?
 2. What would you need to measure about it to tell those causes apart?
 3. Which stage on the chain does that measuring?
 
-- **Pass:** 1 and 2 unaided: misalignment or real motion, and the positions,
+- **Pass:** 1 and 2 unaided: a second story (real motion; or a source that
+  faded next to one that brightened), and the positions,
   brightness and widths of the two lobes **and** a comparison with the other,
   unchanged sources. Misalignment shifts them all the same way; real motion
   affects one source. Both give the same two-lobe shape
@@ -26,8 +28,9 @@ question at a time:
   as a hint: "anything else in it?", "suppose every other star is clean"), e.g. "a single negative
   residual, with no positive lobe: what could cause it, and what would you
   measure?"
-- Hold-back: the dipole's causes are this checkpoint. Don't state them anywhere
-  (margin answers included) until the turn is settled.
+- Hold-back: the second story (real motion) and the comparison with the
+  unchanged sources are this checkpoint. Don't state either anywhere (margin
+  answers included) until the turn is settled. Misalignment you can name.
 - Before settling, ask them to say *why* in one sentence.
 - After settling, `reveal("0.4")`.
 

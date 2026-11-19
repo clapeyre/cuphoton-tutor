@@ -15,7 +15,8 @@ remake them with `work/00/two_nights.py`.
   `show_figure(slot="raw-difference")`. Compare with their prediction in one
   `ask` line only if the turn is still open; otherwise leave it to the page.
 - When they describe a positive patch beside a negative one, name it: a
-  **dipole**. Don't give its causes (held back to 0.4).
+  **dipole**. Misalignment as its cause is fine to confirm once they see it;
+  don't offer any other cause (held back to 0.4).
 
 ## Slot `aligned-difference`
 - Fill it in the same reply that settles `predict-plain` (before `your-plan`
