@@ -75,6 +75,10 @@ label { color: var(--ink2); font-size: 13px; }
 
 <div class="alerts" id="alerts"></div>
 <p class="sub" id="access" style="margin:0 0 12px"></p>
+<p class="sub" id="feedback" style="margin:0 0 12px">Feedback for the course authors:
+  <a href="/api/admin/report" download><button type="button" title="A .tar.gz with your conversations with the tutor, progress, the tutor's notes, metrics and the server log. No model key, no access link, no workspace files.">Download report</button></a>
+  <a id="issue" href="#" target="_blank" rel="noopener"><button type="button" title="Opens a new GitHub issue with this version, the lesson and the tutor's notes filled in. Issues are public.">Report on GitHub</button></a>
+  · The report holds your conversations; send it to whoever gave you the course, or attach it to the issue if you're happy for it to be public.</p>
 <div class="tiles" id="tiles"></div>
 
 <h2>Context size at every model call</h2>
@@ -153,7 +157,7 @@ function header(r) {
   else if (t.preparing) { state = `Preparing ${t.preparing} ahead`; dot = "busy"; }
   else if (t.streaming) { state = "Working"; dot = "busy"; }
   $("#status").innerHTML = `<span class="dot ${dot}"></span>${esc(state)}${t.margins ? ` · ${t.margins} margin thread${t.margins > 1 ? "s" : ""} open` : ""}`;
-  $("#model").textContent = `${t.provider}/${t.model} · thinking ${t.thinking}${t.thread ? ` · thread for Module ${t.thread.module}, started ${ago(t.thread.startedAt)}` : ""} · server up ${ago(r.startedAt).replace(" ago", "")}`;
+  $("#model").textContent = `${t.provider}/${t.model} · thinking ${t.thinking}${t.thread ? ` · thread for Module ${t.thread.module}, started ${ago(t.thread.startedAt)}` : ""} · server up ${ago(r.startedAt).replace(" ago", "")} · app ${r.app?.label ?? "?"}`;
   $("#updated").textContent = "updated " + new Date(r.now).toLocaleTimeString();
 }
 
@@ -275,7 +279,27 @@ function profile(r) {
   $("#profile-when").textContent = r.profile ? `updated ${ago(r.profile.at)} · learner/profile.md` : "";
 }
 
-function render(r) { last = r; header(r); alerts(r); tiles(r); charts(r); profile(r); tables(r); }
+// "Report on GitHub": a new issue with the version, the lesson and the tutor's notes filled in (no transcript).
+function issue(r) {
+  if (!r.app?.issues) return;
+  const t = r.tutor, notes = r.notes ?? [];
+  const lesson = notes.length ? notes[notes.length - 1].lesson : null;
+  let body = `**What happened**\n\n<!-- what you were doing, what you expected, what you saw -->\n\n`
+    + `**Version**: app \`${r.app.label}\` (${r.app.date}), tutor model \`${t.provider}/${t.model}\`\n\n`;
+  if (notes.length) {
+    body += `**The tutor's notes** (last ${notes.length})\n\n`;
+    for (const n of notes.slice().reverse()) {
+      const line = `- ${n.ts.slice(0, 16).replace("T", " ")} · ${n.lesson ?? "?"} · ${n.kind}: ${n.summary}\n`;
+      if (body.length + line.length > 5000) break;
+      body += line;
+    }
+    body += "\n";
+  }
+  body += `<!-- The report archive (admin page, "Download report") has the whole conversation. Attach it only if you're happy for it to be public; otherwise send it to the course authors directly. -->\n`;
+  $("#issue").href = `${r.app.issues}?title=${encodeURIComponent(`Feedback${lesson ? ` on ${lesson}` : ""}: `)}&body=${encodeURIComponent(body)}`;
+}
+
+function render(r) { last = r; header(r); issue(r); alerts(r); tiles(r); charts(r); profile(r); tables(r); }
 
 async function load() {
   try {

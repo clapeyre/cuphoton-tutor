@@ -9,6 +9,8 @@ import { QUEUE, Store, type Pointer, type Thread } from "./state.ts";
 import { Tutor } from "./tutor.ts";
 import { Admin } from "./admin.ts";
 import { accessLink, allow, allowSocket } from "./access.ts";
+import { buildReport } from "./report.ts";
+import { app } from "./version.ts";
 import { isConfigured, loadEndpoint, pingEndpoint, PRESETS, saveEndpoint, type Endpoint } from "./endpoint.ts";
 
 const course = loadCourse();
@@ -132,11 +134,19 @@ const server = http.createServer((req, res) => {
   if (p === "/api/admin/access") return json({ link: accessLink(req), open: process.env.ACCESS === "open" });
   if (p === "/admin") return sendFile(req, res, path.join(import.meta.dirname, "admin.html"));
   if (p === "/api/admin") { admin.report().then(json, (e) => json({ error: String(e?.message ?? e) }, 500)); return; }
+  // The report archive (server/report.ts): conversations, progress, notes, metrics, log; no key or token.
+  if (p === "/api/admin/report") {
+    buildReport({ cuphoton_commit: course.commit, lesson: store.page.current, lessons: course.order.length }).then((r) => {
+      res.writeHead(200, { "content-type": "application/gzip", "content-disposition": `attachment; filename="${r.name}"` });
+      fs.createReadStream(r.file).on("close", r.cleanup).pipe(res);
+    }, (e) => json({ error: String(e?.message ?? e) }, 500));
+    return;
+  }
   if (p === "/api/admin/ping" && req.method === "POST") {
     pingEndpoint().then((r) => { admin.record({ kind: "ping", ok: r.ok, seconds: r.seconds, detail: r.detail }); json(r); });
     return;
   }
-  if (p === "/api/health") return json({ ok: true, model: `${config.provider}/${config.model}`, lessons: course.order.length });
+  if (p === "/api/health") return json({ ok: true, app: app.label, model: `${config.provider}/${config.model}`, lessons: course.order.length });
   if (p.startsWith("/media/") && p.endsWith(".vtt")) { // subtitles: the .srt next to the video, as WebVTT
     const f = under(config.mediaDir, p.slice(7).replace(/\.vtt$/, ".srt"), /\.srt$/);
     if (!f || !fs.existsSync(f)) return json({ error: "not found" }, 404);
@@ -311,6 +321,6 @@ if (pingEvery > 0) setInterval(() => {
 
 server.listen(config.port, config.host, () => {
   console.log(ready
-    ? `cuPhoton Learn on http://${config.host}:${config.port}  (tutor ${config.provider}/${config.model}; ${course.order.length} lessons)`
-    : `cuPhoton Learn on http://${config.host}:${config.port}  (no model yet: open the page to set one up; ${course.order.length} lessons)`);
+    ? `cuPhoton Learn on http://${config.host}:${config.port}  (app ${app.label}; tutor ${config.provider}/${config.model}; ${course.order.length} lessons)`
+    : `cuPhoton Learn on http://${config.host}:${config.port}  (app ${app.label}; no model yet: open the page to set one up; ${course.order.length} lessons)`);
 });

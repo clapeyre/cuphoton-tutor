@@ -7,7 +7,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { config, learnerPath } from "./config.ts";
 import { current } from "./endpoint.ts";
+import { QUEUE } from "./state.ts";
 import type { Tutor } from "./tutor.ts";
+import { app } from "./version.ts";
 
 type Call = { t: number; ctx: number; cached: number; out: number; cost: number; ms: number | null; stop: string; error?: string; lesson: string | null; kind: string };
 type Prompt = {
@@ -169,7 +171,17 @@ export class Admin {
 
   /** Append one event the session log doesn't keep. */
   record(m: Record<string, unknown>) {
-    try { fs.appendFileSync(this.metricsFile, JSON.stringify({ t: Date.now(), ...m }) + "\n"); } catch {}
+    try { fs.appendFileSync(this.metricsFile, JSON.stringify({ t: Date.now(), app: app.label, ...m }) + "\n"); } catch {}
+  }
+
+  /** The tutor's feedback notes (learner/feedback-queue.jsonl), newest last, for the GitHub issue link. */
+  private notes(): { ts: string; kind: string; lesson: string | null; summary: string }[] {
+    try {
+      return fs.readFileSync(QUEUE(), "utf8").split("\n").filter(Boolean).slice(-20).map((l) => {
+        const e = JSON.parse(l);
+        return { ts: String(e.ts ?? ""), kind: String(e.kind ?? ""), lesson: e.lesson ?? null, summary: String(e.summary ?? "") };
+      });
+    } catch { return []; }
   }
 
   private metrics(): any[] {
@@ -253,7 +265,8 @@ export class Admin {
 
     const cached = calls.slice(-50);
     return {
-      now, startedAt: this.started,
+      now, startedAt: this.started, app: { label: app.label, date: app.date, issues: app.issues },
+      notes: this.notes(),
       tutor: this.tutor.status(),
       totals: {
         calls: calls.length, prompts: prompts.length,

@@ -19,6 +19,7 @@ import { QUEUE, Store, type FigureOnPage, type Pointer, type Thread } from "./st
 // drafts: text the tutor is streaming right now, keyed "turn:<lesson>/<turn>" or "thread:<id>".
 // turn: the Your turn ("lesson/turn") the main thread is answering right now, so the page can say it is still working there.
 import { describeStep, type Step } from "./steps.ts";
+import { app } from "./version.ts";
 
 export type Activity = { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string>; steps: Step[]; since: number | null; retry: { attempt: number; of: number; delayMs: number; at: number; error: string } | null };
 
@@ -390,7 +391,7 @@ export class Tutor {
         execute: async (_id, p) => {
           const ev = {
             ts: new Date().toISOString(), ...p, lesson: p.lesson ?? s.page.current,
-            tutor_model: `${config.provider}/${config.model}`, course_commit: this.course.commit,
+            tutor_model: `${config.provider}/${config.model}`, course_commit: this.course.commit, app_commit: app.label,
           };
           fs.appendFileSync(QUEUE(), JSON.stringify(ev) + "\n");
           if (p.kind === "novel_misconception") s.addObservation(p.summary);

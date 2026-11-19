@@ -81,6 +81,17 @@ the admin page). To hand the course to a new browser, delete
 `learner/access.json` and restart. `ACCESS=open` turns the check off, for a
 machine only you can reach.
 
+## Feedback
+
+The admin page has two buttons for feedback. "Download report" makes an
+archive of the session: conversations with the tutor, progress, the
+tutor's feedback notes, metrics and the server log, stamped with the app's
+commit. It leaves out the model key, the access link and the workspace
+files. Send it to whoever gave you the course. "Report on GitHub" opens a
+new issue with the version, the lesson and the tutor's notes filled in
+(issues are public: attach the archive there only if you're happy for it to
+be). The app's commit also shows on the admin page and in the server log.
+
 ## Configuration (environment or `.env`)
 
 | variable | default | |
@@ -92,6 +103,7 @@ machine only you can reach.
 | `LEARNER_PYTHON_BIN` | `$CUPHOTON_DIR/.venv/bin` | Python with NumPy, SciPy, Matplotlib, cuPhoton |
 | `LEARNER_DIR` | `learner/` | progress, conversations, workspace, tutor sessions |
 | `CUPHOTON_LEARN_FEEDBACK_URL` | | where consented feedback notes are POSTed |
+| `CUPHOTON_LEARN_ISSUES_URL` | the GitHub repo it was cloned from | where "Report on GitHub" opens a new issue |
 | `PORT`, `HOST` | `8765`, `127.0.0.1` | |
 | `PI_OFFLINE` | `1` | no pi network activity besides the endpoint |
 | `ACCESS` | | `open`: no access check (see "Who can use it") |

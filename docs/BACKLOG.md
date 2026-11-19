@@ -152,6 +152,42 @@ above; coverage status is in `docs/ROADMAP.md`.
   printed to standard output", which reads as the current run's. Found
   16 Nov 2026 on ff4d260; used as a teaching point in 2.2. Not reported yet.
 
+## Distribution
+
+- **Pin launchables to tags.** The launchable runs `brev-setup.sh` from
+  `main`, so learners who start minutes apart can be on different commits.
+  Every feedback note, metrics line and report archive now carries the
+  app's commit (`server/version.ts`), which is enough for the alpha. Once
+  people we don't talk to directly take the course: tag releases
+  (`v0.1.0`, …), give `brev-setup.sh` a ref to check out (default `main`),
+  publish one launchable per release that fetches the script at that tag,
+  and keep the current one as a preview that tracks `main`.
+- **Feedback from a cohort.** Today feedback reaches the authors by hand:
+  the admin page's report archive (by email or chat) or a pre-filled GitHub
+  issue. `file_feedback` notes also POST to `CUPHOTON_LEARN_FEEDBACK_URL` if
+  set and the learner agreed, but nothing collects them. For a one-day
+  course with many learners, run a collector for that day only (it is a
+  URL anyone can post to, so not a standing one), or collect the report
+  archives at the end of the day.
+- **Running a cohort (20 or 200 learners).** Undecided; notes for when it
+  comes up:
+  - One T4 per learner is the simple option: no shared auth, no
+    contention, about $0.63/h each. The model is the larger cost: the
+    sessions on the author's machine (most of the course) came to about
+    $13 of tokens at the internal prices in `models.json`, against about $5
+    for a T4 for a day.
+  - Sharing GPUs: the lessons' GPU jobs are short (seconds to a minute) and
+    small, so one big GPU could serve dozens. MIG (A100/H100: up to 7
+    isolated slices) keeps timings honest, which matters because 3.4 and
+    8.3 talk about speed; without isolation, the tutor could queue GPU runs
+    since it runs them. Multi-user hosting is a solved problem
+    (JupyterHub's spawners: one container per user behind one login); the
+    course server would run as the per-user container.
+  - Self-hosting the model for the day: needs a model that keeps up with
+    the tutor's contract (Nemotron 3.5 didn't in the sims) and enough GPUs
+    to serve every learner at once. Qualify candidates with the sim harness
+    (`sim/`) first.
+
 ## Plan milestones not started
 
 - Rerun the M0 simulated learners against the app (not the old CLI course).
