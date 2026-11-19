@@ -37,6 +37,7 @@ export class Tutor {
   private main!: AgentSession;
   private chain: Promise<unknown> = Promise.resolve();
   private margins = new Map<string, AgentSession>();
+  private marginStart = new Map<string, number>(); // thread length when its current prompt began
   private pendingNotes: string[] = [];
   private spokeIn = new Set<string>(); // turn ids the tutor addressed during the current prompt
   private promptLesson: string | null = null; // the lesson the current main prompt is about
@@ -189,6 +190,8 @@ export class Tutor {
       "Never answer an open Your turn here, nor anything a hold-back guards: say we come back to it in that lesson, and",
       "offer something that helps them think instead. If they ask you to explain something a turn will test, give a",
       "question that narrows where to look (hint rung a), no more.",
+      "You can't file feedback from here. If they report a problem with the course, say you'll note it for the",
+      "authors once they're back in the lesson (you'll see this side trip then, and can file it).",
     ].join("\n") : "";
     return `${base}\n\n${env}${margin}`;
   }
@@ -360,6 +363,8 @@ export class Tutor {
         }),
         execute: async (_id, p) => {
           const t = resolveTurn(p.turn_id);
+          if (t.turn.status === "settled") throw new Error("that turn is already settled");
+          if (!t.turn.attempts) throw new Error(`the learner hasn't answered in ${p.turn_id} yet: a turn settles on their reply, never before it`);
           t.turn.status = "settled";
           t.turn.summary = p.summary;
           t.turn.misconceptions.push(...(p.misconceptions ?? []));
@@ -445,6 +450,9 @@ export class Tutor {
     this.foreground++;
     // Anything the learner does comes first: interrupt a lesson being prepared ahead (it's retried later).
     if (this.background && !this.rotating) { this.interrupted = this.background; this.main.abort().catch(() => {}); }
+    // A module change started while preparing ahead can't be interrupted (the old thread is writing the profile):
+    // say so on the page instead of leaving the learner's message without a sign of life.
+    if (this.rotating) this.setMain("Starting the module");
     const run = async () => {
       if (!this.thread) { const m = this.moduleOf(lessonId); if (m) this.saveThread({ module: m, startedAt: Date.now() }); } // a new learner's first prompt
       if (!this.rotating && this.thread && this.moduleOf(lessonId) !== this.thread.module) { this.setMain("Starting the module"); await this.ensureThread(lessonId); }
@@ -573,6 +581,18 @@ export class Tutor {
       if (!this.spokeIn.has(key)) {
         this.store.turn(lessonId, turnId).log.push({ who: "tutor", text: "Sorry, I lost my train of thought there. Could you say that again?", at: Date.now() });
         this.store.save(this.lessonTurns);
+        return;
+      }
+      // A reply that neither settles nor asks anything leaves the learner facing an open box with nothing
+      // to answer (seen with GPT tutors: "that's right", no settle). Ask the tutor once to decide.
+      const now = this.store.turn(lessonId, turnId);
+      const last = now.log.at(-1);
+      if (now.status !== "settled" && last?.who === "tutor" && !last.text.includes("?")) {
+        this.enqueue(lessonId, "Thinking", [
+          `[page] Your reply in ${key} asked nothing and the turn is still open, so the learner has no question to answer.`,
+          "If their answers so far meet the criteria in your notes, settle it now (and reveal if it was the last turn).",
+          "If not, ask your next question. If you showed what they asked for and they're meant to react to it, reply `done`.",
+        ].join("\n"), undefined, key);
       }
     }, key);
   }
@@ -599,7 +619,12 @@ export class Tutor {
           // Each finished message goes into the thread, so text written before a tool call isn't lost.
           const said = textOf(ev.message);
           delete this.activity.drafts[key];
-          if (said) { thread.messages.push({ who: "tutor", text: said, at: Date.now() }); this.store.save(); }
+          // A rewrite of an answer already posted in this reply (it checked something, then answered again)
+          // replaces that answer instead of standing beside it.
+          const prev = thread.messages.at(-1);
+          const rewrite = said && prev?.who === "tutor" && thread.messages.length > (this.marginStart.get(thread.id) ?? Infinity) && isRewrite(prev.text, said);
+          if (rewrite) { prev!.text = said; prev!.at = Date.now(); this.store.save(); }
+          else if (said) { thread.messages.push({ who: "tutor", text: said, at: Date.now() }); this.store.save(); }
           else this.onActivity();
         }
       });
@@ -620,6 +645,7 @@ export class Tutor {
     this.activity.threads[thread.id] = true; this.onActivity();
     try {
       const before = thread.messages.length;
+      this.marginStart.set(thread.id, before);
       await s.prompt(`${head}\nLearner: ${question}`, images.length ? { images } : undefined);
       // The answer was posted message by message as it was written; return text only if nothing was.
       return thread.messages.length > before ? "" : s.getLastAssistantText()?.trim() || "…";
@@ -652,9 +678,19 @@ export class Tutor {
     this.margins.delete(thread.id);
     if (thread.messages.length) {
       const qa = thread.messages.map((m) => `${m.who === "learner" ? "Learner" : "You"}: ${m.text.slice(0, 400)}`).join("\n");
-      this.note(`[page] A side trip from lesson ${thread.from}${thread.about ? ` (about: ${thread.about.label})` : ""} was closed. It went:\n${qa}`);
+      this.note(`[page] A side trip from lesson ${thread.from}${thread.about ? ` (about: ${thread.about.label})` : ""} was closed. It went:\n${qa}\nIf the learner reported a problem with the course there, file it with file_feedback.`);
     }
   }
+}
+
+/** Two answers to the same question: most of the shorter one's words are in the other. */
+export function isRewrite(a: string, b: string) {
+  const words = (x: string) => new Set(x.toLowerCase().match(/[a-z0-9]{4,}/g) ?? []);
+  const [x, y] = [words(a), words(b)];
+  const small = x.size <= y.size ? x : y, big = small === x ? y : x;
+  if (small.size < 12) return false; // a short "let me check" before a tool call stays
+  let n = 0; for (const w of small) if (big.has(w)) n++;
+  return n / small.size >= 0.4;
 }
 
 // A still from a video at a given second, for "Pause and ask" (the tutor is multimodal).

@@ -9,7 +9,7 @@ import { config } from "./config.ts";
 export interface RunRecord {
   id: string;
   by: string; // xRep, xPois, …, or NumPy / Python / shell
-  device: "CPU" | "GPU";
+  device: "CPU" | "GPU" | "CPU + GPU";
   seconds: number;
   at: number;
   commands: string[];
@@ -103,16 +103,22 @@ export class Recorder {
     }
     const all = p.command + "\n" + raw.join("\n");
     let receipt: Record<string, unknown> | undefined;
+    const components = new Set<string>(); // what a quickstart summary says actually ran
+    const devices = new Set<"CPU" | "GPU">(); // every receipt's device, for a run that did both
     for (const f of files.filter((f) => f.endsWith("summary.json"))) {
       try {
         const j = JSON.parse(fs.readFileSync(path.join(config.learnerDir, f), "utf8"));
+        if (Array.isArray(j.components)) for (const c of j.components) components.add(String(c).toLowerCase());
         receipt = Object.fromEntries(["workflow", "requested_backend", "backend", "device", "dtype", "fits_reader"].filter((k) => k in j).map((k) => [k, j[k]]));
         // Some workflows keep the device deeper (xImage: performance.device.device = "cuda").
         if (receipt.device == null) { const d = deepDevice(j); if (d) receipt.device = d; }
+        if (receipt.device != null) devices.add(/cuda|gpu/i.test(String(receipt.device)) ? "GPU" : "CPU");
       } catch {}
     }
-    // Every cuPhoton stage the run used, in pipeline order ("xRep + xPois").
-    const stages = STAGES.filter((s) => new RegExp(`\\b${s}\\b|cuphoton\\.${s.toLowerCase()}|\\b${s.toLowerCase()}\\b`).test(all));
+    // Every cuPhoton stage the run used, in pipeline order ("xRep + xPois"). A quickstart's summary lists
+    // its components; otherwise the code decides (run_quickstarts.py names all of them, so it can't).
+    const stages = components.size ? STAGES.filter((s) => components.has(s.toLowerCase()))
+      : STAGES.filter((s) => new RegExp(`\\b${s}\\b|cuphoton\\.${s.toLowerCase()}|\\b${s.toLowerCase()}\\b`).test(all));
     const stage = stages.length ? stages.join(" + ") : /cuphoton\.core|fits_io/.test(all) ? "cuPhoton Core" : undefined;
     const by = stage ?? (/\bnumpy\b|\bnp\./.test(all) ? "NumPy" : /python/.test(all) ? "Python" : "shell");
     // The receipt's device decides when it has one (torch and native backends also run on the CPU).
@@ -121,7 +127,7 @@ export class Recorder {
       : receipt?.backend != null ? /cupy|cutile/i.test(String(receipt.backend))
       : /--require-gpu|backend\s*=\s*["'](cupy|torch|cutile)["']|\bcupy\b/.test(all);
     this.runs.push({
-      id: `r${++this.n}-${Date.now().toString(36)}`, by, device: gpu ? "GPU" : "CPU", seconds, at: Date.now(),
+      id: `r${++this.n}-${Date.now().toString(36)}`, by, device: devices.size > 1 ? "CPU + GPU" : gpu ? "GPU" : "CPU", seconds, at: Date.now(),
       commands: [shown.slice(0, 4000)], files, code: code.length ? code : undefined, receipt, ok: !isError, tool: p.tool,
     });
     if (this.runs.length > 500) this.runs.splice(0, this.runs.length - 500);
@@ -163,12 +169,22 @@ export class Recorder {
     return {
       ...r,
       by: stages.length ? stages.join(" + ") : inputs.find((x) => x.by !== "shell")?.by ?? r.by,
-      device: all.some((x) => x.device === "GPU") ? "GPU" : "CPU",
+      device: foldDevice(all),
       seconds: all.reduce((t, x) => t + x.seconds, 0),
       receipt: r.receipt ?? inputs.findLast((x) => x.receipt)?.receipt,
       inputs: inputs.map(({ inputs: _, ...x }) => x),
     };
   }
+}
+
+/** The device of a figure's runs taken together. */
+function foldDevice(all: RunRecord[]): RunRecord["device"] {
+  // Runs with a receipt decide; without any, a GPU run among the inputs makes it GPU (as before).
+  const withReceipt = all.filter((x) => x.receipt?.device != null || x.receipt?.backend != null);
+  if (!withReceipt.length) return all.some((x) => x.device !== "CPU") ? "GPU" : "CPU";
+  const runs = withReceipt;
+  const gpu = runs.some((x) => x.device !== "CPU"), cpu = runs.some((x) => x.device !== "GPU");
+  return gpu && cpu ? "CPU + GPU" : gpu ? "GPU" : "CPU";
 }
 
 /** The first string `device` anywhere in a summary (nested receipts), or undefined. */
