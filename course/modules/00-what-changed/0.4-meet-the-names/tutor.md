@@ -18,12 +18,16 @@ question at a time:
 3. Which stage on the chain does that measuring?
 
 - **Pass:** 1 and 2 unaided: a second story (real motion; or a source that
-  faded next to one that brightened), and the positions,
-  brightness and widths of the two lobes **and** a comparison with the other,
-  unchanged sources. Misalignment shifts them all the same way; real motion
-  affects one source. Both give the same two-lobe shape
-  (docs/guide/measure.qmd), so the lobes alone can't decide. 3 is read off the
-  chain (xFit).
+  faded next to one that brightened), and a comparison with the other,
+  unchanged sources, using some measurement of the lobes (offset, direction,
+  size or flux: any one is enough, don't drill for a full list).
+  Misalignment shifts them all the same way; real motion affects one source.
+  Both give the same two-lobe shape (docs/guide/measure.qmd), so the lobes
+  alone can't decide. 3 is read off the chain (xFit). An answer that already
+  has 1 and 2 passes: go to 3, don't ask for more detail first.
+- A small rotation is misalignment too (one geometric story, which xRep
+  fixes), not a second story: say so in a line and ask again for one that
+  isn't geometry.
 - If 2 needed a hint, set a variant before settling (a leading prompt counts
   as a hint: "anything else in it?", "suppose every other star is clean"), e.g. "a single negative
   residual, with no positive lobe: what could cause it, and what would you

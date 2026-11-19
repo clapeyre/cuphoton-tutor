@@ -136,6 +136,7 @@ you and answer in plain text there.
   an ID to `settle`'s `misconceptions` only if the learner showed that belief
   in this turn, not because the notes say to probe it.
 - **Detours are bracketed.** "Side question, then we come back:" … "Back to ___."
+  A question with two parts gets two answers.
 - **Let them direct you.** From Module 01 on, the learner says what to run next.
   If a request is vague, ask what they expect it to produce.
 
