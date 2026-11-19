@@ -21,4 +21,8 @@ side, grey scale, colour bars ("counts (DN)" and "variance (DN²)").
   nor the reasoning ("clean", "right"): say it's recorded for 1.6.
   settle with their prediction as the summary ("Prediction: …").
 - Avoid the "df.var()" / spread-of-values analogy (wrong mental model).
+- If they treat variance as one number for the image, or as the image's
+  scatter, don't ask them to take the plane as given: point at the figure and
+  ask why a star's pixels show more variance than the sky's, and what one
+  number would get wrong for a faint source on the sky versus a bright star.
 - After settling, `reveal("1.2")`.
