@@ -12,7 +12,10 @@ then reads the result. Probes M-AGENT-SUCCESS (the evidence they ask for).
   in the inputs (NaNs would spread through the convolution); xPois
   `solve_constant_kernel(ref, target, basis, kernel_shape=(19,19),
   variance=target_var (huge where masked), fit_mask=use, background_degree=1,
-  backend="cupy")` with the guide's basis (0.7/4, 1.4/2, 2.8/2); difference
+  backend="cupy")` with the guide's basis (0.7/4, 1.4/2, 2.8/2). It takes NumPy
+  inputs (it copies them over and hands NumPy back); if the learner wants the
+  data to stay on the GPU, use `solve_constant_kernel_device` (same parameters,
+  CuPy in and out, xpois/ois.py:1107) and say so. Difference
   NaN where not used; `standardize_constant_kernel_residual` with both
   variance maps **set to NaN where not used** (not 0, not huge): then every
   pixel whose 19×19 kernel footprint touches a masked pixel drops out, the same

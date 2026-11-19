@@ -32,7 +32,7 @@ prompt: On a laptop with no usable GPU, you ask your agent to run a stage with t
 :::
 
 :::closure
-found: auto ran on the CPU and reported success; cpu ran on the CPU; torch ran too, on the CPU; cupy failed at once, naming the package to install. Naming a backend isn't naming a device: torch ran on the CPU without a word. Only a GPU-only backend like cupy fails loudly when there's no GPU, and auto never fails for want of one. Either way, only the receipt says where it ran.
-matters: auto is the right default for code that must run anywhere, and the wrong one for anything where the GPU matters: a timing, a GPU-correctness check, a production job you sized for a GPU. Then you name the backend, or make the run demand a GPU, so a missing GPU becomes an error you see instead of a slowdown you don't.
+found: auto ran on the CPU and reported success; cpu ran on the CPU; torch ran too, on the CPU; cupy failed at once, naming the package to install. Naming a backend isn't naming a device: torch ran on the CPU without a word. Only a GPU-only backend like cupy fails loudly when there's no GPU, and auto never fails for want of one. The result names the backend, not the device, so where it ran comes from a receipt's device field or from what the environment can reach (2.1's hardware record).
+matters: auto is the right default for code that must run anywhere, and the wrong one for anything where the GPU matters: a timing, a GPU-correctness check, a production job you sized for a GPU. Then you name a GPU-only backend, or make the run demand a GPU, so a missing GPU becomes an error you see instead of a slowdown you don't.
 raises: The command line has its own receipts. Which choices does one record?
 :::

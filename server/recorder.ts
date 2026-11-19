@@ -90,7 +90,10 @@ export class Recorder {
       for (const m of p.command.matchAll(/(?:^|[;\n&]\s*)(\w+)=([^\s;&|]+)/g)) vars.set(m[1], m[2].replace(/^["']|["']$/g, ""));
       const cmd = p.command.replace(/\$\{?(\w+)\}?/g, (m, v) => vars.get(v) ?? m);
       for (const m of cmd.matchAll(/(?:python3?|uv run[^|;&]*?python)\s+(?:-\S+\s+)*([\w./-]+\.py)/g)) {
-        const sp = path.resolve(config.learnerDir, m[1]);
+        // Follow any `cd` before it (cd work/04 && $PY stack_compare.py).
+        let cwd = config.learnerDir;
+        for (const c of cmd.slice(0, m.index).matchAll(/(?:^|[;\n&|(]\s*)cd\s+([^\s;&|)]+)/g)) cwd = path.resolve(cwd, c[1].replace(/^["']|["']$/g, ""));
+        const sp = path.resolve(cwd, m[1]);
         const text = readSmall(sp);
         if (text != null) { raw.push(text); code.push({ path: path.relative(config.learnerDir, sp), text: heldBack(text) }); }
       }
@@ -144,22 +147,29 @@ export class Recorder {
     const own = path.dirname(rel);
     // The script names the file (or its path from a subfolder: cd work/03 && … "qs-gpu/summary.json"), or names
     // the run's output folder as a whole (--output-dir work/03/qs-gpu). Its own output folder doesn't count.
-    const mentions = (f: string) => {
+    // Returns what the script named (the matched path tail, or the folder), or null.
+    const mentions = (f: string): string | null => {
       const parts = f.split("/");
-      for (let k = 0; k <= parts.length - 2; k++) if (text.includes(parts.slice(k).join("/"))) return true;
+      for (let k = 0; k <= parts.length - 2; k++) { const tail = parts.slice(k).join("/"); if (text.includes(tail)) return tail; }
       const dir = path.dirname(f);
       // A bare name ("chain_gpu.json") only counts next to the figure or in a folder the command cd's into.
-      if ((dir === own || text.includes(`cd ${dir}`)) && new RegExp(`["'/\\s]${parts.at(-1)!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["'\\s)]`).test(text)) return true;
-      if (dir === "." || !dir.includes("/") || own === dir || own.startsWith(dir + "/")) return false;
-      return new RegExp(`${dir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/?["'\\s)]`).test(text);
+      if ((dir === own || text.includes(`cd ${dir}`)) && new RegExp(`["'/\\s]${parts.at(-1)!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["'\\s)]`).test(text)) return f;
+      if (dir === "." || !dir.includes("/") || own === dir || own.startsWith(dir + "/")) return null;
+      return new RegExp(`${dir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/?["'\\s)]`).test(text) ? dir : null;
     };
     const inputs: RunRecord[] = [];
     const seen = new Set<string>();
+    // What the script named belongs to the latest run that wrote it: "runs/reproject/artifacts/mask.npy"
+    // matches every quickstart's output folder, but the script read the newest one.
+    const claimed = new Set<string>();
     for (let j = i - 1; j >= 0 && j >= i - 200; j--) {
       const x = this.runs[j];
       if (!x.ok || x.tool !== "bash") continue;
-      const read = x.files.filter((f) => f !== rel && !seen.has(f) && !/\.(png|jpe?g|svg|log|err|out)$/.test(f) && mentions(f));
-      if (!read.length) continue;
+      const named = x.files.filter((f) => f !== rel && !seen.has(f) && !/\.(png|jpe?g|svg|log|err|out)$/.test(f))
+        .map(mentions).filter((m): m is string => m != null);
+      const fresh = named.filter((m) => !claimed.has(m));
+      named.forEach((m) => claimed.add(m));
+      if (!fresh.length) continue;
       x.files.forEach((f) => seen.add(f));
       inputs.push(x);
     }

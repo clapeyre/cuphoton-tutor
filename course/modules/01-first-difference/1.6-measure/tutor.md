@@ -6,8 +6,9 @@ injected ones with error bars, and tests their 1.2 prediction.
 ## Your turn `cut-stamps`
 - **Hold-back (1.7, axis order):** run the guide's stamp code but don't show it
   or its comments, and never mention `peak_yx` or that hotspot peaks come as
-  (y, x). Listen for whether *they* raise coordinate order; don't correct them
-  either way. Keep the fit in `work/01/measure.py`, first line
+  (y, x). Don't print or quote the hotspots' pixel coordinates either, and
+  don't confirm an order if they state one. Listen for whether *they* raise
+  coordinate order; don't correct them either way. Keep the fit in `work/01/measure.py`, first line
   `# hold-back: 1.7 axis order` (run records then don't show its code), and
   put the figure in a separate `work/01/plot_fluxes.py` that loads saved
   results and names no axis order.
@@ -17,7 +18,8 @@ injected ones with error bars, and tests their 1.2 prediction.
 - Run `fit_single_sources(cutouts, cutout_variance, start=zeros, PSFSIG,
   mask=valid)` as in the guide; signed flux = sign(amplitude) × flux.
 - Figure `work/01/1.6_fluxes.png`: the two stamps (grey scale centred on zero)
-  each with the fitted model beside it, and a small table: candidate letter,
+  each with the fitted model beside it (xFit's `residuals` are model − data,
+  so the model is stamp + residuals, src/cuphoton/xfit/single.py:337), and a small table: candidate letter,
   measured flux ± error, injected value. `show_figure(slot="fluxes")`.
 - Facts: A +12,234 ± 114 DN (injected +12,120), B +4,140 ± 71 (injected 4,000),
   both `converged` and `uncertainty_valid` True. The formal error bar leaves out

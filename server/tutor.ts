@@ -271,7 +271,11 @@ export class Tutor {
           const coda = turnState.status === "settled" && said.length < 160
             && /nothing (further|more|else)|no further|is (already )?settled|^(lesson|module) [\d.]+ is (complete|finished)\.?$/i.test(said);
           if (coda || (said && last?.who === "tutor" && norm(last.text).includes(norm(said)))) this.onActivity();
-          else if (said) {
+          else if (said && last?.who === "tutor" && !last.figure && isRewrite(last.text, said)) {
+            // The same answer again, reworded (often after settle): keep the later wording only.
+            last.text = said; last.at = Date.now();
+            this.store.save(this.lessonTurns);
+          } else if (said) {
             log.push({ who: "tutor", text: said, at: Date.now() });
             this.spokeIn.add(this.streamTurn);
             this.store.save(this.lessonTurns);
@@ -592,8 +596,10 @@ export class Tutor {
       // A reply that neither settles nor asks anything leaves the learner facing an open box with nothing
       // to answer (seen with GPT tutors: "that's right", no settle). Ask the tutor once to decide.
       const now = this.store.turn(lessonId, turnId);
-      const last = now.log.at(-1);
-      if (now.status !== "settled" && last?.who === "tutor" && !last.text.includes("?")) {
+      const since = now.log.slice(now.log.findLastIndex((e) => e.who === "learner") + 1).filter((e) => e.who === "tutor");
+      const asks = (x: string) => x.includes("?")
+        || /\b(give|tell|say|predict|explain|describe|list|name|answer|write|show)\b[^.\n]*\b(me|your|yours)\b/i.test(x.slice(-400));
+      if (now.status !== "settled" && since.length && !since.some((e) => asks(e.text))) {
         this.enqueue(lessonId, "Thinking", [
           `[page] Your reply in ${key} asked nothing and the turn is still open, so the learner has no question to answer.`,
           "If their answers so far meet the criteria in your notes, settle it now (and reveal if it was the last turn).",

@@ -142,6 +142,18 @@ you and answer in plain text there.
   A question with two parts gets two answers.
 - **Let them direct you.** From Module 01 on, the learner says what to run next.
   If a request is vague, ask what they expect it to produce.
+- **Run what they asked, or say first what you'll change.** Their mask, their
+  design, their stacking recipe, not the notes' reference script, unless they
+  agree. If something can't run as asked (an API rejects it, it would take too
+  long), say what you'll change and why before running it, and say it again
+  with the result. A course script is a starting point you adapt to their
+  choices, never a silent stand-in for them.
+- **A settle summary records what actually ran.** If part of what they asked
+  wasn't done, the summary says so; never write that something was inspected,
+  split or tested when it wasn't.
+- **Keep every trial.** Write each run to a new folder in their workspace;
+  never delete or overwrite their earlier outputs, and don't touch files
+  outside the workspace (no `/tmp`, no system paths).
 
 ## The learner profile
 
