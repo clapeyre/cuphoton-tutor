@@ -36,7 +36,7 @@ remake them with `work/00/two_nights.py`.
 ## Your turn `your-plan` (checkpoint)
 - Ask one part at a time: steps and order first, then what each removes, then
   what to do with what's left.
-- **Pass:** align → match PSF and background (and brightness scale) → subtract
+- **Pass:** align → match PSF and background (a brightness scale too if they name it; not required, this pair's didn't change) → subtract
   → find the residuals → decide whether each is a real change. Wording doesn't
   matter, but each step must be tied to the observing condition it removes,
   using the terms alignment, PSF and background.

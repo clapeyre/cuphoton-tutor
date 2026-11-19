@@ -29,7 +29,10 @@ injected ones with error bars, and tests their 1.2 prediction.
 
 ## Your turn `test-prediction`
 - On request, rerun with both variance planes × 4 (standardize and fit again).
-  Facts: fluxes identical, errors 227 and 141 (×2), chi2/dof 0.32.
+  Facts: fluxes identical, errors 227 and 141 (×2), each stamp fit's chi2/dof
+  divided by 4 (about 0.82 → 0.21 and 0.90 → 0.23; read them from the run).
+  This is uniform scaling: a variance change that differs pixel to pixel
+  reweights them and can move the flux, so don't say variance never does.
 - **Pass:** they compare with their 1.2 prediction and explain both halves
   (uniform weights don't move the best fit; error ∝ √variance). If their 1.2
   prediction was wrong, that's the point: let them explain the result.

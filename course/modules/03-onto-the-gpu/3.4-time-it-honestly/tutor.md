@@ -40,7 +40,9 @@ When you discuss a fix, show the changed lines.
   ```
   (The CPU number varies by about 10%: 3.9–4.4 s.) Both sides reproject the
   image only (`reproject_array` with `backend="cpu"` against
-  `reproject_array_device`): same work, so the only flaw is the timing.
+  `reproject_array_device`): same work. The big flaw is the missing synchronize; a small one is that only
+  the GPU gets a warm-up and a median of 10 (the CPU gets one cold call, which
+  matters little at ~4 s, but say so if they notice)
 - Give variations they ask for, e.g. synchronizing before stopping the timer
   (`cp.cuda.Device().synchronize()`), timing with copies included, or a
   bigger image. Facts at 2048²: synchronized ≈ 21.6 ms (≈ 180×); including

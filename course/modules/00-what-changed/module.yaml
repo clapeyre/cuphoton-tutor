@@ -27,7 +27,7 @@ intro: |
   real GPU. Your job is the part an agent can't do for you: knowing what each
   step should produce, and telling whether a result is right.
 
-  **Module 00 has no code at all.** Before any library, it builds the one idea
+  **Module 00 asks you for no code.** Before any library, it builds the one idea
   that cuPhoton is built on: when two pictures of the same sky differ, most of
   the differences have nothing to do with the sky. Four short lessons, 30–45
   minutes in all.

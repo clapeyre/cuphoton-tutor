@@ -17,7 +17,7 @@ and resample one image onto the other's grid. That is [[reprojection]].
 
 xRep moves the variance plane along with the image, and a [[mask]] that flags
 pixels with no valid data, for example parts of one grid that the other image
-never covered. It changes the geometry only: it doesn't touch the blur.
+never covered. It changes the geometry, not the seeing: resampling softens an image a little, but it can't make the two nights' blur match.
 
 :::your-turn which-grid
 title: Which one moves?
