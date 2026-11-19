@@ -100,3 +100,12 @@ is the `corr` term, which the `budget` turn is about.
   they ask what changed for the supernova: almost nothing, it's bright; the
   bias mattered most for faint sources (−11% at 2000 counts).
 - `reveal("5.3")`.
+
+## Closing
+The closing quotes our reference run: Gaussian fakes of σ 1.57 px from
+`inject_chain.py`, the shipped kernel and the whole-image rerun
+(`subtract.auto_stamp_mask=false`). A learner-designed variant (empirical
+PSF, other spacing) is welcome, but run the course's test and the rerun too
+before settling `what-went-wrong`, so the closing's numbers exist in this
+run. Before `reveal`, compare with the learner's own numbers; where theirs
+differ, pass `your_run`: their numbers and what that changes.

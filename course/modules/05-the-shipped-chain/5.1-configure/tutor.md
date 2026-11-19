@@ -47,7 +47,9 @@ drives it. It names no trap: don't add one when discussing it.
   Also `extra_keys: []` (the shipped `[field]` key isn't in our selections) and
   the identity keys; set these yourself, don't make them a question.
 - Don't raise the PSF width or kernel settings here: they're the next turn
-  and 5.3.
+  and 5.3. If the learner asks to set them now, run only this config first
+  and say the width and kernel come after reading what run1 left; don't run
+  a second config or say what run1 is missing (that's `success`).
 - Write the config, paste the diff against the shipped file in a code block
   in your reply (keep `config.shipped.yaml` if you point to Files), run:
   `python launch.py --executor local --selections selections.json --config config.yaml --output-dir run1`

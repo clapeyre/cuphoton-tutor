@@ -29,7 +29,7 @@ prompt: The supernova's row says uq_valid False. Can you use its flux and error 
 :::
 
 :::closure
-found: The chain finds the supernova, at 43,400 counts against about 43,900 ± 190 by hand in 4.4, and the bogus residues on bright stars that 4.3 found, plus one or two more. But its 12 rows are only six places on the sky: a twisted residue on a star splits into several hotspots, positive and negative, each with its own row. And the supernova's uq_valid is False because the fit, built for a pair of lobes, sent its negative lobe 457 pixels away; the centre between the lobes has no error bar, but the flux and its error bar are fine.
+found: The chain finds the supernova, at 43,400 counts against about 43,900 ± 190 by hand in 4.4, and the bogus residues on bright stars that 4.3 found, plus one or two more. But its 12 rows are only six places on the sky: a twisted residue on a star splits into several hotspots, positive and negative, each with its own row. And the supernova's uq_valid is False because the fit, built for a pair of lobes, sent its negative lobe 457 pixels away; the centre between the lobes has no error bar, but the flux and its error bar are still computed, and the flux agrees with 4.4's.
 matters: A catalog row is a measurement with conditions, not a verdict. Rows aren't objects, a flag tells you which quantity failed and not whether the row is useless, and the only way to know which is to read the flags against the question you're asking. That's the same habit as reading a receipt, one row at a time.
 raises: The supernova's error bar is almost twice what the fit alone says. Where does the rest come from, and is it right?
 :::

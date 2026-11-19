@@ -22,6 +22,8 @@ export interface RunRecord {
   inputs?: Omit<RunRecord, "inputs">[];
 }
 
+// A stage named only to say it didn't run (xrep='skipped', "xRep: skipped", "xRep was skipped") isn't one the run used.
+const NOT_RUN = String.raw`(?!["']?\s*[=:]\s*["']?(skip|none|off|false|no\b|not)|\s+(was\s+|is\s+)?(skipped|not run|off)\b)`;
 const STAGES = ["xDR", "xRep", "xPois", "xFit", "xScan", "xLens", "xImage", "xBeam", "xRay"];
 const SKIP = /(^|\/)(\.venv|node_modules|__pycache__|sessions)(\/|$)/;
 
@@ -121,7 +123,7 @@ export class Recorder {
     // Every cuPhoton stage the run used, in pipeline order ("xRep + xPois"). A quickstart's summary lists
     // its components; otherwise the code decides (run_quickstarts.py names all of them, so it can't).
     const stages = components.size ? STAGES.filter((s) => components.has(s.toLowerCase()))
-      : STAGES.filter((s) => new RegExp(`\\b${s}\\b|cuphoton\\.${s.toLowerCase()}|\\b${s.toLowerCase()}\\b`).test(all));
+      : STAGES.filter((s) => new RegExp(`(\\b${s}\\b|cuphoton\\.${s.toLowerCase()}|\\b${s.toLowerCase()}\\b)${NOT_RUN}`).test(all));
     const stage = stages.length ? stages.join(" + ") : /cuphoton\.core|fits_io/.test(all) ? "cuPhoton Core" : undefined;
     const by = stage ?? (/\bnumpy\b|\bnp\./.test(all) ? "NumPy" : /python/.test(all) ? "Python" : "shell");
     // The receipt's device decides when it has one (torch and native backends also run on the CPU).

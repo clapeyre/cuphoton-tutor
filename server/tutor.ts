@@ -42,6 +42,7 @@ export class Tutor {
   private spokeIn = new Set<string>(); // turn ids the tutor addressed during the current prompt
   private promptLesson: string | null = null; // the lesson the current main prompt is about
   private streamTurn: string | null = null; // the turn whose conversation the current main prompt's text goes to
+  private streamFrom = 0; // that turn's log length when the current prompt began
   // The main thread belongs to one module (learner/thread.json). Opening a lesson of a later module
   // starts a new thread, seeded with the learner profile the old one wrote (see rotate()).
   private thread: { module: string; startedAt: number } | null = null;
@@ -271,8 +272,11 @@ export class Tutor {
           const coda = turnState.status === "settled" && said.length < 160
             && /nothing (further|more|else)|no further|is (already )?settled|^(lesson|module) [\d.]+ is (complete|finished)\.?$/i.test(said);
           if (coda || (said && last?.who === "tutor" && norm(last.text).includes(norm(said)))) this.onActivity();
-          else if (said && last?.who === "tutor" && !last.figure && isRewrite(last.text, said)) {
-            // The same answer again, reworded (often after settle): keep the later wording only.
+          else if (said && last?.who === "tutor" && !last.figure && log.length > this.streamFrom
+            && said.length >= 0.6 * last.text.length && isRewrite(last.text, said)) {
+            // The same answer again, reworded (often after settle): keep the later wording only. Only within one
+            // prompt, and never a much shorter text: a reply to a nudge that recaps the results it follows
+            // replaced the whole 4.4 report the learner had asked for.
             last.text = said; last.at = Date.now();
             this.store.save(this.lessonTurns);
           } else if (said) {
@@ -468,6 +472,7 @@ export class Tutor {
       if (!this.rotating && this.thread && this.moduleOf(lessonId) !== this.thread.module) { this.setMain("Starting the module"); await this.ensureThread(lessonId); }
       this.promptLesson = lessonId;
       this.streamTurn = streamTurn;
+      this.streamFrom = streamTurn ? this.store.turn(...(streamTurn.split("/") as [string, string])).log.length : 0;
       this.activity.turn = streamTurn;
       this.activity.steps = [];
       this.activity.since = Date.now();
@@ -634,7 +639,7 @@ export class Tutor {
           // A rewrite of an answer already posted in this reply (it checked something, then answered again)
           // replaces that answer instead of standing beside it.
           const prev = thread.messages.at(-1);
-          const rewrite = said && prev?.who === "tutor" && thread.messages.length > (this.marginStart.get(thread.id) ?? Infinity) && isRewrite(prev.text, said);
+          const rewrite = said && prev?.who === "tutor" && thread.messages.length > (this.marginStart.get(thread.id) ?? Infinity) && said.length >= 0.6 * prev.text.length && isRewrite(prev.text, said);
           if (rewrite) { prev!.text = said; prev!.at = Date.now(); this.store.save(); }
           else if (said) { thread.messages.push({ who: "tutor", text: said, at: Date.now() }); this.store.save(); }
           else this.onActivity();

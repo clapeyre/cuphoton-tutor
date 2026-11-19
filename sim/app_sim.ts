@@ -116,6 +116,12 @@ function lessonPage(l: any): string {
     else if (p.kind === "ref") out.push(`[Reference: ${p.label}: ${strip(p.text ?? "")}]`);
     else if (p.kind === "turn") {
       const t = st.turns[p.id];
+      // As on the page: a turn waits, prompt hidden, while an earlier one in the lesson is open.
+      const before = l.parts.filter((q: any) => q.kind === "turn").map((q: any) => q.id);
+      if (t?.status !== "settled" && before.slice(0, before.indexOf(p.id)).some((id: string) => st.turns[id]?.status !== "settled")) {
+        out.push(`## Your turn (turn id "${p.id}"): ${p.title}\n(Opens once you've finished the one above)`);
+        continue;
+      }
       out.push(`## Your turn (turn id "${p.id}"): ${p.title}\n${p.lead ? strip(p.lead) + " " : ""}${strip(p.prompt ?? "")}` +
         (p.image ? `\n${figureLine({ src: p.image, title: "", caption: p.imageCaption }, false)}` : "") +
         (t?.log?.length ? "\n" + t.log.map((m: any) => `> ${m.who === "tutor" ? "Tutor" : "You"}: ${m.text}${m.figure ? "\n> " + figureLine(m.figure, true) : ""}`).join("\n") : "") +
@@ -181,7 +187,10 @@ function checkTurns(id: string) {
 
 // ---------- the session ----------
 const usage: Usage = { input: 0, output: 0, calls: 0 };
-const history: Msg[] = [{ role: "system", content: `${rules}\n\n# Your persona\n\n${persona}` }];
+// A subset of modules jumps (1.7 to 4.1): say so, or the learner works the skipped modules in the margin.
+const skipped = course.modules.map((m: any) => m.id).filter((id: string) => !modules.includes(id));
+const scope = skipped.length ? `\n\n# This session\n\nIt covers modules ${modules.join(", ")} only. Modules ${skipped.join(", ")} are skipped on purpose: when Next jumps past them, carry on; don't ask to do them.` : "";
+const history: Msg[] = [{ role: "system", content: `${rules}\n\n# Your persona\n\n${persona}${scope}` }];
 let clockS = 0; // simulated minutes: the tutor's real response time plus reading and typing time per step
 const waits: number[] = [];
 let steps = 0, endReason = "max_steps", current = lessonIds[0], openThread: string | null = null;
@@ -224,7 +233,12 @@ try {
     steps++;
     clockS += waits.at(-1)! + 90;
     const l = lessons.get(current);
-    const turns = l.parts.filter((p: any) => p.kind === "turn").map((p: any) => `${p.id} (${state.page.lessons[current]?.turns[p.id]?.status === "settled" ? "closed" : "open"})`);
+    const ts = state.page.lessons[current]?.turns ?? {};
+    let first = true; // the first unsettled turn is open; later ones wait, as on the page
+    const turns = l.parts.filter((p: any) => p.kind === "turn").map((p: any) => {
+      if (ts[p.id]?.status === "settled") return `${p.id} (closed)`;
+      const w = first ? "open" : "waits for the one above"; first = false; return `${p.id} (${w})`;
+    });
     const msg = `${view}\n\n[Lesson ${current}. Your turns here: ${turns.join(", ") || "none"}.${lessonIds.indexOf(current) === lessonIds.length - 1 ? " This is the last lesson of the session." : ""}]\n[Session clock: ${Math.round(clockS / 60)} min elapsed]`;
     const a = await learnerTurn(msg);
     if (a.action !== "side" && openThread) { send({ type: "thread.close", id: openThread }); openThread = null; }
