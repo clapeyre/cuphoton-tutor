@@ -383,7 +383,10 @@ export class Tutor {
       defineTool({
         name: "reveal", label: "Reveal", executionMode: "sequential",
         description: "Show a lesson's closure (We found / Which raises). Only once all its Your turns are settled.",
-        parameters: Type.Object({ lesson_id: Type.String() }),
+        parameters: Type.Object({
+          lesson_id: Type.String(),
+          your_run: Type.Optional(Type.String({ description: "Only when the closing quotes our reference run's numbers and the learner's own run gave different ones: one or two plain sentences with their numbers, read from their run, and what that changes, if anything. Shown under the closing as \"In your run\"." })),
+        }),
         execute: async (_id, p) => {
           const lesson = this.course.lessons.get(p.lesson_id);
           if (!lesson) throw new Error(`no lesson ${p.lesson_id}`);
@@ -392,6 +395,7 @@ export class Tutor {
           const empty = lesson.slotIds.filter((x) => !s.lesson(lesson.id).slots[x]);
           if (empty.length) throw new Error(`not yet: fill ${empty.join(", ")} first (show_figure with slot); the closing can't sit under an empty figure`);
           s.lesson(lesson.id).revealed = true;
+          if (p.your_run?.trim()) s.lesson(lesson.id).yourRun = p.your_run.trim();
           s.save(this.lessonTurns);
           return text("Revealed.");
         },

@@ -50,3 +50,6 @@ Use the GPU environment for cuPhoton from here on.
 - If they say "variance doesn't matter much" (M-VARIANCE-COSMETIC): remind them
   of 1.6 (error bars scale with it) in one sentence.
 - Settle, then `reveal("4.1")`.
+
+## Closing
+The closing quotes our reference run. Before `reveal`, compare it with the learner's own numbers; where theirs differ, pass `your_run`: their numbers, from their run, and what that changes (often nothing in the lesson, sometimes the conclusion).

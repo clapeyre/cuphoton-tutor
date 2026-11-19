@@ -83,3 +83,6 @@ the test.
   ([1.3](#/1.3)) back in the chain. It's not "smooth the variance map":
   the map's values are fine; what's missing is how pixels relate.
 - Settle, then `reveal("4.4")`.
+
+## Closing
+The closing quotes our reference run. Before `reveal`, compare it with the learner's own numbers; where theirs differ, pass `your_run`: their numbers, from their run, and what that changes (often nothing in the lesson, sometimes the conclusion).

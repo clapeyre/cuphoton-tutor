@@ -169,6 +169,8 @@ a.ext::after { content: " ↗"; font-size: 0.85em; }
 .intro p { margin: 0; }
 .closure .small-caps { color: var(--text-color-brand); margin-bottom: -8px; }
 .closure .yours { display: flex; flex-direction: column; gap: 4px; padding: 10px 14px; border-radius: 8px; background: var(--background-color-background-subtle); font-size: 15px; }
+.closure .your-run { display: flex; flex-direction: column; gap: 4px; padding: 10px 14px; border-left: 3px solid var(--brand); border-radius: 0 8px 8px 0; background: var(--background-color-background-subtle); font-size: 15px; }
+.closure .your-run p { margin: 0; }
 .closure .raises { font-size: 17px; color: var(--text-color-secondary); }
 .closure .raises strong { color: var(--text-color-primary); }
 .msg.tutor { white-space: normal; display: flex; flex-direction: column; gap: 6px; }

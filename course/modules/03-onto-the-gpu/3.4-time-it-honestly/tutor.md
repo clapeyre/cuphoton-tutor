@@ -80,3 +80,6 @@ and say honestly how much faster? Not a checkpoint: settle on any honest
 answer that covers the three (backend choice; the receipt and the device;
 synchronized, warm timing with its boundary stated). Add at most one sentence
 connecting it to what they did. Then `reveal("3.4")`.
+
+## Closing
+The closing quotes our reference run. Before `reveal`, compare it with the learner's own numbers; where theirs differ, pass `your_run`: their numbers, from their run, and what that changes (often nothing in the lesson, sometimes the conclusion).

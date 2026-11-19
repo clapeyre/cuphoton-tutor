@@ -196,6 +196,12 @@ export function App() {
                   <>
                     <div className="small-caps">What we found</div>
                     <p><Inline text={lesson.closure.found} where="found" /></p>
+                    {lst.yourRun && (
+                      <div className="your-run">
+                        <span className="note">In your run</span>
+                        <p>{lst.yourRun}</p>
+                      </div>
+                    )}
                     {lesson.turnIds.some((t) => lst.turns[t]?.summary) && (
                       <div className="yours">
                         <span className="note">Your answers, in short</span>

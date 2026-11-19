@@ -114,3 +114,6 @@ in `work/04/data`). Its docstring describes every choice.
 - One question at most for a missing piece that matters; don't make them
   polish wording. Then compare with their 2.6 list in one or two sentences:
   what real data added. Settle, then `reveal("4.6")`.
+
+## Closing
+The closing quotes our reference run. Before `reveal`, compare it with the learner's own numbers; where theirs differ, pass `your_run`: their numbers, from their run, and what that changes (often nothing in the lesson, sometimes the conclusion).

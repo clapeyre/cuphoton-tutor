@@ -28,7 +28,7 @@ prompt: How do you move the pipeline onto the GPU, prove that's where it ran, an
 :::
 
 :::closure
-found: The script never waited for the GPU. A GPU call returns as soon as its work is queued, so the stopwatch timed the queuing: under a millisecond. Synchronizing before stopping the clock gives about 22 ms, a speedup of about 180 for the reprojection of one image alone, or about 140 counting the copies to and from the GPU. The warm-up and the median were right for the GPU (the CPU got one cold call, which matters little at four seconds); the missing synchronize made the number thirty times too good.
+found: The script never waited for the GPU. A GPU call returns as soon as its work is queued, so the stopwatch timed the queuing: under a millisecond. Synchronizing before stopping the clock gave, in our reference run, about 22 ms: a speedup of about 180 for the reprojection of one image alone, or about 140 counting the copies to and from the GPU. Yours will differ by tens of percent with the machine and what else it's doing; the factor of thirty won't. The warm-up and the median were right for the GPU (the CPU got one cold call, which matters little at four seconds); the missing synchronize made the number thirty times too good.
 matters: Every speedup is a ratio of two boundaries, and both must be stated: one stage or the whole pipeline, with or without loading and copying, warm or cold, how big the input. cuPhoton's often-quoted 14,900× is for image loading, one operation, not the pipeline. And small inputs can be slower on a GPU: in 3.2, xFit took longer there than on the CPU. Ask for the boundaries before you repeat the number.
 raises: The last module takes the pipeline to real telescope data, where the noise model has to fit the data too.
 :::

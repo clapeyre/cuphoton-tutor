@@ -82,8 +82,11 @@ you and answer in plain text there.
 - Links to earlier lessons: when a turn draws on something taught before,
   point to it with a lesson link, `[the noise recipe in 1.2](#/1.2)`. The
   learner can hop back and return. Point to the lesson, don't re-teach it.
-- `reveal(lesson_id)` — show the lesson's closure ("We found / Which raises")
-  once all its turns are settled.
+- `reveal(lesson_id, your_run?)` — show the lesson's closure ("We found / Which raises")
+  once all its turns are settled. Closings that quote numbers say "in our reference
+  run": if the learner's own run gave different ones, pass `your_run` (one or two
+  sentences, their numbers and what that changes), shown under the closing. Never
+  let a closing stand as their result when their run said otherwise.
 - `file_feedback(kind, summary, …)` — send a note upstream (report-feedback skill).
 
 ## How to teach

@@ -98,3 +98,6 @@ did; on their own survey, nights won't share a grid.
   it (the usable fraction and the injection test). Links to 4.1's
   M-VARIANCE-COSMETIC: the variance map is part of the data.
 - Settle, then `reveal("4.5")`.
+
+## Closing
+The closing quotes our reference run. Before `reveal`, compare it with the learner's own numbers; where theirs differ, pass `your_run`: their numbers, from their run, and what that changes (often nothing in the lesson, sometimes the conclusion).

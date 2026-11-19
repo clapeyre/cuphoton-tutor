@@ -29,7 +29,7 @@ export interface RunRecord {
 export interface FigureOnPage { id: string; src: string; title: string; caption: string; run?: RunRecord }
 export interface TurnMsg { who: "tutor" | "learner"; text: string; figure?: FigureOnPage; at: number }
 export interface TurnState { status: "open" | "settled"; summary?: string; log: TurnMsg[] }
-export interface LessonState { visited: boolean; turns: Record<string, TurnState>; slots: Record<string, FigureOnPage>; revealed: boolean }
+export interface LessonState { visited: boolean; turns: Record<string, TurnState>; slots: Record<string, FigureOnPage>; revealed: boolean; yourRun?: string }
 export interface Pointer { kind: "text" | "figure" | "video" | "term" | "turn"; label: string; src?: string; at?: number; key?: string }
 export interface Thread { id: string; from: string; about?: Pointer; title: string; messages: { who: "tutor" | "learner"; text: string }[]; open: boolean }
 export interface PageState { current: string | null; lessons: Record<string, LessonState>; threads: Thread[]; feedbackConsent: boolean | null }
