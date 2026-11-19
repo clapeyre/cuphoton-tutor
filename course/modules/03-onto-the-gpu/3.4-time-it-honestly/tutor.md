@@ -34,17 +34,22 @@ When you discuss a fix, show the changed lines.
 - Run it on request and report only its printed output. Facts (real run,
   pinned commit, this machine):
   ```
-  CPU: 8.820 s
+  CPU: 3.903 s
   GPU: 0.69 ms (median of 10, after warm-up)
-  Speedup: 12,702x
+  Speedup: 5,633x
   ```
-  (The CPU number varies by a few %.)
+  (The CPU number varies by about 10%: 3.9–4.4 s.) Both sides reproject the
+  image only (`reproject_array` with `backend="cpu"` against
+  `reproject_array_device`): same work, so the only flaw is the timing.
 - Give variations they ask for, e.g. synchronizing before stopping the timer
   (`cp.cuda.Device().synchronize()`), timing with copies included, or a
-  bigger image. Facts at 2048²: synchronized ≈ 21.8 ms (≈ 400×); including
-  `cp.asarray` and `cp.asnumpy` copies ≈ 28.6 ms (≈ 300×); without
-  synchronize ≈ 0.7 ms whatever the size. At 4096²: CPU 35 s, synchronized
-  90 ms (≈ 390×), unsynchronized still ≈ 0.7 ms. A suspicious sign they may
+  bigger image. Facts at 2048²: synchronized ≈ 21.6 ms (≈ 180×); including
+  `cp.asarray` and `cp.asnumpy` copies ≈ 28.4 ms (≈ 140×); without
+  synchronize ≈ 0.7 ms whatever the size. At 4096²: CPU 22.7 s, synchronized
+  90 ms (≈ 250×), with copies 118 ms (≈ 190×), unsynchronized still ≈ 0.7 ms.
+  (Measured 19 Nov, RTX 4070 Ti SUPER.) If they ask whether both sides do
+  the same work: yes, one image each, no variance or mask; checking that is
+  a good question for (c). A suspicious sign they may
   find: the unsynchronized GPU time doesn't grow with the image.
 - If they don't see it, hint ladder: (a) "What does the GPU time do if you make
   the image four times bigger?" (b) name GPU asynchrony: a call returns when

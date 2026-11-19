@@ -27,7 +27,10 @@ files after their origin).
 - **Pass:** all three: (a) B's label; (b) the evidence, in any words: it ran
   on the CPU, found no usable GPU, and had asked for the best available
   (auto) rather than the CPU; (c) requiring the GPU (`--require-gpu`, or
-  "make it fail if there's no GPU"). Don't ask for field names.
+  "make it fail if there's no GPU"). Don't ask for field names. "Ask for
+  backend=cupy" isn't (c) here: the quickstart runner has no backend flag
+  (2.6). Ask how they'd make a profile-auto run fail when there's no GPU,
+  and settle only when they say it, not after you name `--require-gpu`.
 - Common wrong answers: A ("its status looks the same": check devices);
   C (right symptom, but it asked for the CPU); "compare the metrics" (they
   match to ~1e-9 across devices: `max_absolute_parameter_error` 4.4959e-10 in

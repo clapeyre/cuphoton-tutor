@@ -32,6 +32,10 @@ in it.** It finds Module 04's data itself (or `DATA=...`).
   `mask.mode: provided`.
 
 ## Your turn `fakes` (prediction)
+- Before running, go through the build decisions above (zero-point
+  scales, mask rule, PSF σ from seeing) in one short message with the
+  numbers, and ask them to check one against the headers or the data. If the
+  lesson's request to check them comes up, this is it; don't skip it to run.
 - Collect the prediction (how close to 2,000 in each, which scatters
   less). Most expect the scene to be both closer and tighter.
 - Run from `work/06/`:

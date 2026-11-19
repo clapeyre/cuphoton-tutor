@@ -4,14 +4,14 @@ import time
 
 import cupy as cp
 import numpy as np
-from cuphoton.xrep import BBox, ReprojectionSpec, reproject_array_device, reproject_masked_array
+from cuphoton.xrep import BBox, ReprojectionSpec, reproject_array, reproject_array_device
 
 N = 2048
 image = np.random.default_rng(0).normal(100, 10, (N, N))
 spec = ReprojectionSpec(mapping=lambda xy: xy + 0.37, output_bbox=BBox(0, 0, N, N))
 
 start = time.perf_counter()
-reproject_masked_array(image, np.ones_like(image), np.zeros(image.shape, bool), spec, backend="cpu")
+reproject_array(image, spec, backend="cpu")
 cpu_seconds = time.perf_counter() - start
 
 on_gpu = cp.asarray(image)

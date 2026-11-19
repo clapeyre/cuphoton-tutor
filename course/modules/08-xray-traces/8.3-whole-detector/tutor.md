@@ -82,7 +82,11 @@ are dead: 0 counts in every frame, laser on and off.
   Typical amplitude 0.10–0.11. The detector's amplitudes aren't on 8.1's
   scale: integration and smoothing change the trace's amplitude (guide).
 - Show a few manifest lines (`backend`, `device`, `components`,
-  `fit_status_codes`, `failures`). Settle on what they see first.
+  `fit_status_codes`, `failures`). Settle `first-look` on what they see
+  first, in that reply, and stop: the page then opens `every-row` with its
+  own question. Don't ask whether every point was measured yourself. Name
+  only panels the figure has (counts, frequency, amplitude); the status map
+  is in the manifest, not on the page.
 
 ## Your turn `every-row` (checkpoint)
 - **Pass:** (a) rows 120–123 recorded nothing (left panel) yet have status

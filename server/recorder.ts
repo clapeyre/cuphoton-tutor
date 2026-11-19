@@ -22,7 +22,7 @@ export interface RunRecord {
   inputs?: Omit<RunRecord, "inputs">[];
 }
 
-const STAGES = ["xRep", "xPois", "xFit", "xScan", "xDR", "xImage"];
+const STAGES = ["xDR", "xRep", "xPois", "xFit", "xScan", "xLens", "xImage", "xBeam", "xRay"];
 const SKIP = /(^|\/)(\.venv|node_modules|__pycache__|sessions)(\/|$)/;
 
 function snapshot(dir: string, out = new Map<string, number>(), base = dir): Map<string, number> {

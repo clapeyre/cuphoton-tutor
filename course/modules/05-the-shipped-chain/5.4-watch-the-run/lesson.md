@@ -13,8 +13,8 @@ image as a *sample*: named measurements with units, plus *findings*, the
 results of rules you write ("the kernel fit is poor"). It keeps every sample
 and exports a dashboard as one HTML file. It needs no GPU.
 
-You've run the chain on 22 images in this module: the real pair a few times,
-and two injection tests of ten images each.
+You've run the chain on many images in this module: the real pair a few times,
+and an injection test of ten images or more for each kernel setting you tried.
 
 :::your-turn rules
 title: What to record, what to flag

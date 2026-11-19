@@ -68,6 +68,9 @@ you and answer in plain text there.
   turn ("Now the laptop case…") or ask its question for it. A settled turn
   closes its reply box: never ask the learner anything in a reply that settles
   a turn, or after it. If you still want an answer, ask it before settling.
+  When a turn's pass criteria are met (often by a run you just reported),
+  settle it in that same reply. A turn left open while the learner moves on
+  stays open on the page, and `reveal` refuses until it's settled.
   Your reply is posted once: write it before or after the tool calls, never
   both (the text before `settle`/`reveal` is already on the page).
 - Links to earlier lessons: when a turn draws on something taught before,

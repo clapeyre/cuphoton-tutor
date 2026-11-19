@@ -12,8 +12,9 @@ kinds of bogus it has never seen.  GPU environment; run each step from the same 
         Then write the xScan dataset files and the training YAML (the guide's tiny model, 10 epochs).
     cuphoton xscan data-validate / data-check-training-labels / train-inada-triplet / evaluate-real-bogus
         (the guide's commands; train with --config <dataset dir>/train.yaml)
-    python classify.py score <dataset dir> <run dir> <out.png>
-        p(real) of 4.3's candidates A-D and of every 4.2 hotspot; the figure shows A-D.
+    python classify.py score <dataset dir> <run dir> <out.png> [--candidates cands.json]
+        p(real) of 4.3's candidates A-D and of every hotspot of this script's 4.2 chain; the figure
+        shows A-D. --candidates scores the learner's own 4.3 list instead: {"A": [y, x], ...}.
     python classify.py stress <dataset dir> <run dir> <out.png>
         40 each of one-pixel and two-pixel cosmic rays and trail segments, on empty sky, seed 3 (not
         the training seed), and 60 sources of 1,500 counts planted on top of fainter sources that
@@ -189,6 +190,8 @@ elif step == "score":
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     score = load_model(sys.argv[3])
+    if "--candidates" in sys.argv:
+        CANDS = {k: tuple(int(round(v)) for v in yx) for k, yx in json.loads(pathlib.Path(sys.argv[sys.argv.index("--candidates") + 1]).read_text()).items()}
     p = {k: float(score([triplet(tgt, tv, diff0, mv0, *v)])[0]) for k, v in CANDS.items()}
     print("4.3's candidates, p(real):", "  ".join(f"{k} {v:.3f}" for k, v in p.items()))
     regs = identify_residual_hotspots(z0, robust_sigma=1.0, threshold_sigma=5.0, max_regions=None)
@@ -196,7 +199,7 @@ elif step == "score":
     for r in sorted(regs, key=lambda r: -z0[int(r["peak_yx"][0]), int(r["peak_yx"][1])]):
         y, x = map(int, r["peak_yx"])
         print(f"   {x:4d} {y:4d} {z0[y, x]:6.1f}  {score([triplet(tgt, tv, diff0, mv0, y, x)])[0]:.3f}")
-    fig, ax = plt.subplots(3, 4, figsize=(7.5, 6))
+    fig, ax = plt.subplots(3, len(CANDS), figsize=(1.9 * len(CANDS), 6), squeeze=False)
     for col, (k, (y, x)) in enumerate(CANDS.items()):
         t = triplet(tgt, tv, diff0, mv0, y, x)
         for row in range(3):

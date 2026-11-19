@@ -26,9 +26,15 @@ then reads the result. Probes M-AGENT-SUCCESS (the evidence they ask for).
   Facts: kernel sum 1.022, chi2/dof 1.26, 19 hotspots above 5 (10 above 10),
   run on the GPU (cupy, cuda).
 - Figure `work/04/4.2_overview.png`: reference, target and z (±6), grey scale,
-  side by side; chip gaps shown blank. `show_figure(slot="overview")`. Don't
-  mark or name the supernova.
-- Settle on the run.
+  side by side. Excluded pixels (chip gaps, masks) in one distinct colour
+  (`cmap.set_bad`, e.g. blue), said in the caption: never white or black,
+  which on a grey z map read as "brighter" or "fainter". Stretch the sky
+  panels so the galaxy's arms show (e.g. 1st–99.5th percentile, or an
+  asinh stretch). `show_figure(slot="overview")`. Don't mark or name the
+  supernova. Use the same colours in 4.3's figure.
+- Settle `direct-run` in the same reply as the report and the figure, before
+  anything about what came out: the page then opens `what-came-out` with its
+  own question. Don't ask that question yourself.
 
 ## Your turn `what-came-out`
 - **Pass:** the galaxy cancelled (flat noise where the arms were), and one

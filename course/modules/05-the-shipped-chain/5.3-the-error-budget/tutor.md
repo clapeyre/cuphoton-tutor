@@ -63,7 +63,10 @@ is the `corr` term, which the `budget` turn is about.
   | 8000 | 0.96 | −1.20 | 0.83 | 1.66 | 1.99 |
 
   The bars are the right size (scatter ≲ 1); the values sit ~1.2 bars low:
-  a bias. The fit's own error alone would be too small by 1.3–1.9 (4.4 again).
+  a bias. In counts that is a few hundred at every level (about 220, 240 and
+  320), so the fraction shrinks as the fakes get brighter (11%, 6%, 4%): not
+  "the same fraction". Describe it as the data show it; don't explain
+  the count-versus-fraction shape beyond what the notes verify. The fit's own error alone would be too small by 1.3–1.9 (4.4 again).
 - Where the clue is: each item's `summary.json` `diagnostics.xpois`:
   `chi2` / `dof` ≈ 15.8, `fit_pixel_count` 4,743 (of 640,000; <1%),
   `kernel_sum` 0.97. The shipped `subtract.auto_stamp_mask: true` fits the
@@ -73,7 +76,7 @@ is the `corr` term, which the `budget` turn is about.
   loses light (verified on one seed: given σ 1.70 instead of 1.57, the bias
   vanishes for bright fakes).
 - Hint ladder: (a) "The error bars look right. What would make every value
-  low by about the same fraction?" (b) "Which stage decides how well the
+  come out low, by a few hundred counts at every brightness?" (b) "Which stage decides how well the
   reference is matched? Ask for its numbers in the summary." (c) show
   `diagnostics.xpois` and the `subtract:` block.
 - Fix: `--set subtract.auto_stamp_mask=false` (fit the kernel on all usable

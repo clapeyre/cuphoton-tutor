@@ -43,5 +43,9 @@ remake them with `work/00/two_nights.py`.
 - Probe M-ALIGN-BLUR ("alignment also fixes the blur"): the lettered rings
   are the evidence against it; ask what could leave something at an unchanged
   star. Probe M-SUBTRACT.
+- If they say matching the PSF removes the dipoles, don't agree, and don't
+  put it in the summary: in one line, point at the aligned figure, where
+  alignment removed the dipoles and the unchanged stars left rings, and ask
+  which step removes the rings. (That names no cause beyond the figures.)
 - After settling, `reveal("0.3")`. The v1 video in 0.4 replays this plan on
   the real sample pair.

@@ -29,7 +29,7 @@ in `work/04/data`). Its docstring describes every choice.
   cuphoton xscan data-check-training-labels --dataset-dir ps1 --require-ok
   cuphoton xscan train-inada-triplet --config ps1/train.yaml > ps1-train.json
   cuphoton xscan evaluate-real-bogus --run-dir runs/ps1 --dataset-dir ps1 > ps1-eval.json
-  python classify.py score ps1 runs/ps1 4.6_scores.png
+  python classify.py score ps1 runs/ps1 4.6_scores.png --candidates cands.json
   ```
   The dataset: 568 candidates (480 fakes, flux 800–8,000 counts; 88 stars and
   knots), each as 4 rotations that share a `split_group`, so 2,272 cutouts of
@@ -42,10 +42,17 @@ in `work/04/data`). Its docstring describes every choice.
   that each cutout is in units of its own noise, so the checkpoint only
   fits cutouts prepared the same way (the guide's "What is
   survey-specific").
+- Score **their** candidates: write `cands.json` with the positions of the
+  learner's 4.3 candidates as `{"A": [y, x], ...}` (from your 4.3 work; the
+  letters they used). Without it the script scores the course's reference
+  four (A (640, 403), B (246, 46), C = the supernova (400, 402), D (84, 274)).
+  The "every 4.2 hotspot" list is the script's own chain at threshold 5
+  (19 hotspots), which can differ from the learner's 4.2 run: say so in one
+  line and give the count they saw, rather than calling it "your 19".
 - `show_figure(slot="scores")`. Facts (training isn't bit-reproducible on a
   GPU; these held over 3 dataset seeds): test ROC AUC 1.000, PR AUC 1.000,
   0–1 errors at threshold 0.5; A 0.00, B 0.00, C (the supernova) 1.00,
-  D 0.00; of the 19 hotspots of 4.2, only the supernova above 0.5. The
+  D 0.00 (the reference four); of the script's 19 hotspots, only the supernova above 0.5. The
   supernova (43,000 counts) is brighter than any fake; it still scores 1.00.
 - Settle on the run.
 
