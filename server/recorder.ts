@@ -76,12 +76,16 @@ export class Recorder {
     const seconds = (durationMs ?? Date.now() - p.t0) / 1000;
     const code: RunRecord["code"] = [];
     if (p.tool === "bash") {
-      for (const m of p.command.matchAll(/(?:python3?|uv run[^|;&]*?python)\s+(?:-\S+\s+)*([\w./-]+\.py)/g)) {
+      // Expand simple shell variables (G=/path/script.py; $PY $G …) so the script is found and read.
+      const vars = new Map<string, string>();
+      for (const m of p.command.matchAll(/(?:^|[;\n&]\s*)(\w+)=([^\s;&|]+)/g)) vars.set(m[1], m[2].replace(/^["']|["']$/g, ""));
+      const cmd = p.command.replace(/\$\{?(\w+)\}?/g, (m, v) => vars.get(v) ?? m);
+      for (const m of cmd.matchAll(/(?:python3?|uv run[^|;&]*?python)\s+(?:-\S+\s+)*([\w./-]+\.py)/g)) {
         const sp = path.resolve(config.learnerDir, m[1]);
         const text = readSmall(sp);
         if (text != null) code.push({ path: path.relative(config.learnerDir, sp), text });
       }
-      const heredoc = p.command.match(/<<\s*['"]?(\w+)['"]?\n([\s\S]*?)\n\1/);
+      const heredoc = cmd.match(/<<\s*['"]?(\w+)['"]?\n([\s\S]*?)\n\1/);
       if (heredoc) code.push({ path: "(inline)", text: heredoc[2] });
     }
     const all = p.command + "\n" + code.map((c) => c.text).join("\n");
@@ -96,8 +100,9 @@ export class Recorder {
     const stages = STAGES.filter((s) => new RegExp(`\\b${s}\\b|cuphoton\\.${s.toLowerCase()}|\\b${s.toLowerCase()}\\b`).test(all));
     const stage = stages.length ? stages.join(" + ") : /cuphoton\.core|fits_io/.test(all) ? "cuPhoton Core" : undefined;
     const by = stage ?? (/\bnumpy\b|\bnp\./.test(all) ? "NumPy" : /python/.test(all) ? "Python" : "shell");
-    const gpu = receipt
-      ? /cuda|gpu/i.test(String(receipt.device ?? "")) || /cupy|torch|cutile|native/i.test(String(receipt.backend ?? ""))
+    // The receipt's device decides when it has one (torch and native backends also run on the CPU).
+    const gpu = receipt && receipt.device != null ? /cuda|gpu/i.test(String(receipt.device))
+      : receipt ? /cupy|cutile/i.test(String(receipt.backend ?? ""))
       : /--require-gpu|backend\s*=\s*["'](cupy|torch|cutile)["']|\bcupy\b/.test(all);
     this.runs.push({
       id: `r${++this.n}-${Date.now().toString(36)}`, by, device: gpu ? "GPU" : "CPU", seconds, at: Date.now(),
