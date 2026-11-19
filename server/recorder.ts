@@ -121,6 +121,8 @@ export class Recorder {
       const parts = f.split("/");
       for (let k = 0; k <= parts.length - 2; k++) if (text.includes(parts.slice(k).join("/"))) return true;
       const dir = path.dirname(f);
+      // A bare name ("chain_gpu.json") only counts next to the figure or in a folder the command cd's into.
+      if ((dir === own || text.includes(`cd ${dir}`)) && new RegExp(`["'/\\s]${parts.at(-1)!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["'\\s)]`).test(text)) return true;
       if (dir === "." || !dir.includes("/") || own === dir || own.startsWith(dir + "/")) return false;
       return new RegExp(`${dir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/?["'\\s)]`).test(text);
     };
