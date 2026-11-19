@@ -80,4 +80,8 @@ frame 3's PSF recorded as 0.6 pixels wide; the frame was blurred by 1.2.
   a mask instead: write `masks.npy` (True = good) with that one pixel
   False, set `mask.mode: provided`, and run L2; say you haven't a
   measured result for it in these notes and report what comes back.
+- Before `reveal`, the learner must have seen everything the closing quotes:
+  the frames at (30, 12) (nothing in 1 and 3), `widths` on both bundles
+  (0.24 px for bundle-1's spot), and the `rho` run with its figure. Run and
+  show any they haven't, even if they chose the mask.
 - Settle, then `reveal("6.2")`.

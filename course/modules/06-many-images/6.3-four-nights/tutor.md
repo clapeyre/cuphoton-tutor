@@ -60,6 +60,9 @@ in it.** It finds Module 04's data itself (or `DATA=...`).
   calibrate the scene with fakes at the same settings and divide by the
   ratio; the guide says the run gives no variance and no PSF for the
   scene, so its error bars come from the fakes' scatter too.
+- Give both comparisons when you report: 1.15 against the planted flux,
+  1.05 for the median measured the same way (partly its sky ring, see
+  below), so about 10% between them. Don't call 1.15 the scene's own error.
 - **Pass:** they read the 10% offset against the median and the scatter
   three times smaller, and say they'd calibrate with fakes before using a
   flux. Settle.

@@ -14,8 +14,9 @@ docs/guide/concepts.qmd, "Dtype and device". Use the GPU environment.
   (`cp.asarray(...)` on cutouts, variance, start, mask). Run each twice and
   report the second (warm) run; synchronize the GPU before stopping each timer.
   Record the result type of each stage (`type(x).__module__`).
-- Figure `work/03/3.2_chain.png`: a table, one row per stage: backend that ran,
-  result type (NumPy/host or CuPy/device), CPU time, GPU time; and the two
+- Figure `work/03/3.2_chain.png`: a table, one row per stage: backend that ran
+  (read from the run, never typed in: xRep's result carries `.backend`; for
+  the others the result type is the evidence), result type (NumPy/host or CuPy/device), CPU time, GPU time; and the two
   fluxes ± error from each run. `show_figure(slot="gpu-chain")`.
 - Facts (real run, pinned commit, this machine, warm):
 

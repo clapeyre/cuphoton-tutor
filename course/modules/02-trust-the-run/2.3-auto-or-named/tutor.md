@@ -27,6 +27,6 @@ M-EXPLICIT-FALLBACK, M-BACKEND-NAMES.
 - **Pass:** cupy fails loudly (an error naming the missing package); auto
   succeeds on the CPU, and only the receipt tells you so.
   Bonus, not required: auto never picks `cutile` or `native`; the CPU backend
-  is `numpy` in xFit and xBeam and `cpu` in xRep and xPois.
+  is `numpy` in xFit and `cpu` in xRep, xPois and xRay.
 - If they say auto "warns": it doesn't; ask where they'd look.
 - Settle, then `reveal("2.3")`.

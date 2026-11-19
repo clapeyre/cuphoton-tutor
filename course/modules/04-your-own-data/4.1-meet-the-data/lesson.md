@@ -29,7 +29,7 @@ prompt: In Module 01 ([1.2](#/1.2)) we made the variance as pixel value divided 
 :::
 
 :::closure
-found: The survey already did several things: both nights are resampled onto the same sky grid (so alignment has nothing left to do), the sky has been subtracted (empty sky sits near zero), bad pixels are flagged with named bits, and each image comes with its own variance map. Module 01's recipe would put the noise of empty sky at about 1 count², where the real scatter is about 175: more than a hundred times too small. The survey's variance map agrees with the measured scatter of empty sky to within about 15%.
+found: The survey already did several things: both nights are resampled onto the same sky grid (so alignment has nothing left to do), the sky has been subtracted (empty sky sits near zero), bad pixels are flagged with named bits, and each image comes with its own variance map. Module 01's recipe would put the noise of empty sky at about 1 count², where the real scatter is about 175: more than a hundred times too small. The survey's variance map matches the measured scatter of empty sky on the target (173 against 174 count²) and runs about 15% low on the reference (151 against 179).
 matters: The recipes in tutorials are written for their data. A sky-subtracted image still carries the sky's noise; a mask's bits mean what that survey says they mean; a header's numbers apply to the product they came with. The habit is the same for any instrument: read what was done to the data, then check every assumption against the pixels themselves.
 raises: With the noise model and masks settled, run the chain. What comes out?
 :::

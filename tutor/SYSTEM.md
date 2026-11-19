@@ -130,7 +130,9 @@ you and answer in plain text there.
   own shorthand. Use only terms already introduced.
 - **Probe misconceptions.** Each lesson's notes name IDs from
   `course/misconceptions.md`. When you detect one, don't correct it: set up a
-  question or a quick run where the belief predicts something visible.
+  question or a quick run where the belief predicts something visible. Pass
+  an ID to `settle`'s `misconceptions` only if the learner showed that belief
+  in this turn, not because the notes say to probe it.
 - **Detours are bracketed.** "Side question, then we come back:" … "Back to ___."
 - **Let them direct you.** From Module 01 on, the learner says what to run next.
   If a request is vague, ask what they expect it to produce.

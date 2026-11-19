@@ -59,7 +59,8 @@ are dead: 0 counts in every frame, laser on and off.
   python <course>/.../detector.py look run1 detector 8.3_rows.png
   ```
   `--roi-dim` is width then height (x, y). `--components 4`: one mode,
-  and the guide says to set the order the sweep chose; the default is 30
+  set by the lesson (no sweep runs on this detector; 8.2's sweep is on its
+  own scans), and the guide says to set the order a sweep chose; the default is 30
   (see below). `detector-mask`: 128 tiles, 2,048 row fits, 0 skipped.
 - `show_figure(slot="rows")`. Facts (real run, RTX 4070 Ti SUPER):
   ```

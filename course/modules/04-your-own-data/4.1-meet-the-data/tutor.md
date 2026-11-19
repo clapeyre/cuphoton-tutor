@@ -42,9 +42,11 @@ Use the GPU environment for cuPhoton from here on.
   subtracted, so its noise is lost from the recipe) versus a real scatter of
   about 175 count²; so use the survey's variance map; and check it against the
   data (e.g. the scatter of empty-sky pixels).
-- Run the check they propose. Facts: robust variance of empty sky (MAD²) 179
-  (ref) and 174 (target); the variance map's median there 152 and 173.
-  Agreement within ~15%.
+- Run the check they propose, on empty sky (the corners, sources masked):
+  over the whole frame the galaxy's structure inflates the scatter (ref 213).
+  Facts: robust variance of empty sky (MAD²) 179 (ref) and 174 (target); the
+  variance map's median there 151 and 173. The target agrees; the reference's
+  map runs about 15% low. Say both.
 - If they say "variance doesn't matter much" (M-VARIANCE-COSMETIC): remind them
   of 1.6 (error bars scale with it) in one sentence.
 - Settle, then `reveal("4.1")`.
