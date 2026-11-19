@@ -22,3 +22,6 @@ target's grid, with variance and mask carried along.
   the sharper one). Probe M-ALIGN-BLUR if they expect the stars to match now.
 - **Settle** once the run is shown and they've said what it did and why the
   reference moved, in their words. Then `reveal("1.3")`.
+
+- If they propose float32 (M-FLOAT32), don't endorse it: say 3.2 tests what
+  each stage does with it, and note it in the profile.

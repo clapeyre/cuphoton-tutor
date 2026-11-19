@@ -31,6 +31,12 @@ docs/guide/concepts.qmd, "Dtype and device". Use the GPU environment.
   slower on the GPU here: two 21×21 stamps are far too little work. Don't make
   timing the topic; if they ask, say 3.4 is about it.
 - Settle `predict-move` on the comparison with their prediction.
+- If they want float32 (M-FLOAT32), don't endorse or refuse it: ask what dtype
+  they expect back from xRep and xPois when fed float32, then run it and print
+  each stage's result dtype. xRep and xPois compute and return float64; xFit
+  keeps its input's dtype (docs/guide/concepts.qmd, "Dtype and device"). Whether
+  float32 is accurate enough is then a measurement: compare fluxes with the
+  float64 run against their error bars.
 
 ## Your turn `where-it-lives` (checkpoint)
 - **Pass:** aligned image and difference on the host (NumPy), fluxes on the
