@@ -259,7 +259,11 @@ export class Tutor {
           // After settle or reveal the model often repeats its whole reply as the closing text: post it once.
           const norm = (x: string) => x.replace(/\s+/g, " ").trim();
           const last = log.at(-1);
-          if (said && last?.who === "tutor" && norm(last.text).includes(norm(said))) this.onActivity();
+          // A settled turn's box is closed: drop the model's "nothing further to add" coda.
+          const turnState = this.store.turn(lid, tid);
+          const coda = turnState.status === "settled" && said.length < 160
+            && /nothing (further|more|else)|no further|is (already )?settled/i.test(said);
+          if (coda || (said && last?.who === "tutor" && norm(last.text).includes(norm(said)))) this.onActivity();
           else if (said) {
             log.push({ who: "tutor", text: said, at: Date.now() });
             this.spokeIn.add(this.streamTurn);
@@ -357,7 +361,11 @@ export class Tutor {
           this.spokeIn.add(`${t.lessonId}/${t.tid}`);
           s.save(this.lessonTurns);
           const left = t.lesson.turnIds.filter((x) => s.lesson(t.lessonId).turns[x]?.status !== "settled");
-          return text(left.length
+          const idx = t.lesson.turnIds.indexOf(t.tid);
+          const earlier = left.filter((x) => t.lesson.turnIds.indexOf(x) < idx);
+          return text(earlier.length
+            ? `Settled. An earlier turn is still open: ${earlier.join(", ")}. Settle it once its criteria are met; reveal waits for it. Don't ask anything in this turn.`
+            : left.length
             ? `Settled. The page now opens the next turn, ${left[0]}, with its own question. Finish your reply about this one and stop: don't introduce or ask the next turn.`
             : `Settled. All turns in ${t.lessonId} are settled; reveal("${t.lessonId}") when ready.`);
         },

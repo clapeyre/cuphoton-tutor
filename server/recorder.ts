@@ -38,6 +38,13 @@ function snapshot(dir: string, out = new Map<string, number>(), base = dir): Map
   return out;
 }
 
+/** A script whose first line is `# hold-back: <why>` answers a later lesson's question:
+ *  the run record names it but doesn't show its code (the stage and device still come from it). */
+export const HOLD_MARK = /^#\s*hold-back\b/i;
+function heldBack(text: string): string {
+  return HOLD_MARK.test(text) ? "(code held back for a later lesson; it's in the Files panel)" : text;
+}
+
 function readSmall(p: string, max = 20000): string | null {
   try {
     const st = fs.statSync(p);
@@ -75,6 +82,8 @@ export class Recorder {
     }
     const seconds = (durationMs ?? Date.now() - p.t0) / 1000;
     const code: RunRecord["code"] = [];
+    const raw: string[] = []; // full texts, for the stage and device even when the code is held back
+    let shown = p.command;
     if (p.tool === "bash") {
       // Expand simple shell variables (G=/path/script.py; $PY $G …) so the script is found and read.
       const vars = new Map<string, string>();
@@ -83,17 +92,23 @@ export class Recorder {
       for (const m of cmd.matchAll(/(?:python3?|uv run[^|;&]*?python)\s+(?:-\S+\s+)*([\w./-]+\.py)/g)) {
         const sp = path.resolve(config.learnerDir, m[1]);
         const text = readSmall(sp);
-        if (text != null) code.push({ path: path.relative(config.learnerDir, sp), text });
+        if (text != null) { raw.push(text); code.push({ path: path.relative(config.learnerDir, sp), text: heldBack(text) }); }
       }
       const heredoc = cmd.match(/<<\s*['"]?(\w+)['"]?\n([\s\S]*?)\n\1/);
-      if (heredoc) code.push({ path: "(inline)", text: heredoc[2] });
+      if (heredoc) {
+        raw.push(heredoc[2]);
+        code.push({ path: "(inline)", text: heldBack(heredoc[2]) });
+        if (HOLD_MARK.test(heredoc[2])) shown = shown.replace(heredoc[2], heldBack(heredoc[2]));
+      }
     }
-    const all = p.command + "\n" + code.map((c) => c.text).join("\n");
+    const all = p.command + "\n" + raw.join("\n");
     let receipt: Record<string, unknown> | undefined;
     for (const f of files.filter((f) => f.endsWith("summary.json"))) {
       try {
         const j = JSON.parse(fs.readFileSync(path.join(config.learnerDir, f), "utf8"));
         receipt = Object.fromEntries(["workflow", "requested_backend", "backend", "device", "dtype", "fits_reader"].filter((k) => k in j).map((k) => [k, j[k]]));
+        // Some workflows keep the device deeper (xImage: performance.device.device = "cuda").
+        if (receipt.device == null) { const d = deepDevice(j); if (d) receipt.device = d; }
       } catch {}
     }
     // Every cuPhoton stage the run used, in pipeline order ("xRep + xPois").
@@ -101,12 +116,13 @@ export class Recorder {
     const stage = stages.length ? stages.join(" + ") : /cuphoton\.core|fits_io/.test(all) ? "cuPhoton Core" : undefined;
     const by = stage ?? (/\bnumpy\b|\bnp\./.test(all) ? "NumPy" : /python/.test(all) ? "Python" : "shell");
     // The receipt's device decides when it has one (torch and native backends also run on the CPU).
-    const gpu = receipt && receipt.device != null ? /cuda|gpu/i.test(String(receipt.device))
-      : receipt ? /cupy|cutile/i.test(String(receipt.backend ?? ""))
+    // A summary with neither (a chain script's own summary) leaves it to the code.
+    const gpu = receipt?.device != null ? /cuda|gpu/i.test(String(receipt.device))
+      : receipt?.backend != null ? /cupy|cutile/i.test(String(receipt.backend))
       : /--require-gpu|backend\s*=\s*["'](cupy|torch|cutile)["']|\bcupy\b/.test(all);
     this.runs.push({
       id: `r${++this.n}-${Date.now().toString(36)}`, by, device: gpu ? "GPU" : "CPU", seconds, at: Date.now(),
-      commands: [p.command.slice(0, 4000)], files, code: code.length ? code : undefined, receipt, ok: !isError, tool: p.tool,
+      commands: [shown.slice(0, 4000)], files, code: code.length ? code : undefined, receipt, ok: !isError, tool: p.tool,
     });
     if (this.runs.length > 500) this.runs.splice(0, this.runs.length - 500);
   }
@@ -153,4 +169,17 @@ export class Recorder {
       inputs: inputs.map(({ inputs: _, ...x }) => x),
     };
   }
+}
+
+/** The first string `device` anywhere in a summary (nested receipts), or undefined. */
+function deepDevice(o: unknown, depth = 0): string | undefined {
+  if (depth > 4 || o == null || typeof o !== "object") return undefined;
+  for (const [k, v] of Object.entries(o as Record<string, unknown>)) {
+    if (k === "device" && typeof v === "string") return v;
+  }
+  for (const v of Object.values(o as Record<string, unknown>)) {
+    const d = deepDevice(v, depth + 1);
+    if (d) return d;
+  }
+  return undefined;
 }
