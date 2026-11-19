@@ -56,6 +56,43 @@ and command was checked against `src/cuphoton/` on 16 Nov 2026.
 
 ---
 
+### xRep: align (`G/align.qmd`)
+- **For:** puts one image on another image's pixel grid using the WCS in both headers, resampling the image, its variance and its bad-pixel mask together. Also stacks several exposures on one shared grid, without combining them (`:3`, `:155`).
+- **Input:** two-dimensional FITS images with a celestial WCS (`:8`). From Python: NumPy image, variance (nonnegative, NaN or +inf for no data) and an integer or boolean mask, plus a `ReprojectionSpec(mapping=..., output_bbox=BBox(...))`. Positions are (x, y) while arrays index (y, x) (`:63`, `:67`, `:210`).
+- **First run:** `cuphoton xrep reproject-stack --inputs sample/reference.fits --target-wcs sample/target.fits --backend cpu --mapping-grid-step 1 --output-dir runs/align` (`:241-242`). From Python: `make_wcs_pair_transform(target_wcs, reference_wcs)` (`:59`), then `reproject_masked_array(reference, reference_variance, mask, spec, backend="cpu")` (`:86`).
+- **Needs:** the CPU profile. The `gpu` profile adds `backend="cupy"`; `native` needs the native extension (`:7`, `:214`). Without `backend`, it takes the first available of `cupy`, CUDA `torch` and `cpu` (`:210`).
+- **Silent trap:** "The commands do not resample variance", and `reproject-stack` "marks only the geometric footprint"; use `reproject_masked_array` for both (`:259`). "xRep does not skip NaN source pixels. Each NaN turns every output pixel that reads it into NaN" (`:264`). Resampling correlates neighbouring pixels' noise and "xRep does not return that correlation" (`:91`). `area_scaling=True` by default: set it `False` for surface-brightness units (`:151`).
+- **Evidence:** the result's `backend`, `interpolation` and `metadata` (variance recorded as diagonal); mask bit 1 marks pixels outside the source, with NaN image and variance (`:87-95`). The command's run directory holds `summary.json` (`requested_backend`, `backend`, `device`, `fits_reads`, `interpolation`, `stack_shape`, `saved`) and `artifacts/reprojected_stack.npy` (`:245`; `src/cuphoton/xrep/workflows.py:932-982`).
+- **Track:** Module 01, "A first difference with cuPhoton": xRep moved the
+  reference onto the target's grid, and the learner predicted which image
+  moves and why (the sharper one, which gets blurred next). Link [1.3](#/1.3).
+
+### xPois: subtract (`G/subtract.qmd`)
+- **For:** fits a convolution kernel that blurs the reference until it matches the target, plus a smooth background, subtracts, predicts the noise of every difference pixel and finds the candidates (`:3`).
+- **Input:** a reference and a target of the same shape on one pixel grid, each with a variance plane; variance must be strictly positive, with NaN marking pixels to leave out (`:5`, `:424`, `:430`). A kernel basis of `GaussianBasisComponent(sigma, degree)` and an odd `kernel_shape` (`:42`, `:56`). The command reads FITS or NPY (`:322`).
+- **First run:** `solve_constant_kernel(aligned.image, target, basis, kernel_shape=(19, 19), variance=target_variance, background_degree=1, backend="cpu")` (`:65-66`). CLI: `cuphoton xpois subtract --reference sample/reference_aligned.npy --target sample/target.fits --variance sample/target_variance.npy --fit-mask sample/fit_mask.npy --kernel-height 19 --kernel-width 19 --basis-sigmas 0.7,1.4,2.8 --basis-degrees 4,2,2 --background-degree 1 --backend cpu --no-review --output-dir runs --name sample`, then `cuphoton xpois evaluate-subtraction --run-dir runs/sample` (`:333-337`).
+- **Needs:** the CPU profile. `gpu` for `cupy`; `cutile` is experimental and needs its extra; `native` needs the native extension (`:5`, `:302-304`).
+- **Silent trap:** "A GPU fit reports `backend` `cpu`": `auto` falls back without error, so check `fit.backend` (`:452`). Bad pixels left in "pull the kernel, and stars across the image become candidates"; set them to NaN or pass `--mask-policy` (`:215`, `:375`). The noise prediction ignores correlation: on a resampled reference "the diagonal prediction is approximate" (`:109`). `solve_spatial_als` "returns `converged=False` without an error. Check it." (`:251`). `identify_residual_hotspots` keeps only 8 regions unless `max_regions=None` (`:289`). Not in the guide, from the code: `cuphoton xpois subtract` takes only the target's `--variance` (no reference variance) and saves kernel, matched image, residual, fit mask and background, but no noise prediction or standardized residual (`src/cuphoton/xpois/commands.py`), so a z-map needs the Python API (`standardize_constant_kernel_residual`, as in 1.4).
+- **Evidence:** `fit.backend`, `chi2`/`dof` and `fit_pixel_count`; the kernel sum is the reference-to-target flux ratio (`:68-73`). The robust spread of the standardized residual should sit near one (`:98-102`). The command's `runs/<name>/summary.json` holds `requested_backend`, `backend`, `device`, `fits_reads`, `kernel_sum`, `chi2`, `dof`, `fit_pixel_count` and, with masks, `input_mask`; `evaluate-subtraction` prints `robust_sigma` and `pixels_gt_5sigma` (`:340`, `:365`, `:392-406`; `src/cuphoton/xpois/workflows.py:924-955`, `:1520-1540`).
+- **Track:** Module 01, "A first difference with cuPhoton": the 19 × 19
+  kernel, the NaN edge frame it leaves, chi2/dof 1.29 as necessary but not
+  proof ([1.4](#/1.4)), then the candidates from the standardized residual
+  ([1.5](#/1.5)). Link [1.4](#/1.4).
+
+### xFit: measure (`G/measure.qmd`)
+- **For:** measures each candidate on a difference image: one fitted source (new, brightened or faded), a forced PSF flux at a known position, or a dipole (two opposite lobes, from a moved source or a misaligned star) (`:3`, `:68-75`).
+- **Input:** cutouts as NumPy (or CuPy) arrays `(batch, y, x)` cut from the difference image, with a per-pixel variance of the same shape, finite and strictly positive on the pixels the `mask` includes (`:52`, `:256`; `src/cuphoton/xfit/io.py:250-255`). Positions are (x, y) from the cutout centre (`:64`). `fit_single_sources` and `forced_psf_photometry` take the variance as a required argument; `fit_dipoles` takes it as optional, scaling the covariance by the reduced chi-square without it (`:257`). The command reads an NPZ with `candidate_id` and `images`, optionally `initial`, `mask`, `variance` and `stamp_basis` (`:301`).
+- **First run:** `fit_single_sources(cutouts, cutout_variance, start, psf_sigma, mask=usable, sign=1)` (`:88`). CLI: `cuphoton xfit data-validate --input sample/cutouts.npz --model gaussian --mode difference`, then `cuphoton xfit fit-dipoles --input sample/cutouts.npz --model gaussian --backend numpy --output-dir runs/dipoles` (`:311-312`).
+- **Needs:** the CPU profile. `gpu` for `cupy`; `cutile` and `native` fit Gaussian models only (`:5`, `:284`). The command line fits dipoles only (`:344`).
+- **Silent trap:** "A converged fit can still be wrong" (`:175`). The covariance "does not account for a wrong PSF or pixel correlations" (`:95`). `fit_single_sources`' `flux` is "the nonnegative lobe-flux magnitude"; the sign is in `parameters[:, 0]` (`:95`). Forced `flux_error` "leaves out the uncertainty of a position fitted on the same image" (`:109`).
+- **Evidence:** `converged`, `uncertainty_valid` and `uncertainty_reason`, plus `status`, `reduced_chi_square`, `backend`, `device`, `dtype` and `solver_version` on a dipole result (`:144-155`); `dipole_quality_flags` bits (`:188-196`). The command writes `summary.json` (`requested_backend`, `backend`, `device`, `solver_version`, `inputs.variance_present`, and `metrics`: `converged_count`, `uncertainty_valid_count`, `median_reduced_chi_square`, `status_counts`), `fits.parquet` and `fit-arrays.npz` (`:315`, `:335`; `src/cuphoton/xfit/io.py:560-612`).
+- **Track:** Module 01, "A first difference with cuPhoton": `fit_single_sources`
+  with the width fixed to `PSFSIG`; both injected fluxes came back within
+  about two error bars, and variance × 4 left the fluxes alone and doubled
+  the error bars. Link [1.6](#/1.6).
+
+---
+
 ### xImage: reconstruct (`G/reconstruct.qmd`)
 - **For:** builds one sharp image from many already-aligned frames, each with its own blur (PSF) and noise.
 - **Input:** a bundle (NPY directory, HDF5 file or Zarr store) holding `images` `(batch, y, x, frame)`, `variances` (same shape, finite and positive) and `psfs` `(psf_y, psf_x, channel, frame)`, which must be square, odd-sized and one channel. Optional: `masks` (bool, `True` = good pixel) and `exp_times`. Settings come from a strictly validated YAML file (`:41-47`, `:67`, `:71`).
