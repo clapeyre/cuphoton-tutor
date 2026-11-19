@@ -25,7 +25,9 @@ export type Activity = { main: string | null; turn: string | null; threads: Reco
 
 
 /** Text blocks of an assistant message so far (thinking and tool calls excluded). */
-const textOf = (m: any) => (Array.isArray(m?.content) ? m.content : []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("").trim();
+const textOf = (m: any) => (Array.isArray(m?.content) ? m.content : []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("")
+  // Models with nothing to say sometimes write an invisible placeholder (an HTML comment, a zero-width space) or "done".
+  .replace(/<!--[\s\S]*?-->/g, "").replace(/[\u200B-\u200D\uFEFF]/g, "").trim().replace(/^\(?done\.?\)?$/i, "");
 
 const text = (t: string) => ({ content: [{ type: "text" as const, text: t }], details: {} });
 
@@ -107,7 +109,9 @@ export class Tutor {
         await this.main.prompt([
           `[page] The learner is moving on from Module ${prev} "${prevTitle}" to Module ${next}. Your next prompt starts a new thread`,
           `that won't see this conversation. Update the learner profile, \`${learnerPath("profile.md")}\`, as described`,
-          'under "The learner profile" in your instructions: read it if it exists, then rewrite it whole with what this',
+          fs.existsSync(learnerPath("profile.md"))
+            ? 'under "The learner profile" in your instructions: read it first, then rewrite it whole with what this'
+            : 'under "The learner profile" in your instructions. It doesn\'t exist yet: write it with what this',
           "module showed, in under 700 words (cut what would change your teaching least). This conversation may use older",
           "lesson ids, from before the course was reordered: name every lesson by its id in the course outline of your",
           'instructions and its title, e.g. "8.3 Every row on the GPU". Use write. Don\'t use ask, settle or reveal, and say',
@@ -262,7 +266,7 @@ export class Tutor {
           // A settled turn's box is closed: drop the model's "nothing further to add" coda.
           const turnState = this.store.turn(lid, tid);
           const coda = turnState.status === "settled" && said.length < 160
-            && /nothing (further|more|else)|no further|is (already )?settled/i.test(said);
+            && /nothing (further|more|else)|no further|is (already )?settled|^(lesson|module) [\d.]+ is (complete|finished)\.?$/i.test(said);
           if (coda || (said && last?.who === "tutor" && norm(last.text).includes(norm(said)))) this.onActivity();
           else if (said) {
             log.push({ who: "tutor", text: said, at: Date.now() });
