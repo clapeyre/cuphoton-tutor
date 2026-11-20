@@ -7,7 +7,7 @@ import path from "node:path";
 import { Type } from "typebox";
 import YAML from "yaml";
 import {
-  createAgentSession, createExtensionRuntime, defineTool, loadSkillsFromDir, ModelRuntime,
+  createAgentSession, createBashToolDefinition, createExtensionRuntime, defineTool, loadSkillsFromDir, ModelRuntime,
   SessionManager, SettingsManager, type AgentSession, type ResourceLoader, type ToolDefinition,
 } from "@earendil-works/pi-coding-agent";
 import { config, learnerPath } from "./config.ts";
@@ -23,6 +23,19 @@ import { app } from "./version.ts";
 
 export type Activity = { main: string | null; turn: string | null; threads: Record<string, boolean>; drafts: Record<string, string>; steps: Step[]; since: number | null; retry: { attempt: number; of: number; delayMs: number; at: number; error: string } | null };
 
+
+/** A recursive delete (rm -r/-rf, shutil.rmtree, find -delete). Tutors deleted learners' runs twice despite
+ *  SYSTEM.md's "keep every trial", so the app refuses these rather than relying on the prompt. */
+export function deletesTree(cmd: string) {
+  return /(^|[\s;&|(`])rm\s+(-\S+\s+)*(-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)(\s|$)/.test(cmd)
+    || /\brmtree\s*\(/.test(cmd) || /\bfind\b[^\n;|&]*\s-delete\b/.test(cmd);
+}
+const REFUSED = "Refused by the course app: recursive deletes (rm -r, rmtree, find -delete) are not allowed in the learner's workspace. "
+  + "Keep every trial: write a new run to a new folder and say which one is current. If something went to the wrong place, leave it and tell the learner.";
+/** pi's bash tool, with recursive deletes turned into a failing command that says why. */
+const guardedBash = () => createBashToolDefinition(config.learnerDir, {
+  spawnHook: (ctx) => deletesTree(ctx.command) ? { ...ctx, command: `echo ${JSON.stringify(REFUSED).replace(/\$/g, "\\$")} >&2; exit 1` } : ctx,
+}) as unknown as ToolDefinition;
 
 /** Text blocks of an assistant message so far (thinking and tool calls excluded). */
 const textOf = (m: any) => (Array.isArray(m?.content) ? m.content : []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("")
@@ -224,7 +237,7 @@ export class Tutor {
       thinkingLevel: config.thinking,
       resourceLoader: this.loader(kind),
       tools: kind === "main" ? ["read", "bash", "edit", "write", "show_figure", "ask", "settle", "reveal", "file_feedback"] : ["read", "bash"],
-      customTools: kind === "main" ? this.pageTools() : [],
+      customTools: kind === "main" ? [...this.pageTools(), guardedBash()] : [guardedBash()],
       sessionManager: sm,
       settingsManager: SettingsManager.inMemory({ compaction: { enabled: true }, retry: { enabled: true, maxRetries: 6 } } as any),
     });
