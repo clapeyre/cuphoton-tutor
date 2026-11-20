@@ -64,7 +64,10 @@ function info(id: string, now: number): Info | null {
 function why(r: Info): string {
   const e = String(r.meta?.end_reason ?? "");
   if (e === "stopped_by_operator") return "stopped by the operator";
-  if (e.startsWith("error")) return "sim error: " + e.replace(/^error:\s*/, "").split(/[:{(]/)[0].trim().slice(0, 40);
+  if (e.startsWith("error")) {
+    const http = e.match(/HTTP (\d{3})/)?.[1];
+    return http ? `sim error: the learner model's API refused a request (HTTP ${http})` : "sim error: " + e.replace(/^error:\s*/, "").slice(0, 50);
+  }
   if (e === "max_steps") return "ran out of steps";
   if (r.qDone === r.qTotal) return "every question answered, a closing never shown";
   return e.replace(/_/g, " ");
