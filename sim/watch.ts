@@ -60,13 +60,33 @@ function info(id: string, now: number): Info | null {
   };
 }
 
+const hhmm = (t: number) => new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+/** The --tag of every app_sim process alive on this machine (a run id ends with "-<tag>"). */
+function liveTags(): Set<string> {
+  const tags = new Set<string>();
+  for (const pid of fs.readdirSync("/proc").filter((d) => /^\d+$/.test(d))) {
+    try {
+      const argv = fs.readFileSync(`/proc/${pid}/cmdline`, "utf8").split("\0");
+      if (!argv.some((a) => a.endsWith("app_sim.ts"))) continue;
+      const i = argv.indexOf("--tag");
+      if (i >= 0 && argv[i + 1]) tags.add(argv[i + 1]);
+    } catch {}
+  }
+  return tags;
+}
+
 function render(): string {
   const now = Date.now();
   const today = new Date().toDateString();
   const lines: string[] = [`${c.bold}cuPhoton sims${c.off}  ${c.dim}${new Date().toLocaleTimeString()} · every ${EVERY_S}s · ctrl-c to quit${c.off}`, ""];
   const ids = fs.existsSync(RUNS) ? fs.readdirSync(RUNS).filter((d) => /^\d{4}-\d{4}-/.test(d)).sort() : [];
   const all = ids.map((id) => info(id, now)).filter((x): x is Info => !!x);
-  const running = all.filter((r) => !r.meta && r.idle < 2 * 3600);
+  // A run without results is running only if its sim process is alive; otherwise it was stopped (killed) without results.
+  const alive = liveTags();
+  const isAlive = (r: Info) => [...alive].some((t) => r.id.endsWith("-" + t));
+  const running = all.filter((r) => !r.meta && isAlive(r));
+  const stopped = all.filter((r) => !r.meta && !isAlive(r) && new Date(now - r.idle * 1000).toDateString() === today);
   const finished = all.filter((r) => r.meta && new Date(r.metaAt).toDateString() === today).sort((a, b) => b.metaAt - a.metaAt);
 
   lines.push(`${c.bold}Running${c.off}`, "");
@@ -74,7 +94,7 @@ function render(): string {
     const frac = r.qTotal ? r.qDone / r.qTotal : r.lessons ? r.done / r.lessons : 0;
     const status = r.idle > 600 ? `${c.red}quiet ${mmss(r.idle)}${c.off}` : r.idle > 180 ? `${c.yellow}quiet ${mmss(r.idle)}${c.off}` : `${c.cyan}in ${r.cur}${c.off}`;
     const eta = frac > 0.05 ? `  ~${mmss(r.elapsed * (1 - frac) / frac)} left` : "";
-    lines.push(`${c.bold}${r.tutor}${c.off}  ${c.dim}modules ${r.mods.join(",")} · ${r.id.slice(0, 9)}${c.off}`);
+    lines.push(`${c.bold}${r.tutor}${c.off}  ${c.dim}modules ${r.mods.join(",")} · started ${hhmm(started(r.id))}${c.off}`);
     lines.push(`  ${bar(frac, 32)} ${String(Math.round(frac * 100)).padStart(3)}%   lessons ${r.done}/${r.lessons} · questions ${r.qDone}/${r.qTotal}`);
     lines.push(`  ${status}  ${c.dim}· step ${r.steps} · ${mmss(r.elapsed)} elapsed${eta}${c.off}`, "");
   }
@@ -90,7 +110,10 @@ function render(): string {
       ` lessons ${r.done}/${r.lessons} · questions ${r.qDone}/${r.qTotal} · ${mmss(r.elapsed)}` +
       ` · ${rev.length ? `${c.green}reviewed: ${rev.join(" + ")}${c.off}` : `${c.yellow}not reviewed yet${c.off}`}`);
   }
-  if (!finished.length) lines.push(`${c.dim}  None yet.${c.off}`);
+  for (const r of stopped)
+    lines.push(`  ${c.dim}${hhmm(now - r.idle * 1000)}${c.off}  ${c.red}✗${c.off} ${r.tutor.padEnd(34)} ${c.dim}${r.mods.join(",").padEnd(15)}${c.off}` +
+      ` lessons ${r.done}/${r.lessons} · questions ${r.qDone}/${r.qTotal} · ${c.red}stopped without results${c.off}`);
+  if (!finished.length && !stopped.length) lines.push(`${c.dim}  None yet.${c.off}`);
   return lines.join("\n");
 }
 
