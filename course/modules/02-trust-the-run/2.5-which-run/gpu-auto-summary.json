@@ -22,7 +22,7 @@
       "version": "14.1.1"
     },
     "gpu_available": true,
-    "platform": "Linux-7.2.8-9-omarchy-x86_64-with-glibc2.44",
+    "platform": "Linux-7.2.15-1-omarchy-x86_64-with-glibc2.44",
     "python": "3.12.16",
     "torch": {
       "available": true,
@@ -40,7 +40,7 @@
     }
   },
   "profile": "auto",
-  "require_gpu": true,
+  "require_gpu": false,
   "results": {
     "xfit": {
       "artifacts": {

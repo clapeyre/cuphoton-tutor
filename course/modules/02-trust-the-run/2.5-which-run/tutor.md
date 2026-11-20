@@ -6,10 +6,12 @@ says what in the receipts shows it, and names `--require-gpu`.
 ## On open: nothing visible
 Don't put anything on the page. Prepare the three receipts quietly in
 `work/02/which-run/`, so they're ready when asked:
-- **A, the GPU run:** `gpu-require-gpu-summary.json` next to these notes. A
-  real `--require-gpu` run on a GPU machine (RTX 4070 Ti SUPER, CUDA 13):
-  `profile auto`, `require_gpu true`, xfit cupy/cuda:0, xpois cupy/cuda,
-  xrep cupy/cuda, xray gpu/cuda, xscan torch/cuda, `gpu_available true`.
+- **A, the GPU run:** `gpu-auto-summary.json` next to these notes. A real
+  default run (profile auto, no `--require-gpu`) on a GPU machine (RTX 4070
+  Ti SUPER, CUDA 13): `profile auto`, `require_gpu false`, xfit cupy/cuda:0,
+  xpois cupy/cuda, xrep cupy/cuda, xray gpu/cuda, xscan torch/cuda,
+  `gpu_available true`. Same request as B, so only where things ran differs;
+  `require_gpu` appears in none of the three as true, so (c) has to be reasoned.
 - **B, the silent fallback:** made live in this environment, into a new
   directory: `python <checkout>/examples/run_quickstarts.py --output-dir work/02/qs-auto`
   (default profile auto). Exit 0, status ok, `profile auto`, `require_gpu false`,
