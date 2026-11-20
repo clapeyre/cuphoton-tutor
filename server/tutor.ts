@@ -7,7 +7,7 @@ import path from "node:path";
 import { Type } from "typebox";
 import YAML from "yaml";
 import {
-  createAgentSession, createBashToolDefinition, createExtensionRuntime, defineTool, loadSkillsFromDir, ModelRuntime,
+  createAgentSession, createBashToolDefinition, createExtensionRuntime, createLocalBashOperations, defineTool, loadSkillsFromDir, ModelRuntime,
   SessionManager, SettingsManager, type AgentSession, type ResourceLoader, type ToolDefinition,
 } from "@earendil-works/pi-coding-agent";
 import { config, learnerPath } from "./config.ts";
@@ -32,8 +32,12 @@ export function deletesTree(cmd: string) {
 }
 const REFUSED = "Refused by the course app: recursive deletes (rm -r, rmtree, find -delete) are not allowed in the learner's workspace. "
   + "Keep every trial: write a new run to a new folder and say which one is current. If something went to the wrong place, leave it and tell the learner.";
-/** pi's bash tool, with recursive deletes turned into a failing command that says why. */
+/** pi's bash tool, with recursive deletes turned into a failing command that says why, and a default timeout:
+ *  pi has none, and a self-hosted tutor's command that never returned blocked a run for over an hour. */
+const BASH_TIMEOUT_S = 900;
+const localBash = createLocalBashOperations();
 const guardedBash = () => createBashToolDefinition(config.learnerDir, {
+  operations: { exec: (command, cwd, o) => localBash.exec(command, cwd, { ...o, timeout: o.timeout ?? BASH_TIMEOUT_S }) },
   spawnHook: (ctx) => deletesTree(ctx.command) ? { ...ctx, command: `echo ${JSON.stringify(REFUSED).replace(/\$/g, "\\$")} >&2; exit 1` } : ctx,
 }) as unknown as ToolDefinition;
 
