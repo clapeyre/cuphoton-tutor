@@ -5,7 +5,7 @@ adapts: no alignment needed, sky-subtracted images, the survey's variance map
 (checked against the data), mask bits from the header. Probes
 M-VARIANCE-COSMETIC, M-MASK-POLARITY.
 
-Data: `<course dir>/modules/04-your-own-data/data/` (see its README.md): for
+Data: `<course dir>/modules/04-real-data/data/` (see its README.md): for
 `reference` and `target`: `.fits` (image, counts), `.var.fits` (variance,
 counts²), `.mask.fits` (integer bits, 0 = good). Copy it to `work/04/data/`.
 Use the GPU environment for cuPhoton from here on.

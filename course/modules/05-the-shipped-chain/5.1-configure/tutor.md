@@ -11,7 +11,7 @@ drives it. It names no trap: don't add one when discussing it.
 
 ## Setup (once, when you prepare the lesson)
 - Working dir `work/05/`. Data: the module 04 files in
-  `course/modules/04-your-own-data/data/` (absolute paths: the selections file
+  `course/modules/04-real-data/data/` (absolute paths: the selections file
   needs them). Python: the GPU environment (it has the `catalog` extra and the
   `transient-chain` example installed). Launcher:
   `<checkout>/examples/transient-chain/launch.py`.

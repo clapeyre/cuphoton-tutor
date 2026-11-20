@@ -29,7 +29,7 @@ from pathlib import Path
 
 import numpy as np
 
-DATA = Path(os.environ.get("DATA") or Path(__file__).resolve().parents[2] / "04-your-own-data/data")
+DATA = Path(os.environ.get("DATA") or Path(__file__).resolve().parents[2] / "04-real-data/data")
 NIGHTS = {"refs": ("reference", "reference-b", "reference-c"), "all": ("reference", "reference-b", "reference-c", "target")}
 CY, CX, K, ZP = 400, 402, 25, 24.6
 DETECTOR_PIX = 0.258  # arcsec per GPC1 detector pixel (4.1)

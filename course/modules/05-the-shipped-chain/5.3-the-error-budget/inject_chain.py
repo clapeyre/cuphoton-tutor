@@ -4,7 +4,7 @@ Run from a scratch dir; writes inj/. Env: NSEED (images), NPER (fakes per flux l
 SPACING (minimum px between fakes; keep it above the 51 px stamp so no stamp holds two fakes)."""
 import json, warnings, numpy as np; warnings.simplefilter("ignore")
 from astropy.io import fits
-import os, pathlib; D=os.environ.get("DATA") or str(pathlib.Path(__file__).resolve().parents[2] / "04-your-own-data" / "data"); D=D.rstrip("/")+"/"
+import os, pathlib; D=os.environ.get("DATA") or str(pathlib.Path(__file__).resolve().parents[2] / "04-real-data" / "data"); D=D.rstrip("/")+"/"
 tgt=fits.getdata(D+"target.fits").astype(np.float64); th=fits.getheader(D+"target.fits")
 tvar=fits.getdata(D+"target.var.fits").astype(np.float64); tvh=fits.getheader(D+"target.var.fits")
 rm,tm=fits.getdata(D+"reference.mask.fits"),fits.getdata(D+"target.mask.fits")

@@ -33,7 +33,7 @@ modules:
   - 01-first-difference
   - 02-trust-the-run
   - 03-onto-the-gpu
-  - 04-your-own-data
+  - 04-real-data
   - 05-the-shipped-chain
   # After the image modules: xImage continues with the same sky, then the
   # components for other kinds of data.

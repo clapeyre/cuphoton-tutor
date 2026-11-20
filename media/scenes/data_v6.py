@@ -12,7 +12,7 @@ from pathlib import Path
 
 repo = Path(__file__).resolve().parents[2]
 out = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
-data = repo / "course" / "modules" / "04-your-own-data" / "data"
+data = repo / "course" / "modules" / "04-real-data" / "data"
 cfg = repo / "course" / "modules" / "05-the-shipped-chain" / "5.1-configure" / "config-ps1.yaml"
 gpy = Path(os.environ.get("LEARNER_GPU_PYTHON_BIN", repo / ".envs" / "cuphoton-gpu" / "bin")) / "python"
 launch = Path(os.environ.get("CUPHOTON_DIR", Path.home() / "cuphoton-overnight" / "cuPhoton")) / "examples" / "transient-chain" / "launch.py"

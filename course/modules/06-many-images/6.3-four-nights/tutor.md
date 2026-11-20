@@ -9,7 +9,7 @@ again, M-SHARP-MEANS-RIGHT.
 Source: docs/guide/reconstruct.qmd ("Read the run directory": "The run
 returns no output variance and no effective PSF for the scene"; the
 opening: "one nonnegative scene"), docs/components/ximage.md; Module 04's
-data (`course/modules/04-your-own-data/data/`, its README for credit).
+data (`course/modules/04-real-data/data/`, its README for credit).
 `nights.py`, next to these notes. **Run it in place, from the course
 folder, with outputs in `work/06/`; don't copy it: the fakes' answer is
 in it.** It finds Module 04's data itself (or `DATA=...`).

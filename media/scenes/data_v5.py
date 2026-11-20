@@ -13,7 +13,7 @@ from cuphoton.xrep import BBox, ReprojectionSpec, make_wcs_pair_transform, repro
 
 warnings.simplefilter("ignore")
 out = Path(sys.argv[1] if len(sys.argv) > 1 else ".")
-PS1 = Path(__file__).resolve().parents[2] / "course" / "modules" / "04-your-own-data" / "data"
+PS1 = Path(__file__).resolve().parents[2] / "course" / "modules" / "04-real-data" / "data"
 
 
 def wcs(dx, dy, n):
