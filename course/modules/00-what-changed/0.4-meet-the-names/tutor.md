@@ -21,7 +21,9 @@ question at a time:
   faded next to one that brightened), and a comparison with the other,
   unchanged sources, using some measurement of the lobes (offset, direction,
   size or flux: any one is enough, don't drill for a full list).
-  Misalignment shifts them all the same way; real motion affects one source.
+  Misalignment moves every source by one geometric rule (the same offset for a
+  pure shift; with a rotation, an offset that changes smoothly across the
+  image); real motion affects one source.
   Both give the same two-lobe shape (docs/guide/measure.qmd), so the lobes
   alone can't decide. 3 is read off the chain (xFit). An answer that already
   has 1 and 2 passes: go to 3, don't ask for more detail first.
