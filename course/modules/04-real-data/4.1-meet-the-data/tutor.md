@@ -45,15 +45,23 @@ Use the GPU environment for cuPhoton from here on.
 - Run the check they propose, on empty sky. If they leave the selection to
   you, use `noise_check.py` (next to these notes; `python <this dir>/noise_check.py`):
   four 150 px corners, the survey's mask bits, sources masked and grown by
-  5 px, a 3σ-clipped variance. Facts from it: scatter 180 (ref) and 162
-  (target); the map's median there 150 and 171: the reference's map runs about
-  17% low, the target's agrees within about 5%. Say both.
+  5 px, each corner's own sky level removed, a 3σ-clipped variance. Facts from
+  it: scatter 168 (ref) and 143 (target); the map's median there 150 and 171:
+  the reference's map runs about 11% low, the target's about 19% high. Say both.
+  Neither map is exact; both are the right size (about 150–170 counts², a
+  hundred times the 1 count² of value/gain). A map above the pixel scatter is
+  what resampling does: it smooths each pixel's noise and moves part of it
+  into correlations between neighbours (4.4 measures that). Don't explain the
+  reference's being low beyond "it differs"; we haven't pinned it down.
 - Why learners' numbers differ: the survey stores pixel values in steps of
   about 0.8 counts, so a MAD jumps between a few values (121, 146, 174, 179,
   213 all turn up), and bigger corners take in the galaxy's outskirts (the
   reference's scatter grows to about 200 with 200 px corners). The
-  conclusion holds across selections: the target's map is right, the
-  reference's runs low by 10–25%.
+  conclusion holds across selections once each corner's sky level is removed:
+  the target's map runs 15–20% above the empty-sky scatter, the reference's
+  10–15% below. (Pooling the corners without removing their levels, as a quick
+  check does, adds their offsets to the scatter and can make the target look
+  exact.)
 - If they say "variance doesn't matter much" (M-VARIANCE-COSMETIC): remind them
   of 1.6 (error bars scale with it) in one sentence.
 - Settle, then `reveal("4.1")`.

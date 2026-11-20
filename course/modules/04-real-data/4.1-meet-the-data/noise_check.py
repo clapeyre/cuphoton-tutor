@@ -5,7 +5,8 @@
 Empty sky, defined once so every run gets the same numbers: the four corners (150 x 150 px by default),
 pixels the survey marks usable (none of MASK.VALUE's bits, finite, variance > 0), minus anything
 brighter than 3 sigma above the corner's median, grown by 5 px so the faint wings of stars go too.
-The scatter is a 3-sigma-clipped variance, not the MAD: the survey stores pixel values in steps of about 0.8
+Each corner's own sky level is removed first (the corners sit up to ~15 counts apart, and pooling them
+would count that as noise). The scatter is a 3-sigma-clipped variance, not the MAD: the survey stores pixel values in steps of about 0.8
 counts, so the MAD jumps between a few values and small changes in the selection flip it. The map's value is
 its median over the same pixels.
 """
@@ -39,7 +40,7 @@ for name in ("reference", "target"):
         sig = 1.4826 * np.median(np.abs(c[ok] - med))
         src = ndi.binary_dilation(ok & (c > med + 3 * sig), iterations=5)
         sky = ok & ~src
-        x = c[sky]
+        x = c[sky] - sigma_clipped_stats(c[sky], sigma=3)[0]  # this corner's own sky level removed
         scat.append(x)
         mapv.append(v[sky])
         used += sky.sum()
