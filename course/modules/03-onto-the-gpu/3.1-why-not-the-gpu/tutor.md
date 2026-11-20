@@ -13,6 +13,11 @@ Host and device memory, real copy and xRep times for a 2048² image on this GPU
 (up 2.6 ms, xRep 21.6 ms, back 4.0 ms; CPU xRep 8.8 s), crossing once vs at
 every stage. It deliberately doesn't say which calls return NumPy or CuPy (3.2's
 prediction) or mention queuing (3.4): don't fill those in when discussing it.
+Its CPU figure ("nine seconds") is from an older run: on the pinned commit the
+same CPU reprojection takes about 4 s (3.9–4.4 s, 3.4's notes). If the learner
+notices the two disagree, say so: the video is out of date on that number, so
+its CPU side is about twice too slow. Don't compute a speedup from the video's
+numbers; 3.4 measures one properly.
 
 ## Your turn `what-was-missing`
 - Hand over the evidence they ask for, nothing more. Likely requests:

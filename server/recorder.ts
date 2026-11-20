@@ -118,7 +118,7 @@ export class Recorder {
         receipt = Object.fromEntries(["workflow", "requested_backend", "backend", "device", "dtype", "fits_reader"].filter((k) => k in j).map((k) => [k, j[k]]));
         // Some workflows keep the device deeper (xImage: performance.device.device = "cuda").
         if (receipt.device == null) { const d = deepDevice(j); if (d) receipt.device = d; }
-        if (receipt.device != null) devices.add(/cuda|gpu/i.test(String(receipt.device)) ? "GPU" : "CPU");
+        if (receipt.device != null) devices.add(isGpu(receipt.device) ? "GPU" : "CPU");
       } catch {}
     }
     // Every cuPhoton stage the run used, in pipeline order ("xRep + xPois"). A quickstart's summary lists
@@ -129,7 +129,7 @@ export class Recorder {
     const by = stage ?? (/\bnumpy\b|\bnp\./.test(all) ? "NumPy" : /python/.test(all) ? "Python" : "shell");
     // The receipt's device decides when it has one (torch and native backends also run on the CPU).
     // A summary with neither (a chain script's own summary) leaves it to the code.
-    const gpu = receipt?.device != null ? /cuda|gpu/i.test(String(receipt.device))
+    const gpu = receipt?.device != null ? isGpu(receipt.device)
       : receipt?.backend != null ? /cupy|cutile/i.test(String(receipt.backend))
       : /--require-gpu|backend\s*=\s*["'](cupy|torch|cutile)["']|\bcupy\b/.test(all);
     this.runs.push({
@@ -208,6 +208,11 @@ function foldDevice(all: RunRecord[]): RunRecord["device"] {
 }
 
 /** The first string `device` anywhere in a summary (nested receipts), or undefined. */
+/** A receipt's device names a GPU: "cuda:0", "gpu", or the card itself ("NVIDIA GeForce RTX 4070 Ti SUPER", "NVIDIA H100"):
+ *  learners' own summaries often record torch.cuda.get_device_name(). */
+export function isGpu(device: unknown): boolean {
+  return /cuda|gpu|nvidia|geforce|\brtx\b|tesla|quadro|\b[abhlt]\d{2,3}\b|gh200|gb200|dgx/i.test(String(device));
+}
 function deepDevice(o: unknown, depth = 0): string | undefined {
   if (depth > 4 || o == null || typeof o !== "object") return undefined;
   for (const [k, v] of Object.entries(o as Record<string, unknown>)) {

@@ -27,7 +27,9 @@ reference, shape, sign. Names SN 2011fe after the sort.
   (Nugent et al. 2011), the nearest type Ia in decades; the target night is
   233 days after the explosion. Optional depth if they ask how bright: fit
   ≈ 43,900 ± 190 counts; calibrated against ~20 PS1 catalogue stars in the same
-  image (zero point 26.9 ± 0.2), that's r ≈ 15.3. The header's FPA.ZP does
-  **not** apply directly to these warps (it gives 17.0: off by 1.7 mag); a good
+  image (zero point 26.9 ± 0.2), that's r ≈ 15.3. The header's FPA.ZP
+  (24.60) does **not** apply directly to these warps: per second (43,900 / 40 s)
+  it gives 17.0, 1.7 mag too faint; on the total counts, 13.0, 2.3 mag too
+  bright. Either way the header disagrees with the stars in the image: a good
   "check the header against the data" story if they're interested.
 - `reveal("4.3")`.
