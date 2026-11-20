@@ -1,5 +1,5 @@
 // Live progress of running sims, redrawn every few seconds. Leave it open in a terminal pane:
-//   npx tsx sim/watch.ts            (sims running now, plus those finished in the last 30 min)
+//   npm run sims                    (sims running now, and those finished today)
 //   npx tsx sim/watch.ts --once     (print once and exit)
 // Reads only files the sims write: runs/<id>/transcript.md, learner/page.json and, once done, meta.json.
 import fs from "node:fs";
@@ -36,47 +36,61 @@ function started(id: string): number {
   return Date.UTC(new Date().getUTCFullYear(), +m[1] - 1, +m[2], +m[3], +m[4]);
 }
 
+type Info = { id: string; tutor: string; mods: string[]; done: number; lessons: number; qDone: number; qTotal: number; steps: number; elapsed: number; idle: number; cur: string; meta: any; metaAt: number };
+
+function info(id: string, now: number): Info | null {
+  const dir = path.join(RUNS, id);
+  const tr = path.join(dir, "transcript.md");
+  if (!fs.existsSync(tr)) return null;
+  const meta = readJson(path.join(dir, "meta.json"));
+  const metaAt = meta ? fs.statSync(path.join(dir, "meta.json")).mtimeMs : 0;
+  const lastWrite = fs.statSync(tr).mtimeMs;
+  const text = fs.readFileSync(tr, "utf8");
+  const mods = (text.slice(0, 600).match(/modules ([\d, ]+)/)?.[1] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  const lessons = mods.flatMap((m) => course.get(m) ?? []);
+  const page = readJson(path.join(dir, "learner", "page.json")) ?? { lessons: {} };
+  return {
+    id, meta, metaAt, mods, cur: page.current ?? "—",
+    tutor: id.replace(/^\d{4}-\d{4}-/, "").replace(/^(t1-thorough|s4-[a-z-]+?)-/, ""),
+    done: lessons.filter((l) => page.lessons[l.id]?.revealed).length, lessons: lessons.length,
+    qTotal: lessons.reduce((a, l) => a + l.questions, 0),
+    qDone: lessons.reduce((a, l) => a + Object.values<any>(page.lessons[l.id]?.turns ?? {}).filter((t) => t.status === "settled").length, 0),
+    steps: (text.match(/^## \[\d+\]/gm) ?? []).length,
+    elapsed: ((meta ? metaAt : now) - started(id)) / 1000, idle: (now - lastWrite) / 1000,
+  };
+}
+
 function render(): string {
   const now = Date.now();
+  const today = new Date().toDateString();
   const lines: string[] = [`${c.bold}cuPhoton sims${c.off}  ${c.dim}${new Date().toLocaleTimeString()} · every ${EVERY_S}s · ctrl-c to quit${c.off}`, ""];
-  const dirs = fs.existsSync(RUNS) ? fs.readdirSync(RUNS).filter((d) => /^\d{4}-\d{4}-/.test(d)).sort() : [];
-  let shown = 0;
-  for (const id of dirs) {
-    const dir = path.join(RUNS, id);
-    const tr = path.join(dir, "transcript.md");
-    if (!fs.existsSync(tr)) continue;
-    const meta = readJson(path.join(dir, "meta.json"));
-    const lastWrite = fs.statSync(tr).mtimeMs;
-    if (meta && now - fs.statSync(path.join(dir, "meta.json")).mtimeMs > 30 * 60e3) continue; // finished a while ago
-    if (!meta && now - lastWrite > 2 * 3600e3) continue; // abandoned
-    const head = fs.readFileSync(tr, "utf8").slice(0, 600);
-    const mods = (head.match(/modules ([\d, ]+)/)?.[1] ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-    const lessons = mods.flatMap((m) => course.get(m) ?? []);
-    const page = readJson(path.join(dir, "learner", "page.json")) ?? { lessons: {} };
-    const done = lessons.filter((l) => page.lessons[l.id]?.revealed).length;
-    const qTotal = lessons.reduce((a, l) => a + l.questions, 0);
-    const qDone = lessons.reduce((a, l) => a + Object.values<any>(page.lessons[l.id]?.turns ?? {}).filter((t) => t.status === "settled").length, 0);
-    const steps = (fs.readFileSync(tr, "utf8").match(/^## \[\d+\]/gm) ?? []).length;
-    const t0 = started(id);
-    const elapsed = ((meta ? fs.statSync(path.join(dir, "meta.json")).mtimeMs : now) - t0) / 1000;
-    const frac = qTotal ? qDone / qTotal : lessons.length ? done / lessons.length : 0;
-    const idle = (now - lastWrite) / 1000;
-    const name = id.replace(/^\d{4}-\d{4}-/, "");
-    const tutor = name.replace(/^(t1-thorough|s4-[a-z-]+?)-/, "");
-    const cur = page.current ?? "—";
-    let status: string;
-    if (meta) status = `${c.green}done${c.off} (${meta.end_reason})`;
-    else if (idle > 600) status = `${c.red}quiet ${mmss(idle)}${c.off}`;
-    else if (idle > 180) status = `${c.yellow}quiet ${mmss(idle)}${c.off}`;
-    else status = `${c.cyan}in ${cur}${c.off}`;
-    const eta = !meta && frac > 0.05 ? `  ~${mmss(elapsed * (1 - frac) / frac)} left` : "";
-    lines.push(`${c.bold}${tutor}${c.off}  ${c.dim}modules ${mods.join(",")} · ${id.slice(0, 9)}${c.off}`);
-    lines.push(`  ${bar(frac, 32)} ${String(Math.round(frac * 100)).padStart(3)}%   lessons ${done}/${lessons.length} · questions ${qDone}/${qTotal}`);
-    lines.push(`  ${status}  ${c.dim}· step ${steps} · ${mmss(elapsed)} elapsed${eta}${c.off}`);
-    lines.push("");
-    shown++;
+  const ids = fs.existsSync(RUNS) ? fs.readdirSync(RUNS).filter((d) => /^\d{4}-\d{4}-/.test(d)).sort() : [];
+  const all = ids.map((id) => info(id, now)).filter((x): x is Info => !!x);
+  const running = all.filter((r) => !r.meta && r.idle < 2 * 3600);
+  const finished = all.filter((r) => r.meta && new Date(r.metaAt).toDateString() === today).sort((a, b) => b.metaAt - a.metaAt);
+
+  lines.push(`${c.bold}Running${c.off}`, "");
+  for (const r of running) {
+    const frac = r.qTotal ? r.qDone / r.qTotal : r.lessons ? r.done / r.lessons : 0;
+    const status = r.idle > 600 ? `${c.red}quiet ${mmss(r.idle)}${c.off}` : r.idle > 180 ? `${c.yellow}quiet ${mmss(r.idle)}${c.off}` : `${c.cyan}in ${r.cur}${c.off}`;
+    const eta = frac > 0.05 ? `  ~${mmss(r.elapsed * (1 - frac) / frac)} left` : "";
+    lines.push(`${c.bold}${r.tutor}${c.off}  ${c.dim}modules ${r.mods.join(",")} · ${r.id.slice(0, 9)}${c.off}`);
+    lines.push(`  ${bar(frac, 32)} ${String(Math.round(frac * 100)).padStart(3)}%   lessons ${r.done}/${r.lessons} · questions ${r.qDone}/${r.qTotal}`);
+    lines.push(`  ${status}  ${c.dim}· step ${r.steps} · ${mmss(r.elapsed)} elapsed${eta}${c.off}`, "");
   }
-  if (!shown) lines.push(`${c.dim}No sim running (or finished in the last 30 min).${c.off}`);
+  if (!running.length) lines.push(`${c.dim}  No sim running.${c.off}`, "");
+
+  lines.push(`${c.bold}Finished today${c.off}`);
+  for (const r of finished) {
+    const dir = path.join(RUNS, r.id);
+    const rev = [fs.existsSync(path.join(dir, "bugs.json")) && "Opus", fs.existsSync(path.join(dir, "bugs-gpt-6.2-astra.json")) && "Astra"].filter(Boolean);
+    const complete = r.done === r.lessons && r.qDone === r.qTotal;
+    const at = new Date(r.metaAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    lines.push(`  ${c.dim}${at}${c.off}  ${complete ? c.green + "✓" : c.yellow + "…"}${c.off} ${r.tutor.padEnd(34)} ${c.dim}${r.mods.join(",").padEnd(15)}${c.off}` +
+      ` lessons ${r.done}/${r.lessons} · questions ${r.qDone}/${r.qTotal} · ${mmss(r.elapsed)}` +
+      ` · ${rev.length ? `${c.green}reviewed: ${rev.join(" + ")}${c.off}` : `${c.yellow}not reviewed yet${c.off}`}`);
+  }
+  if (!finished.length) lines.push(`${c.dim}  None yet.${c.off}`);
   return lines.join("\n");
 }
 
