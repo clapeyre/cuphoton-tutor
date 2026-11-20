@@ -31,7 +31,7 @@ caption: The four candidates of 4.3, as the classifier sees them (each cutout in
 
 :::your-turn never-seen
 title: What has it never seen?
-prompt: Its score on its own test cutouts is perfect or nearly, and it agrees with you on A to D. Before you let it sort the next night, what kinds of candidates were not in its training set? Predict how it would score one, then ask the tutor to test it.
+prompt: Suppose its score on its own test cutouts is high, and it agrees with you on A to D. Before you let it sort the next night, what kinds of candidates were not in its training set? Predict how it would score one, then ask the tutor to test it.
 :::
 
 :::slot stress

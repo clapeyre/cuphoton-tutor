@@ -158,6 +158,13 @@ export class Recorder {
       // A bare name ("chain_gpu.json") only counts next to the figure or in a folder the command cd's into.
       if ((dir === own || text.includes(`cd ${dir}`)) && new RegExp(`["'/\\s]${parts.at(-1)!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["'\\s)]`).test(text)) return f;
       if (dir === "." || !dir.includes("/") || own === dir || own.startsWith(dir + "/")) return null;
+      // A path built from pieces under the figure's folder: root / 'chain-01' / m / 'summary.json' for m in ('cpu', 'gpu').
+      // Every part of its path below that folder appears as a quoted string in the script.
+      if (f.startsWith(own + "/")) {
+        const parts2 = f.slice(own.length + 1).split("/");
+        const quoted = (x: string) => new RegExp(`["']${x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["']`).test(text);
+        if (parts2.length > 1 && parts2.every(quoted)) return f;
+      }
       // A folder named from inside the folder the command cd's into: cd work/08 && … look run2 …
       for (const c of text.matchAll(/(?:^|[;\n&|(]\s*)cd\s+([^\s;&|)]+)/g)) {
         const base = path.relative(config.learnerDir, path.resolve(config.learnerDir, c[1].replace(/^["']|["']$/g, "")));

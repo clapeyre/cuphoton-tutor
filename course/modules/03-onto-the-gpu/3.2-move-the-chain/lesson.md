@@ -33,7 +33,7 @@ prompt: After the GPU run, where do the aligned image, the difference image and 
 :::
 
 :::closure
-found: The fluxes didn't change: +12,234 ± 114 and +4,140 ± 71 DN, matching the CPU to about a billionth. xRep and xPois ran on the GPU but handed their results back as NumPy arrays on the host; xFit, given CuPy stamps, returned CuPy arrays on the device. xRep's result says the cupy backend ran. xPois hands back NumPy on either path, so for it the evidence is that the named cupy backend ran without error: a GPU-only backend fails loudly when it can't run (2.3).
+found: The fluxes didn't change: +12,234 ± 114 and +4,140 ± 71 DN, matching the CPU to about a billionth. xRep and xPois ran on the GPU but handed their results back as NumPy arrays on the host; xFit, given CuPy stamps, returned CuPy arrays on the device. xRep's and xPois's results both say the cupy backend ran, even though their arrays came back to the host: where a result lives and where the work ran are separate facts.
 matters: A stage that copies its result back to the host is convenient, but a chain of such stages copies the image across and back at every step, and for big images the copies can cost more than the arithmetic. cuPhoton offers `_device` versions that keep results on the GPU for exactly that reason. Knowing where each result lives tells you where the time goes.
 raises: The files themselves still go through the CPU first. Can we read an image straight onto the GPU?
 :::
