@@ -22,5 +22,5 @@ if ss -ltn 2>/dev/null | grep -qE "[0-9.*]:$port "; then
 fi
 nohup node --import tsx server/index.ts > server.log 2>&1 &
 echo $! > server.pid
-for i in $(seq 30); do grep -q "cuPhoton Learn on" server.log && break; sleep 0.5; done
+for i in $(seq 30); do grep -q " on http://" server.log && break; sleep 0.5; done
 cat server.log

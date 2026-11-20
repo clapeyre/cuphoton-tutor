@@ -15,6 +15,8 @@ export interface Lesson {
 export interface GlossaryEntry { key: string; label: string; definition: string; holdUntil?: string; concept?: boolean; link?: { url: string; label: string } }
 export interface Course {
   title: string;
+  brand: string;
+  product: string;
   guideUrl?: string;
   modules: { id: string; title: string; lessons: { id: string; title: string; turns: number }[] }[];
   chain: { id: string; does: string; definition: string }[];

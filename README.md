@@ -99,11 +99,11 @@ be). The app's commit also shows on the admin page and in the server log.
 | `INFERENCE_API_KEY` | | key for the provider in `tutor/pi-agent/models.json` |
 | `TUTOR_PROVIDER`, `TUTOR_MODEL` | `nvidia`, `aws/anthropic/bedrock-claude-sonnet-5-5` | any model listed in models.json |
 | `TUTOR_THINKING` | `off` | pi thinking level |
-| `CUPHOTON_DIR` | `~/cuphoton-overnight/cuPhoton` | pinned checkout (commit in `course/course.yaml`) |
+| `CUPHOTON_DIR` (or `PRODUCT_DIR`) | `~/cuphoton-overnight/cuPhoton` | pinned checkout (commit in `course/course.yaml`) |
 | `LEARNER_PYTHON_BIN` | `$CUPHOTON_DIR/.venv/bin` | Python with NumPy, SciPy, Matplotlib, cuPhoton |
 | `LEARNER_DIR` | `learner/` | progress, conversations, workspace, tutor sessions |
-| `CUPHOTON_LEARN_FEEDBACK_URL` | | where consented feedback notes are POSTed |
-| `CUPHOTON_LEARN_ISSUES_URL` | the GitHub repo it was cloned from | where "Report on GitHub" opens a new issue |
+| `CUPHOTON_LEARN_FEEDBACK_URL` (or `FEEDBACK_URL`) | | where consented feedback notes are POSTed |
+| `CUPHOTON_LEARN_ISSUES_URL` (or `ISSUES_URL`) | the GitHub repo it was cloned from | where "Report on GitHub" opens a new issue |
 | `PORT`, `HOST` | `8765`, `127.0.0.1` | |
 | `PI_OFFLINE` | `1` | no pi network activity besides the endpoint |
 | `ACCESS` | | `open`: no access check (see "Who can use it") |

@@ -119,7 +119,7 @@ export function App() {
   return (
     <>
       <header className="top">
-        <div className="brand"><span className="logo" aria-hidden="true" /><span>cuPhoton Learn</span></div>
+        <div className="brand"><span className="logo" aria-hidden="true" /><span>{course.brand}</span></div>
         <nav className="strip" aria-label="Course progress">
           {course.modules.map((u) => (
             <div key={u.id} className="strip-group">
@@ -133,7 +133,7 @@ export function App() {
             </div>
           ))}
         </nav>
-        {course.guideUrl && <a className="ext guide-link" href={course.guideUrl} target="_blank" rel="noopener noreferrer">cuPhoton user guide</a>}
+        {course.guideUrl && <a className="ext guide-link" href={course.guideUrl} target="_blank" rel="noopener noreferrer">{course.product} user guide</a>}
         <button type="button" className="btn tertiary small files-btn" aria-expanded={filesOpen}
           onClick={() => filesOpen ? setFilesOpen(false) : openFile(filesDir === moduleId ? filesPath : null)}>
           Files

@@ -88,7 +88,7 @@ export function allow(req: http.IncomingMessage, res: http.ServerResponse): bool
     return true;
   }
   if (PAGES.has(url.pathname) || (req.headers.accept ?? "").includes("text/html")) {
-    res.writeHead(401, { "content-type": "text/html; charset=utf-8" }).end(LOCKED);
+    res.writeHead(401, { "content-type": "text/html; charset=utf-8" }).end(LOCKED());
   } else {
     res.writeHead(401, { "content-type": "application/json" }).end(JSON.stringify({ error: "this course belongs to another browser; open its access link" }));
   }
@@ -103,11 +103,14 @@ export function allowSocket(req: http.IncomingMessage): boolean {
   return !req.headers.origin || req.headers.origin === origin(req);
 }
 
-const LOCKED = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>cuPhoton Learn · In use</title>
+/** What the lock page calls the course (course.yaml `brand`); index.ts sets it at startup. */
+let brand = "This course";
+export function setBrand(b: string) { brand = b; }
+const LOCKED = () => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${brand} · In use</title>
 <style>body{margin:0;background:#141414;color:#ececec;font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
 main{max-width:600px;margin:0 auto;padding:48px 16px}h1{font-size:22px;font-weight:600}code{font:13px ui-monospace,Menlo,monospace;background:#0d0d0d;padding:2px 6px;border-radius:4px}p{color:#a3a3a3}</style></head>
 <body><main><h1>This course is open in another browser</h1>
-<p>cuPhoton Learn belongs to the first browser that opened it, because its tutor can run commands on this machine.</p>
+<p>${brand} belongs to the first browser that opened it, because its tutor can run commands on this machine.</p>
 <p>If it's yours, open its access link. On the machine, it is in <code>learner/access-link.txt</code>, and in the server's log. In the browser that's already in, it's on the admin page.</p>
 <p>To start over with this browser as the owner, delete <code>learner/access.json</code> on the machine and restart the server.</p></main></body></html>`;

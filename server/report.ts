@@ -41,11 +41,11 @@ function walk(dir: string, rel = ""): string[] {
 }
 
 /** Writes the archive to a temporary folder; returns its path and a file name. Call cleanup() when sent. */
-export async function buildReport(about: Record<string, unknown>): Promise<{ file: string; name: string; cleanup: () => void }> {
+export async function buildReport(prefix: string, about: Record<string, unknown>): Promise<{ file: string; name: string; cleanup: () => void }> {
   const scrub = scrubber();
   const stamp = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "");
-  const name = `cuphoton-tutor-report-${stamp}-${app.commit}`;
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "cuphoton-report-"));
+  const name = `${prefix}-${stamp}-${app.commit}`;
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `${prefix}-`));
   const out = path.join(tmp, name);
   fs.mkdirSync(out);
   const put = (rel: string, text: string) => {

@@ -5,6 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { chat, firstJson } from "./llm.ts";
+import { brand, product } from "./course_names.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const run = path.resolve(process.argv[2]);
@@ -42,7 +43,7 @@ const prompt = (mod: string, dir: string) => {
   const lessonText = lessons.map((d) => `<lesson dir="${d}">\n<lesson.md>\n${read(path.join(dir, d, "lesson.md"))}\n</lesson.md>\n<tutor.md>\n${read(path.join(dir, d, "tutor.md"))}\n</tutor.md>\n</lesson>`).join("\n");
   const sig = signals.filter((s) => (s.lesson && modOf(s.lesson) === mod) || (!s.lesson && s.kind !== "server_log"));
   return [
-    `You are reviewing one module (${mod}) of a simulated run through an interactive course (cuPhoton Learn). A simulated learner`,
+    `You are reviewing one module (${mod}) of a simulated run through an interactive course (${brand}). A simulated learner`,
     `used the real web app; an AI tutor (${meta.tutor_model ?? "unknown model"}) taught through page tools (ask, settle, reveal, show_figure) and ran real`,
     "code. Your job is to FIND BUGS, not to grade teaching. A bug is anything a course author should fix:",
     "- app: the page or server misbehaved (no reply, duplicated or misplaced messages, a slot never filled, the closing not shown,",
@@ -50,7 +51,7 @@ const prompt = (mod: string, dir: string) => {
     "- content: the lesson text, a figure spec, a video, or tutor.md is wrong, contradicts itself or the data, refers to something",
     "  that doesn't exist, asks a question the page can't support, or leaves the learner unable to answer;",
     "- tutor: the tutor broke a rule in its notes in a way the notes or SYSTEM.md should prevent (leaking an answer, settling",
-    "  without the idea, wrong claims about cuPhoton or the physics, figures that don't match their caption);",
+    `  without the idea, wrong claims about ${product} or the physics, figures that don't match their caption);`,
     "- environment: code failed because of the machine (missing package, GPU, download, path, permissions, timing);",
     "- harness: the simulation itself caused it (the learner acted oddly); list these separately so they aren't mistaken for bugs.",
     "Be concrete: quote the step number or the tool call. Don't report style preferences. If the module ran cleanly, say so.",

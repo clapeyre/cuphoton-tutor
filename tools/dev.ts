@@ -11,7 +11,7 @@ const children: ChildProcess[] = [
   spawn(bin("vite"), ["build", "web", "--watch"], { cwd: root, stdio: "inherit" }),
   spawn(bin("tsx"), [
     "watch", "--clear-screen=false",
-    "--include", "course/**", "--include", "tutor/SYSTEM.md", "--include", "tutor/skills/**",
+    "--include", "course/**", "--include", "tutor/SYSTEM.md", "--include", "tutor/COURSE.md", "--include", "tutor/skills/**",
     "server/index.ts",
   ], { cwd: root, stdio: "inherit" }),
 ];

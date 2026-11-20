@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>cuPhoton Learn · Set up the tutor</title>
+<title>{{brand}} · Set up the tutor</title>
 <style>
 :root {
   --bg: #141414; --raised: #1f1f1f; --sunken: #0d0d0d; --subtle: #262626;
@@ -49,7 +49,7 @@ a { color: var(--brand); }
 <body>
 <main>
 <h1>Set up the tutor</h1>
-<p class="lead">cuPhoton Learn's tutor is a language model that reads the lessons, runs code on this machine and talks with you. Tell the course which model to use. It tests the model with one small call before saving.</p>
+<p class="lead">{{brand}}'s tutor is a language model that reads the lessons, runs code on this machine and talks with you. Tell the course which model to use. It tests the model with one small call before saving.</p>
 <p class="now" id="now"></p>
 
 <div class="note"><b>Which model?</b> The course was written and tested with Claude Sonnet 5.5. The model must support tool calls, and it does better if it reads images (it looks at the figures it makes). Smaller models tend to lose track of the lesson's questions. A model served on this machine shares the GPU the lessons use.</div>

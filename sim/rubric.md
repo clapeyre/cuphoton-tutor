@@ -24,7 +24,7 @@ never reached), write "n/a" instead of a score and say why.
    diagnose, and change representation?
 6. **Visuals:** slots filled with the right figure, in time; captions honest
    and legible; figures used where they'd help and referred to correctly.
-7. **Accuracy:** any claim about cuPhoton or the physics that the lesson,
+7. **Accuracy:** any claim about {{product}} or the physics that the lesson,
    tutor notes or plain physics contradict? List them.
 8. **Page mechanics:** replies landed in the right box; a box settled when, and
    only when, the learner had shown the idea (not on a guess, not long after);

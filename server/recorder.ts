@@ -5,17 +5,18 @@
 import fs from "node:fs";
 import path from "node:path";
 import { config } from "./config.ts";
+import type { RunRules } from "./content.ts";
 
 export interface RunRecord {
   id: string;
-  by: string; // xRep, xPois, …, or NumPy / Python / shell
+  by: string; // the course's stages (cuPhoton: xRep, xPois, …), or NumPy / Python / shell
   device: "CPU" | "GPU" | "CPU + GPU";
   seconds: number;
   at: number;
   commands: string[];
   files: string[]; // written, relative to the learner dir
   code?: { path: string; text: string }[];
-  receipt?: Record<string, unknown>; // summary.json fields, when a cuPhoton CLI run wrote one
+  receipt?: Record<string, unknown>; // a receipt's fields (course.yaml runs.receipts), when the run wrote one
   ok: boolean;
   tool: string;
   /** Earlier runs whose output this one read (a plotting script drawing a GPU run's results). */
@@ -24,7 +25,6 @@ export interface RunRecord {
 
 // A stage named only to say it didn't run (xrep='skipped', "xRep: skipped", "xRep was skipped") isn't one the run used.
 const NOT_RUN = String.raw`(?!["']?\s*[=:]\s*["']?(skip|none|off|false|no\b|not)|\s+(was\s+|is\s+)?(skipped|not run|off)\b)`;
-const STAGES = ["xDR", "xRep", "xPois", "xFit", "xScan", "xLens", "xImage", "xBeam", "xRay"];
 const SKIP = /(^|\/)(\.venv|node_modules|__pycache__|sessions)(\/|$)/;
 
 function snapshot(dir: string, out = new Map<string, number>(), base = dir): Map<string, number> {
@@ -57,6 +57,8 @@ function readSmall(p: string, max = 20000): string | null {
 
 export class Recorder {
   runs: RunRecord[] = [];
+  private stages: string[];
+  constructor(private rules: RunRules) { this.stages = rules.stages; }
   private pending = new Map<string, { t0: number; before: Map<string, number>; command: string; tool: string; path?: string }>();
   private n = 0;
 
@@ -110,28 +112,30 @@ export class Recorder {
     let receipt: Record<string, unknown> | undefined;
     const components = new Set<string>(); // what a quickstart summary says actually ran
     const devices = new Set<"CPU" | "GPU">(); // every receipt's device, for a run that did both
-    // A run's receipt: a summary.json (the chain, quickstarts) or a manifest.json (the xRay detector track).
-    for (const f of files.filter((f) => f.endsWith("summary.json") || f.endsWith("manifest.json"))) {
+    // A run's receipt (cuPhoton: a summary.json from the chain or a quickstart, a manifest.json from the xRay detector track).
+    for (const f of files.filter((f) => this.rules.receipts.some((r) => f.endsWith(r)))) {
       try {
         const j = JSON.parse(fs.readFileSync(path.join(config.learnerDir, f), "utf8"));
         if (Array.isArray(j.components)) for (const c of j.components) components.add(String(c).toLowerCase());
-        receipt = Object.fromEntries(["workflow", "requested_backend", "backend", "device", "dtype", "fits_reader"].filter((k) => k in j).map((k) => [k, j[k]]));
+        receipt = Object.fromEntries(this.rules.receiptFields.filter((k) => k in j).map((k) => [k, j[k]]));
         // Some workflows keep the device deeper (xImage: performance.device.device = "cuda").
         if (receipt.device == null) { const d = deepDevice(j); if (d) receipt.device = d; }
         if (receipt.device != null) devices.add(isGpu(receipt.device) ? "GPU" : "CPU");
       } catch {}
     }
-    // Every cuPhoton stage the run used, in pipeline order ("xRep + xPois"). A quickstart's summary lists
-    // its components; otherwise the code decides (run_quickstarts.py names all of them, so it can't).
-    const stages = components.size ? STAGES.filter((s) => components.has(s.toLowerCase()))
-      : STAGES.filter((s) => new RegExp(`(\\b${s}\\b|cuphoton\\.${s.toLowerCase()}|\\b${s.toLowerCase()}\\b)${NOT_RUN}`).test(all));
-    const stage = stages.length ? stages.join(" + ") : /cuphoton\.core|fits_io/.test(all) ? "cuPhoton Core" : undefined;
+    // Every stage the run used, in pipeline order ("xRep + xPois"). A receipt that lists its components
+    // decides; otherwise the code does (cuPhoton's run_quickstarts.py names all of them, so it can't).
+    const pkg = this.rules.package;
+    const stages = components.size ? this.stages.filter((s) => components.has(s.toLowerCase()))
+      : this.stages.filter((s) => new RegExp(`(\\b${s}\\b${pkg ? `|${pkg}\\.${s.toLowerCase()}` : ""}|\\b${s.toLowerCase()}\\b)${NOT_RUN}`).test(all));
+    const core = this.rules.core;
+    const stage = stages.length ? stages.join(" + ") : core && new RegExp(core.pattern).test(all) ? core.label : undefined;
     const by = stage ?? (/\bnumpy\b|\bnp\./.test(all) ? "NumPy" : /python/.test(all) ? "Python" : "shell");
     // The receipt's device decides when it has one (torch and native backends also run on the CPU).
     // A summary with neither (a chain script's own summary) leaves it to the code.
     const gpu = receipt?.device != null ? isGpu(receipt.device)
-      : receipt?.backend != null ? /cupy|cutile/i.test(String(receipt.backend))
-      : /--require-gpu|backend\s*=\s*["'](cupy|torch|cutile)["']|\bcupy\b/.test(all);
+      : receipt?.backend != null ? !!this.rules.gpuBackend && new RegExp(this.rules.gpuBackend, "i").test(String(receipt.backend))
+      : !!this.rules.gpuCode && new RegExp(this.rules.gpuCode).test(all);
     this.runs.push({
       id: `r${++this.n}-${Date.now().toString(36)}`, by, device: devices.size > 1 ? "CPU + GPU" : gpu ? "GPU" : "CPU", seconds, at: Date.now(),
       commands: [shown.slice(0, 4000)], files, code: code.length ? code : undefined, receipt, ok: !isError, tool: p.tool,
@@ -192,7 +196,7 @@ export class Recorder {
     }
     if (!inputs.length) return r;
     const all = [...inputs.reverse(), r];
-    const stages = STAGES.filter((s) => all.some((x) => x.by.split(" + ").includes(s)));
+    const stages = this.stages.filter((s) => all.some((x) => x.by.split(" + ").includes(s)));
     return {
       ...r,
       by: stages.length ? stages.join(" + ") : inputs.find((x) => x.by !== "shell")?.by ?? r.by,

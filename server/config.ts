@@ -26,11 +26,13 @@ export const config = {
   tutorDir: abs(env("TUTOR_DIR", "tutor")),
   learnerDir: abs(env("LEARNER_DIR", "learner")),
   webDist: abs(env("WEB_DIST", "web/dist")),
-  cuphotonDir: abs(env("CUPHOTON_DIR", path.join(process.env.HOME ?? "", "cuphoton-overnight/cuPhoton"))),
-  // Python for the learner workspace: NumPy, SciPy, Matplotlib and cuPhoton.
-  pythonBin: env("LEARNER_PYTHON_BIN", ""), // a venv's bin/ dir; default: <cuphotonDir>/.venv/bin
-  // The same with cuPhoton's gpu extra (CuPy, CUDA PyTorch), for Module 03 on. Modules 00–02 rely on the
-  // default environment having no usable GPU (Module 02 teaches the silent fallback). tools/setup-gpu-env.sh makes it.
+  // The checkout of the software the course teaches (course.yaml `product`), at its pinned commit.
+  // CUPHOTON_DIR and its default are the cuPhoton course's names, kept so existing installs keep working.
+  productDir: abs(env("PRODUCT_DIR", env("CUPHOTON_DIR", path.join(process.env.HOME ?? "", "cuphoton-overnight/cuPhoton")))),
+  // Python for the learner workspace (cuPhoton: NumPy, SciPy, Matplotlib and cuPhoton).
+  pythonBin: env("LEARNER_PYTHON_BIN", ""), // a venv's bin/ dir; default: <productDir>/.venv/bin
+  // A second environment with GPU packages (cuPhoton: its gpu extra, CuPy, CUDA PyTorch, for Module 03 on;
+  // Modules 00–02 rely on the default one having no usable GPU). tools/setup-gpu-env.sh makes it.
   gpuPythonBin: abs(env("LEARNER_GPU_PYTHON_BIN", ".envs/cuphoton-gpu/bin")),
   // Inference: any OpenAI- or Anthropic-style endpoint. Provider + model are
   // looked up in tutor/pi-agent/models.json (add a provider there for a new site).
@@ -40,7 +42,7 @@ export const config = {
   // endpoint (probed 20 Nov) Sonnet 5.5 then reasons as at high, hidden; GPT and Gemini at about their medium;
   // Kimi and Qwen always reason. A level is sent only for models marked "reasoning" in models.json.
   thinking: env("TUTOR_THINKING", "off") as "off" | "minimal" | "low" | "medium" | "high",
-  feedbackUrl: env("CUPHOTON_LEARN_FEEDBACK_URL", ""),
+  feedbackUrl: env("FEEDBACK_URL", env("CUPHOTON_LEARN_FEEDBACK_URL", "")),
   offline: env("PI_OFFLINE", "1") === "1",
 };
 

@@ -14,10 +14,11 @@ const commit = git("rev-parse", "--short=10", "HEAD");
 // Local edits to tracked files: the commit alone doesn't say what ran.
 const dirty = commit !== "" && git("status", "--porcelain", "--untracked-files=no") !== "";
 
-// Where "Report on GitHub" opens a new issue: CUPHOTON_LEARN_ISSUES_URL, else the GitHub repo this copy
+// Where "Report on GitHub" opens a new issue: ISSUES_URL (or CUPHOTON_LEARN_ISSUES_URL), else the GitHub repo this copy
 // was cloned from (a fork reports to the fork), else the course's own repo.
 function issuesUrl(): string {
-  if (process.env.CUPHOTON_LEARN_ISSUES_URL) return process.env.CUPHOTON_LEARN_ISSUES_URL;
+  const set = process.env.ISSUES_URL || process.env.CUPHOTON_LEARN_ISSUES_URL;
+  if (set) return set;
   const m = git("remote", "get-url", "origin").match(/github\.com[:/]([^/]+)\/([^/]+?)(?:\.git)?$/);
   return m ? `https://github.com/${m[1]}/${m[2]}/issues/new` : "https://github.com/clapeyre/cuphoton-tutor/issues/new";
 }

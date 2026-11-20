@@ -3,13 +3,39 @@ id: cuphoton-learn
 title: Working with cuPhoton through an agent
 version: 0.2-draft
 
-cuphoton:
+# What the page calls the course (header, tab titles, server log).
+brand: cuPhoton Learn
+# The admin page's report archive is <report_name>-<date>-<commit>.
+report_name: cuphoton-tutor-report
+
+# The software the course teaches, checked out at a pinned commit (PRODUCT_DIR, or CUPHOTON_DIR).
+product:
+  name: cuPhoton
   repo: https://github.com/NVIDIA/cuPhoton
   # The lessons were written against this commit. Bump deliberately, after
   # re-running every unit's runs.
   commit: ff4d26018eb4a5fed391d196ebe424736c6498e5
   # The published user guide (docs/guide/ at that commit); lessons link pages by file name (`guide:`).
   guide: https://nvidia.github.io/cuPhoton/main/
+  # Where those pages are in the checkout, for their titles: <guide_dir>/<name><guide_ext>.
+  guide_dir: docs/guide
+  guide_ext: .qmd
+
+# How a run record names what made a figure and on which device (server/recorder.ts).
+runs:
+  # Components a run can use, in pipeline order: a run is labelled "xRep + xPois".
+  stages: [xDR, xRep, xPois, xFit, xScan, xLens, xImage, xBeam, xRay]
+  # The package's import name: `cuphoton.xrep` counts as xRep.
+  package: cuphoton
+  # Code that uses the package but none of the stages.
+  core: { label: cuPhoton Core, pattern: 'cuphoton\.core|fits_io' }
+  # Files a run writes that record what it did; these fields are kept from them.
+  receipts: [summary.json, manifest.json]
+  receipt_fields: [workflow, requested_backend, backend, device, dtype, fits_reader]
+  # Without a receipt's device: a backend matching this is a GPU one ...
+  gpu_backend: 'cupy|cutile'
+  # ... and, without a receipt, code matching this ran on the GPU.
+  gpu_code: '--require-gpu|backend\s*=\s*["''](cupy|torch|cutile)["'']|\bcupy\b'
 
 objectives:
   - id: O1

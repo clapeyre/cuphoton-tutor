@@ -13,6 +13,7 @@ import {
 import { config, learnerPath } from "./config.ts";
 import type { Course, Lesson } from "./content.ts";
 import { modelsPath } from "./endpoint.ts";
+import { tutorPrompt } from "./prompt.ts";
 import { Recorder } from "./recorder.ts";
 import { QUEUE, Store, type FigureOnPage, type Pointer, type Thread } from "./state.ts";
 
@@ -73,14 +74,16 @@ export class Tutor {
   // starts a new thread, seeded with the learner profile the old one wrote (see rotate()).
   private thread: { module: string; startedAt: number } | null = null;
   private rotating = false;
-  recorder = new Recorder();
+  recorder: Recorder;
   activity: Activity = { main: null, turn: null, threads: {}, drafts: {}, steps: [], since: null, retry: null };
   onActivity: () => void = () => {};
   onNote: (n: { kind: string; summary: string }) => void = () => {};
   /** Events the session log doesn't keep (retries, compactions as they happen, margin calls), for the admin page. */
   onMetric: (m: Record<string, unknown>) => void = () => {};
 
-  constructor(private course: Course, private store: Store, private lessonTurns: Map<string, string[]>) {}
+  constructor(private course: Course, private store: Store, private lessonTurns: Map<string, string[]>) {
+    this.recorder = new Recorder(course.runs);
+  }
 
   async init() {
     this.runtime = await ModelRuntime.create({
@@ -89,7 +92,7 @@ export class Tutor {
     });
     this.model = this.runtime.getModel(config.provider, config.model);
     if (!this.model) throw new Error(`model ${config.provider}/${config.model} not found (tutor/pi-agent/models.json, or learner/endpoint.json from /setup)`);
-    const pyBin = config.pythonBin || path.join(config.cuphotonDir, ".venv", "bin");
+    const pyBin = config.pythonBin || path.join(config.productDir, ".venv", "bin");
     if (fs.existsSync(pyBin) && !process.env.PATH?.startsWith(pyBin)) process.env.PATH = `${pyBin}:${process.env.PATH}`;
     if (config.offline) process.env.PI_OFFLINE = "1";
     fs.mkdirSync(learnerPath("sessions", "main"), { recursive: true });
@@ -196,16 +199,17 @@ export class Tutor {
   // ---------- context ----------
 
   private systemPrompt(kind: "main" | "margin") {
-    const base = fs.readFileSync(path.join(config.tutorDir, "SYSTEM.md"), "utf8");
+    // The engine's SYSTEM.md, filled from the course's COURSE.md (server/prompt.ts).
+    const { system: base, environment } = tutorPrompt(config.tutorDir, {
+      product: this.course.product, commit: this.course.commit, productDir: config.productDir, gpuPythonBin: config.gpuPythonBin,
+    });
     const outline = this.course.modules.map((u) =>
       `- Module ${u.id} · ${u.title}\n` + u.lessons.map((l) => `  - ${l.id} ${l.title} (turns: ${l.turnIds.join(", ") || "none"})`).join("\n")).join("\n");
     const env = [
       "## Environment",
       `- Learner workspace (your cwd): ${config.learnerDir}`,
       `- Course files (read-only): ${config.courseDir} — vocabulary.yaml, concepts.yaml, misconceptions.md, modules/*/<lesson>/lesson.md and tutor.md`,
-      `- cuPhoton checkout, pinned at ${this.course.commit}: ${config.cuphotonDir}`,
-      `- Python environments: \`python\` on your PATH is cuPhoton's CPU-only environment (no CuPy, CPU PyTorch), used for Modules 00–02.`,
-      `  The GPU environment, with cuPhoton's gpu extra, is ${config.gpuPythonBin}: call ${path.join(config.gpuPythonBin, "python")} (and ${path.join(config.gpuPythonBin, "cuphoton")}) by full path for GPU work, from Module 03 on.`,
+      ...(environment ? [environment] : []),
       "", "## The course", outline,
     ].join("\n");
     const margin = kind === "margin" ? "\n\n" + [

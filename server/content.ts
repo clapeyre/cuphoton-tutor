@@ -51,10 +51,25 @@ export interface GlossaryEntry {
   link?: { label: string; url: string }; // read_more in vocabulary.yaml
 }
 
+/** How the run recorder names what made a figure and where it ran: course.yaml `runs`. */
+export interface RunRules {
+  stages: string[];
+  package?: string;
+  core?: { label: string; pattern: string };
+  receipts: string[];
+  receiptFields: string[];
+  gpuBackend?: string;
+  gpuCode?: string;
+}
+
 export interface Course {
   title: string;
+  brand: string; // what the page calls the course ("cuPhoton Learn")
+  reportName: string; // the admin page's report archive: <reportName>-<date>-<commit>
+  product: string; // the software it teaches ("cuPhoton")
   commit: string;
   guideUrl: string;
+  runs: RunRules;
   modules: Module[];
   lessons: Map<string, Lesson>;
   order: string[]; // lesson ids in reading order
@@ -165,15 +180,17 @@ function parseBody(body: string, lessonDir: string, videos: Course["videos"], le
   return { parts, closure };
 }
 
-// A guide page by its file name (read-fits): its title from the pinned checkout's docs/guide, and its URL.
-function guidePage(base: string, name: string) {
-  const f = path.join(config.cuphotonDir, "docs", "guide", `${name}.qmd`);
+// A guide page by its file name (read-fits): its title from the pinned checkout's guide sources, and its URL.
+function guidePage(product: any, name: string) {
+  const base = product?.guide ?? "";
+  const f = path.join(config.productDir, product?.guide_dir ?? "docs/guide", `${name}${product?.guide_ext ?? ".qmd"}`);
   const t = fs.existsSync(f) ? fs.readFileSync(f, "utf8").match(/^# (.+?)(?:\s*\{[^}]*\})?\s*$/m)?.[1] : undefined;
   return { title: t ?? name, url: `${base}${name}.html` };
 }
 
 export function loadCourse(): Course {
   const cy = YAML.parse(fs.readFileSync(path.join(config.courseDir, "course.yaml"), "utf8"));
+  const product = cy.product ?? cy.cuphoton ?? {}; // `cuphoton:` was this block's name before 20 Nov 2026
   const videosFile = path.join(config.mediaDir, "videos.yaml");
   const videos = fs.existsSync(videosFile) ? YAML.parse(fs.readFileSync(videosFile, "utf8")) ?? {} : {};
   const modules: Module[] = [];
@@ -194,7 +211,7 @@ export function loadCourse(): Course {
       const notesFile = path.join(dir, "tutor.md");
       const lesson: Lesson = {
         id, module: module.id, slug: ld, dir, title: meta.title ?? ld, question: meta.question ?? "",
-        terms: (meta.terms ?? []).map(String), guide: (meta.guide ?? []).map((g: string) => guidePage(cy.cuphoton?.guide ?? "", String(g))), parts, closure,
+        terms: (meta.terms ?? []).map(String), guide: (meta.guide ?? []).map((g: string) => guidePage(product, String(g))), parts, closure,
         turnIds: parts.flatMap((p) => (p.kind === "turn" ? [p.id] : [])),
         slotIds: parts.flatMap((p) => (p.kind === "slot" ? [p.id] : [])),
         source, tutorNotes: fs.existsSync(notesFile) ? fs.readFileSync(notesFile, "utf8") : "",
@@ -207,7 +224,14 @@ export function loadCourse(): Course {
     }
     modules.push(module);
   }
-  return { title: cy.title, commit: cy.cuphoton?.commit ?? "", guideUrl: cy.cuphoton?.guide ?? "", modules, lessons, order, glossary: loadGlossary(), chain: cy.chain ?? [], videos };
+  const r = cy.runs ?? {};
+  const runs: RunRules = {
+    stages: (r.stages ?? []).map(String), package: r.package, core: r.core,
+    receipts: r.receipts ?? ["summary.json"], receiptFields: r.receipt_fields ?? ["backend", "device"],
+    gpuBackend: r.gpu_backend, gpuCode: r.gpu_code,
+  };
+  const name = String(product.name ?? "");
+  return { title: cy.title, brand: String(cy.brand ?? cy.title), reportName: String(cy.report_name ?? `${cy.id ?? "course"}-report`), product: name, commit: product.commit ?? "", guideUrl: product.guide ?? "", runs, modules, lessons, order, glossary: loadGlossary(), chain: cy.chain ?? [], videos };
 }
 
 // read_more: "Label | https://…" — one outside page that explains the idea in more depth.

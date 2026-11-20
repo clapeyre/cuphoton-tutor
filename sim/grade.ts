@@ -2,6 +2,7 @@
 //   npx tsx sim/grade.ts runs/<id> [--grader aws/anthropic/bedrock-claude-opus-5-5]
 import fs from "node:fs";
 import path from "node:path";
+import { product } from "./course_names.ts";
 import { chat, firstJson } from "./llm.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -27,7 +28,7 @@ const blind = (s: string) => s.replaceAll(meta.tutor_model, "<tutor model>").rep
 const { tutor_model, run_id, ...metaBlind } = meta;
 
 const prompt = [
-  read(path.join(ROOT, "sim", "rubric.md")),
+  read(path.join(ROOT, "sim", "rubric.md")).replaceAll("{{product}}", product),
   "<persona>", read(path.join(ROOT, "sim", "personas", meta.persona)), "</persona>",
   "<misconception-catalogue>", read(path.join(ROOT, "course", "misconceptions.md")), "</misconception-catalogue>",
   "<lessons-covered>", lessonsText, "</lessons-covered>",

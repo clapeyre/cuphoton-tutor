@@ -8,12 +8,13 @@ import { courseOutline, loadCourse, publicLesson } from "./content.ts";
 import { QUEUE, Store, type Pointer, type Thread } from "./state.ts";
 import { Tutor } from "./tutor.ts";
 import { Admin } from "./admin.ts";
-import { accessLink, allow, allowSocket } from "./access.ts";
+import { accessLink, allow, allowSocket, setBrand } from "./access.ts";
 import { buildReport } from "./report.ts";
 import { app } from "./version.ts";
 import { isConfigured, loadEndpoint, pingEndpoint, PRESETS, saveEndpoint, type Endpoint } from "./endpoint.ts";
 
 const course = loadCourse();
+setBrand(course.brand);
 const lessonTurns = new Map([...course.lessons].map(([id, l]) => [id, l.turnIds]));
 const store = new Store();
 const tutor = new Tutor(course, store, lessonTurns);
@@ -36,6 +37,11 @@ function sendFile(req: http.IncomingMessage, res: http.ServerResponse, file: str
     const end = range[2] ? Number(range[2]) : st.size - 1;
     res.writeHead(206, { "content-type": type, "content-range": `bytes ${start}-${end}/${st.size}`, "accept-ranges": "bytes", "content-length": end - start + 1 });
     fs.createReadStream(file, { start, end }).pipe(res);
+    return;
+  }
+  if (type.startsWith("text/html")) { // pages carry the course's name: {{brand}}
+    const html = Buffer.from(fs.readFileSync(file, "utf8").replaceAll("{{brand}}", course.brand));
+    res.writeHead(200, { "content-type": type, "content-length": html.length, "cache-control": "no-cache", ...extra }).end(html);
     return;
   }
   res.writeHead(200, { "content-type": type, "content-length": st.size, "accept-ranges": "bytes", "cache-control": "no-cache", ...extra });
@@ -106,7 +112,7 @@ const server = http.createServer((req, res) => {
   const p = url.pathname;
   const json = (o: unknown, code = 200) => { res.writeHead(code, { "content-type": "application/json" }).end(JSON.stringify(o)); };
   if (p === "/api/course") {
-    return json({ title: course.title, guideUrl: course.guideUrl, modules: courseOutline(course), chain: course.chain, glossary: [...course.glossary.values()], order: course.order, videos: course.videos });
+    return json({ title: course.title, brand: course.brand, product: course.product, guideUrl: course.guideUrl, modules: courseOutline(course), chain: course.chain, glossary: [...course.glossary.values()], order: course.order, videos: course.videos });
   }
   if (p.startsWith("/api/lesson/")) {
     const l = course.lessons.get(decodeURIComponent(p.slice("/api/lesson/".length)));
@@ -136,7 +142,7 @@ const server = http.createServer((req, res) => {
   if (p === "/api/admin") { admin.report().then(json, (e) => json({ error: String(e?.message ?? e) }, 500)); return; }
   // The report archive (server/report.ts): conversations, progress, notes, metrics, log; no key or token.
   if (p === "/api/admin/report") {
-    buildReport({ cuphoton_commit: course.commit, lesson: store.page.current, lessons: course.order.length }).then((r) => {
+    buildReport(course.reportName, { product: course.product, product_commit: course.commit, lesson: store.page.current, lessons: course.order.length }).then((r) => {
       res.writeHead(200, { "content-type": "application/gzip", "content-disposition": `attachment; filename="${r.name}"` });
       fs.createReadStream(r.file).on("close", r.cleanup).pipe(res);
     }, (e) => json({ error: String(e?.message ?? e) }, 500));
@@ -321,6 +327,6 @@ if (pingEvery > 0) setInterval(() => {
 
 server.listen(config.port, config.host, () => {
   console.log(ready
-    ? `cuPhoton Learn on http://${config.host}:${config.port}  (app ${app.label}; tutor ${config.provider}/${config.model}; ${course.order.length} lessons)`
-    : `cuPhoton Learn on http://${config.host}:${config.port}  (app ${app.label}; no model yet: open the page to set one up; ${course.order.length} lessons)`);
+    ? `${course.brand} on http://${config.host}:${config.port}  (app ${app.label}; tutor ${config.provider}/${config.model}; ${course.order.length} lessons)`
+    : `${course.brand} on http://${config.host}:${config.port}  (app ${app.label}; no model yet: open the page to set one up; ${course.order.length} lessons)`);
 });

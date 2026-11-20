@@ -4,6 +4,7 @@
 // Reads only files the sims write: runs/<id>/transcript.md, learner/page.json and, once done, meta.json.
 import fs from "node:fs";
 import path from "node:path";
+import { product } from "./course_names.ts";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const RUNS = path.join(ROOT, "runs");
@@ -92,7 +93,7 @@ function liveTags(): Set<string> {
 function render(): string {
   const now = Date.now();
   const today = new Date().toDateString();
-  const lines: string[] = [`${c.bold}cuPhoton sims${c.off}  ${c.dim}${new Date().toLocaleTimeString()} · every ${EVERY_S}s · ctrl-c to quit${c.off}`, ""];
+  const lines: string[] = [`${c.bold}${product} sims${c.off}  ${c.dim}${new Date().toLocaleTimeString()} · every ${EVERY_S}s · ctrl-c to quit${c.off}`, ""];
   const ids = fs.existsSync(RUNS) ? fs.readdirSync(RUNS).filter((d) => /^\d{4}-\d{4}-/.test(d)).sort() : [];
   const all = ids.map((id) => info(id, now)).filter((x): x is Info => !!x);
   // A run without results is running only if its sim process is alive; otherwise it was stopped (killed) without results.
