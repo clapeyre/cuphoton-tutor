@@ -344,7 +344,7 @@ const settled = turnsIn.filter((t) => page.lessons[t.id]?.turns[t.turn]?.status 
 const lost = Object.values<any>(page.lessons).flatMap((l: any) => Object.values<any>(l.turns)).flatMap((t: any) => t.log).filter((m: any) => /lost my train of thought/.test(m.text)).length;
 const sorted = waits.filter((w) => w > 0).sort((a, b) => a - b);
 const meta = {
-  run_id: runId, persona: path.basename(personaFile), tutor_model: tutorModel, learner_model: learnerModel, modules,
+  run_id: runId, persona: path.basename(personaFile), tutor_model: tutorModel, tutor_thinking: process.env.TUTOR_THINKING ?? "off", learner_model: learnerModel, modules,
   end_reason: endReason, steps, wall_s: Math.round((Date.now() - t0) / 1000), sim_minutes: Math.round(clockS / 60),
   lessons_visited: lessonIds.filter((id) => page.lessons[id]?.visited).length, lessons_total: lessonIds.length,
   turns_settled: settled, turns_total: turnsIn.length,
