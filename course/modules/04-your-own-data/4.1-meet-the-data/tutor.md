@@ -42,11 +42,18 @@ Use the GPU environment for cuPhoton from here on.
   subtracted, so its noise is lost from the recipe) versus a real scatter of
   about 175 count²; so use the survey's variance map; and check it against the
   data (e.g. the scatter of empty-sky pixels).
-- Run the check they propose, on empty sky (the corners, sources masked):
-  over the whole frame the galaxy's structure inflates the scatter (ref 213).
-  Facts: robust variance of empty sky (MAD²) 179 (ref) and 174 (target); the
-  variance map's median there 151 and 173. The target agrees; the reference's
-  map runs about 15% low. Say both.
+- Run the check they propose, on empty sky. If they leave the selection to
+  you, use `noise_check.py` (next to these notes; `python <this dir>/noise_check.py`):
+  four 150 px corners, the survey's mask bits, sources masked and grown by
+  5 px, a 3σ-clipped variance. Facts from it: scatter 180 (ref) and 162
+  (target); the map's median there 150 and 171: the reference's map runs about
+  17% low, the target's agrees within about 5%. Say both.
+- Why learners' numbers differ: the survey stores pixel values in steps of
+  about 0.8 counts, so a MAD jumps between a few values (121, 146, 174, 179,
+  213 all turn up), and bigger corners take in the galaxy's outskirts (the
+  reference's scatter grows to about 200 with 200 px corners). The
+  conclusion holds across selections: the target's map is right, the
+  reference's runs low by 10–25%.
 - If they say "variance doesn't matter much" (M-VARIANCE-COSMETIC): remind them
   of 1.6 (error bars scale with it) in one sentence.
 - Settle, then `reveal("4.1")`.

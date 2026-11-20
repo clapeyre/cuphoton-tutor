@@ -1,3 +1,4 @@
+# hold-back: 1.7 asks the learner to find this script's bug from its output; run records name it without showing its code
 """Find and measure what changed between the sample reference and target.
 
 Run from a directory containing sample/ (see tools/make_sample.py).

@@ -24,7 +24,7 @@ prompt: How should the three reference exposures (two from 22 April 2011, one fr
 
 :::slot stack
 title: Three exposures and their stacks
-caption: Top, the usable pixels of each exposure, with its seeing (the width of a star, as a FWHM in pixels), and how many exposures cover each pixel. Bottom, z for the single reference and for each stack; circles mark hotspots outside the single exposure's usable area.
+caption: Top, the usable pixels of each exposure, with its seeing (the width of a star, as a FWHM in pixels), and how many exposures cover each pixel. Bottom, z for the single reference and for each stack (blue: no usable pixel); circles mark hotspots outside the single exposure's usable area.
 :::
 
 :::your-turn what-it-bought

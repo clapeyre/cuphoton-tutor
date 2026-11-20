@@ -171,6 +171,8 @@ for c in CONFIGS:
         who = [n for n in NAMES if members[n][2][y, x]]
         print(f"   x {x} y {y}  z {runs[c]['z'][y, x]:6.1f}  covered by {', '.join(who)}")
 
+# Unusable pixels in blue (4.2's rule): white or black on a grey z map would read as brighter or fainter.
+ZMAP = plt.get_cmap("gray").copy(); ZMAP.set_bad("#2A78D6")
 fig, ax = plt.subplots(2, 4, figsize=(13, 6.8))
 for a, n in zip(ax[0], NAMES):
     a.imshow(members[n][2], origin="lower", cmap="gray", vmin=0, vmax=1)
@@ -181,7 +183,7 @@ ax[0, 3].set_title(f"nights per pixel\n(target seeing {SEEING['target']:.2f} px)
 fig.colorbar(im, ax=ax[0, 3], ticks=[0, 1, 2, 3], fraction=.046)
 show = [c for c in CONFIGS][:4]
 for a, c in zip(ax[1], show):
-    a.imshow(runs[c]["z"], origin="lower", cmap="gray", vmin=-6, vmax=6)
+    a.imshow(runs[c]["z"], origin="lower", cmap=ZMAP, vmin=-6, vmax=6)
     a.set_title(f"z, {c}: usable {runs[c]['use'].mean():.0%}, {len(runs[c]['regs'])} hotspots", fontsize=9)
     for q in new.get(c, []):
         a.add_patch(plt.Circle(q["peak_yx"][::-1], 14, fill=False, color="#ffb000", lw=1.2))
@@ -189,7 +191,7 @@ for a in ax[1, len(show):]:
     a.axis("off")
 for a in ax.flat:
     a.set_xticks([]); a.set_yticks([])
-fig.text(.99, .005, "Pan-STARRS1 DR2, M101, r band. Circles: hotspots outside the single night's usable area.",
+fig.text(.99, .005, "Pan-STARRS1 DR2, M101, r band. z panels: blue = no usable pixel. Circles: hotspots outside the single night's usable area.",
          ha="right", fontsize=7, color="0.4")
 fig.tight_layout()
 fig.savefig(OUT, dpi=110)
