@@ -19,7 +19,7 @@ it, with fakes, as in 4.4.
 
 :::your-turn fakes
 title: Fakes in the scene
-prompt: The tutor will plant 24 fake stars of 2,000 counts in each of the three 2011 exposures, each blurred by that exposure's PSF, then reconstruct a 160 × 160 cut around the supernova's position. It will measure the fakes in the scene and in the median of the frames, the same way. Predict how close each will come to 2,000, and which will scatter less. Then ask what you'd do before measuring anything real in the scene.
+prompt: The tutor will plant 24 fake stars of 2,000 counts in each of the three 2011 exposures, each blurred by that exposure's PSF, then reconstruct a 160 × 160 cut around the supernova's position. It will measure the fakes in the scene and in the median of the frames with the same procedure, apertures scaled to each image's blur. Predict how close each will come to 2,000, and which will scatter less. Then ask what you'd do before measuring anything real in the scene.
 :::
 
 :::slot fakes
@@ -38,7 +38,7 @@ caption: The median of the four exposures, the 2012-04-12 frame alone, and the t
 :::
 
 :::closure
-found: In the scene the fakes came back at 1.15 times their planted flux, scattered by 0.05; in the median of the frames, measured the same way, at 1.05, scattered by 0.16. The scene's sharpness bought a third of the scatter, but its flux scale was off by 10% against the median's, without any warning. On the 2012 night the supernova put 46,000 counts in the aperture; before it, the three 2011 exposures had a few hundred at most. The L2 scene put 3,600 there, a faint smudge that was neither the supernova nor its absence, and the robust scene 400, about what was there before. The loss rose from 1.43 to 2.14, and nothing else said anything.
+found: In the scene the fakes came back at 1.15 times their planted flux, scattered by 0.05; in the median of the frames, with apertures scaled to its wider blur, at 1.05, scattered by 0.16. The scene's sharpness bought a third of the scatter, but its flux scale was off by 10% against the median's, without any warning. On the 2012 night the supernova put 46,000 counts in the aperture; before it, the three 2011 exposures had a few hundred at most. The L2 scene put 3,600 there, a faint smudge that was neither the supernova nor its absence, and the robust scene 400, about what was there before. The loss rose from 1.43 to 2.14, and nothing else said anything.
 matters: A reconstruction is a measurement, so calibrate it: plant what you'll measure, at your settings, and use the ratio. And xImage assumes one scene that doesn't change. Something that changed between the frames is either smeared into a faint ghost or removed as an outlier, depending on the loss. To find what changed, use the chain from Modules 01 to 05; use xImage for what stays put.
 raises: Every module so far has worked on images. cuPhoton has parts for other kinds of signal; the next two modules take one each, starting with two receivers that hear the same source.
 :::

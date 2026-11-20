@@ -76,8 +76,9 @@ via GWOSC (gwosc.org)".
   √(R_H1H1(0)·R_L1L1(0)), from the autocorrelation pairs the guide
   suggests. Background: quarter seconds more than 2 s from the event (the
   grid of 128 quarter seconds, minus those near the event).
-- What it can claim: louder than every one of 112, so a chance below about
-  1 in 100 for this analysis. Not more: the loudest background at 0.58 is
+- What it can claim: louder than every one of 112. That is the finest this
+  background can resolve (about 1 in 100); a careful bound (95%) is only that
+  noise beats it less than about 1 time in 40 in this analysis. Not more: the loudest background at 0.58 is
   close. LIGO's 5.1σ came from matched filtering and far more background.
 - **Pass:** (a) a background from the same analysis on stretches without
   the event; (b) the event beats all of it whitened, not raw; (c) the limit

@@ -110,7 +110,8 @@ export class Recorder {
     let receipt: Record<string, unknown> | undefined;
     const components = new Set<string>(); // what a quickstart summary says actually ran
     const devices = new Set<"CPU" | "GPU">(); // every receipt's device, for a run that did both
-    for (const f of files.filter((f) => f.endsWith("summary.json"))) {
+    // A run's receipt: a summary.json (the chain, quickstarts) or a manifest.json (the xRay detector track).
+    for (const f of files.filter((f) => f.endsWith("summary.json") || f.endsWith("manifest.json"))) {
       try {
         const j = JSON.parse(fs.readFileSync(path.join(config.learnerDir, f), "utf8"));
         if (Array.isArray(j.components)) for (const c of j.components) components.add(String(c).toLowerCase());
@@ -157,6 +158,13 @@ export class Recorder {
       // A bare name ("chain_gpu.json") only counts next to the figure or in a folder the command cd's into.
       if ((dir === own || text.includes(`cd ${dir}`)) && new RegExp(`["'/\\s]${parts.at(-1)!.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}["'\\s)]`).test(text)) return f;
       if (dir === "." || !dir.includes("/") || own === dir || own.startsWith(dir + "/")) return null;
+      // A folder named from inside the folder the command cd's into: cd work/08 && … look run2 …
+      for (const c of text.matchAll(/(?:^|[;\n&|(]\s*)cd\s+([^\s;&|)]+)/g)) {
+        const base = path.relative(config.learnerDir, path.resolve(config.learnerDir, c[1].replace(/^["']|["']$/g, "")));
+        if (!dir.startsWith(base + "/")) continue;
+        const sub = dir.slice(base.length + 1).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        if (new RegExp(`(^|[\\s"'=])${sub}/?(["'\\s)]|$)`, "m").test(text)) return dir;
+      }
       return new RegExp(`${dir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/?["'\\s)]`).test(text) ? dir : null;
     };
     const inputs: RunRecord[] = [];

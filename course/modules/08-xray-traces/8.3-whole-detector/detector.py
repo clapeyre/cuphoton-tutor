@@ -87,9 +87,22 @@ def look(run: Path, data: Path, png: str) -> None:
     fitted = status[:, x] == 1
     axs[1].plot(rows, truth(), "--", color="0.6", lw=1, label="planted")
     axs[1].plot(rows[fitted], f1[fitted], ".", color="#2A78D6", ms=2.5, label="fitted (status 1)")
-    axs[1].set_ylabel("frequency (THz)"); axs[1].set_title("the dispersion curve: strongest mode per row", fontsize=9); axs[1].legend(frameon=False, fontsize=8)
+    axs[1].set_ylabel("frequency (THz)"); axs[1].set_title("the dispersion curve: strongest mode per row", fontsize=9)
     axs[2].plot(rows[fitted], a1[fitted], ".", color="#2A78D6", ms=2.5)
     axs[2].set_ylabel("amplitude"); axs[2].set_title("its amplitude", fontsize=9)
+    # Rows that weren't fitted are shaded and labelled, so a skipped band shows as one (its stored zeros aren't plotted).
+    shade = {0: "#BBBBBB", 2: "#E8A33D", 3: "#D64545"}
+    for code in (2, 3, 0):
+        bad = np.flatnonzero(status[:, x] == code)
+        if not bad.size:
+            continue
+        runs_ = np.split(bad, np.flatnonzero(np.diff(bad) > 1) + 1)
+        span = ", ".join(f"{r[0]}" if r[0] == r[-1] else f"{r[0]}-{r[-1]}" for r in runs_[:4]) + (" ..." if len(runs_) > 4 else "")
+        for ax in axs:
+            for i, r in enumerate(runs_):
+                ax.axvspan(r[0] - 0.5, r[-1] + 0.5, color=shade[code], alpha=0.35, lw=0,
+                           label=f"{names[code]} (status {code}): rows {span}" if ax is axs[1] and i == 0 else None)
+    axs[1].legend(frameon=False, fontsize=8)
     for ax in axs:
         ax.set_xlabel("detector row")
     fig.text(0.995, 0.01, f"synthetic data · {run.name} · column {x}", ha="right", fontsize=7, style="italic", color="0.4")

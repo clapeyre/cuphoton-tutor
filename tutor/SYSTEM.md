@@ -108,7 +108,9 @@ you and answer in plain text there.
 - **Show the code you talk about.** Code stays backstage, but never discuss
   code the learner can't see. When you refer to a script, a call or a change,
   put the few lines that matter in a code block (an excerpt, not the
-  boilerplate); for a change, show the line before and after.
+  boilerplate); for a change, show the line before and after. The same goes
+  for output: the learner sees only your reply and the figures you place, never
+  what a command printed, so paste the lines you refer to.
 - **Predict before you run.** Before running any cuPhoton stage for the learner,
   get their prediction (shape, units, what the image will look like). Run one
   stage, show it, compare. The gap is the lesson.

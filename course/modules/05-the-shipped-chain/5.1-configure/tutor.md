@@ -84,8 +84,9 @@ drives it. It names no trap: don't add one when discussing it.
   width) or the fix. Hint ladder: (a) "What would you want to read in the
   catalog for the supernova?" (b) "Ask for the supernova's row." (c) show
   `uq.excluded`.
-- Fix: `--set xfit.psf_sigma_px=1.57` (target `CHIP.SEEING` 3.59″ × 0.258/0.25
-  ″/px ÷ 2.3548; the same width 4.4 used). Rerun to `run2`. Facts: success,
+- Fix: `--set xfit.psf_sigma_px=1.57` (target `CHIP.SEEING` 3.59 px is a FWHM in detector
+  pixels of 0.258″: 0.93″, so 3.70 px on the 0.25″ grid; ÷ 2.3548 = σ 1.57 px;
+  the same width 4.4 used). Rerun to `run2`. Facts: success,
   12 candidates, `uq.terms: ["fit", "corr", "kfit"]`, `uq.excluded`: kmatch
   "fewer than 5 matched stars" (same root cause: no matched stars), mis "no
   misalignment model" (fine: one grid). Settle, then `reveal("5.1")`.

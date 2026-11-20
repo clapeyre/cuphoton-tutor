@@ -16,8 +16,9 @@ the module's runs in an xLens dashboard. Module exit (O6, O3).
   first (the `findings` block; thresholds are yours to argue), show them the
   changed lines:
   `python <this dir>/watch_runs.py xlens-state 5.4_dashboard.html run1 run2 inj/run-shipped inj/run-whole [run-final]`,
-  plus every other run directory in `work/05/` and `work/05/inj/` (`ls -d run* inj/run-*`: learners
-  often make extra ones). Say how many runs and images it covers.
+  plus every other run directory in `work/05/` and `work/05/inj/` (any folder holding `items/*/summary.json`:
+  `find . -path '*/items/*/summary.json' | sed 's|/items/.*||' | sort -u`;
+  learners often make extra ones, some nested). Say how many runs and images it covers.
   It prints one line per sample (χ²/dof, finding codes) and the ingestion
   errors, and exports `work/05/5.4_dashboard.html`.
 - Link the dashboard in your reply as
