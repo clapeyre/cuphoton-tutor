@@ -36,6 +36,9 @@ export const config = {
   // looked up in tutor/pi-agent/models.json (add a provider there for a new site).
   provider: env("TUTOR_PROVIDER", "nvidia"),
   model: env("TUTOR_MODEL", "aws/anthropic/bedrock-claude-sonnet-5-5"),
+  // "off" sends no reasoning effort, so the model runs at its provider's default, which isn't off: on the NVIDIA
+  // endpoint (probed 20 Nov) Sonnet 5.5 then reasons as at high, hidden; GPT and Gemini at about their medium;
+  // Kimi and Qwen always reason. A level is sent only for models marked "reasoning" in models.json.
   thinking: env("TUTOR_THINKING", "off") as "off" | "minimal" | "low" | "medium" | "high",
   feedbackUrl: env("CUPHOTON_LEARN_FEEDBACK_URL", ""),
   offline: env("PI_OFFLINE", "1") === "1",
