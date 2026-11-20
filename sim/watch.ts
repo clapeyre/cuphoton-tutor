@@ -30,11 +30,10 @@ const bar = (f: number, w: number) => { const n = Math.round(Math.max(0, Math.mi
 const c = { dim: "\x1b[2m", bold: "\x1b[1m", green: "\x1b[32m", yellow: "\x1b[33m", red: "\x1b[31m", cyan: "\x1b[36m", off: "\x1b[0m" };
 
 function started(id: string): number {
-  // Run ids start MMDD-HHMM (local time).
+  // Run ids start MMDD-HHMM in UTC (app_sim stamps them with toISOString).
   const m = id.match(/^(\d\d)(\d\d)-(\d\d)(\d\d)/);
   if (!m) return Date.now();
-  const d = new Date(); d.setMonth(+m[1] - 1, +m[2]); d.setHours(+m[3], +m[4], 0, 0);
-  return d.getTime();
+  return Date.UTC(new Date().getUTCFullYear(), +m[1] - 1, +m[2], +m[3], +m[4]);
 }
 
 function render(): string {
