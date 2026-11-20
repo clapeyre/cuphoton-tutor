@@ -37,6 +37,15 @@ const guardedBash = () => createBashToolDefinition(config.learnerDir, {
   spawnHook: (ctx) => deletesTree(ctx.command) ? { ...ctx, command: `echo ${JSON.stringify(REFUSED).replace(/\$/g, "\\$")} >&2; exit 1` } : ctx,
 }) as unknown as ToolDefinition;
 
+/** A PNG's width and height from its header (null for other formats or a short file). */
+export function pngSize(file: string): { w: number; h: number } | null {
+  try {
+    const fd = fs.openSync(file, "r"); const b = Buffer.alloc(24); fs.readSync(fd, b, 0, 24, 0); fs.closeSync(fd);
+    if (b.toString("ascii", 1, 4) !== "PNG") return null;
+    return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+  } catch { return null; }
+}
+
 /** Text blocks of an assistant message so far (thinking and tool calls excluded). */
 const textOf = (m: any) => (Array.isArray(m?.content) ? m.content : []).filter((c: any) => c.type === "text").map((c: any) => c.text).join("")
   // Models with nothing to say sometimes write an invisible placeholder (an HTML comment, a zero-width space) or "done".
@@ -334,6 +343,9 @@ export class Tutor {
           for (let i = 0; i < 40 && !fs.existsSync(abs); i++) await new Promise((r) => setTimeout(r, 250));
           if (!fs.existsSync(abs)) throw new Error(`no such file in the workspace: ${p.path}`);
           if (!/\.(png|jpe?g|svg|gif|webp)$/i.test(abs)) throw new Error("show_figure takes an image (png, jpg, svg, gif, webp)");
+          const px = pngSize(abs);
+          if (px && (px.w > 4000 || px.h > 4000 || px.w * px.h > 12e6))
+            throw new Error(`this figure is ${px.w} × ${px.h} pixels, far larger than a page shows; redraw it at a normal size (e.g. figsize in inches × dpi ≤ about 2000 px wide; dpi 100–150) and call show_figure again`);
           const rel = path.relative(config.learnerDir, abs);
           const fig: FigureOnPage = { id: `${rel}@${fs.statSync(abs).mtimeMs}`, src: `/workspace/${rel}?v=${Math.round(fs.statSync(abs).mtimeMs)}`, title: p.title ?? "", caption: p.caption ?? "", run: this.recorder.recordFor(rel) };
           if (p.turn_id) {

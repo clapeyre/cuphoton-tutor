@@ -1,5 +1,6 @@
 // One chat call to the inference endpoint (OpenAI-compatible), for the simulated learner and the grader.
 // The tutor itself goes through pi, inside the server, like for a real learner.
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -16,7 +17,17 @@ export interface Usage { input: number; output: number; calls: number }
 
 export function imagePart(file: string) {
   const ext = path.extname(file).slice(1).toLowerCase().replace("jpg", "jpeg");
-  return { type: "image_url" as const, image_url: { url: `data:image/${ext};base64,${fs.readFileSync(file).toString("base64")}` } };
+  return { type: "image_url" as const, image_url: { url: `data:image/${ext};base64,${shrunk(file).toString("base64")}` } };
+}
+
+/** The image as a browser would show it: anything over 2000 px is scaled down (an 11457 × 4506 figure exceeded
+ *  the learner model's image limit and ended a run). Uses ImageMagick when it's there; otherwise the original. */
+function shrunk(file: string): Buffer {
+  const raw = fs.readFileSync(file);
+  if (raw.length < 1.5e6 && !(raw.toString("ascii", 1, 4) === "PNG" && Math.max(raw.readUInt32BE(16), raw.readUInt32BE(20)) > 2000)) return raw;
+  try {
+    return execFileSync("magick", [file, "-resize", "2000x2000>", path.extname(file).slice(1) + ":-"], { maxBuffer: 64e6 });
+  } catch { return raw; }
 }
 
 export async function chat(model: string, messages: Msg[], opts: { maxTokens?: number; usage?: Usage; temperature?: number } = {}): Promise<string> {
