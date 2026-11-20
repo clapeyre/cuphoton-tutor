@@ -77,6 +77,9 @@ the job's clocks are all 0. 20% of each recording is the shared sky.
   doesn't state the sign; that's why a rerun is the check. If they ask for
   +1.75e-6, run it: don't warn first. If they ask for -1.75e-6, run it, then
   ask what +1.75e-6 would have done, and show that run too.
+  If they ask which sign to use before choosing, don't state the convention:
+  point them to the job's own delay entries (what sign does CC's +0.9 µs
+  imply?) and let the rerun decide.
 - Make the change in a copy, `job-fixed.json` (show the diff), and run:
   ```
   cuphoton xbeam correlate job-fixed.json --output run2 --backend cupy --index-dir sidecars

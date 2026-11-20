@@ -616,7 +616,10 @@ export class Tutor {
       const now = this.store.turn(lessonId, turnId);
       const since = now.log.slice(now.log.findLastIndex((e) => e.who === "learner") + 1).filter((e) => e.who === "tutor");
       const asks = (x: string) => x.includes("?")
-        || /\b(give|tell|say|predict|explain|describe|list|name|answer|write|show)\b[^.\n]*\b(me|your|yours)\b/i.test(x.slice(-400));
+        || /\b(give|tell|say|predict|explain|describe|list|name|answer|write|show)\b[^.\n]*\b(me|your|yours)\b/i.test(x.slice(-400))
+        // "one sentence on why … and what you expect …" (7.2): a request with no verb above and no question mark
+        || /\b(one|a|two|a few) (sentence|line|word)s? (on|about)\b/i.test(x.slice(-400))
+        || /\b(why|what|how|which|whether)\b[^.\n]{0,160}\byou\b/i.test(x.slice(-300));
       if (now.status !== "settled" && since.length && !since.some((e) => asks(e.text))) {
         this.enqueue(lessonId, "Thinking", [
           `[page] Your reply in ${key} asked nothing and the turn is still open, so the learner has no question to answer.`,
