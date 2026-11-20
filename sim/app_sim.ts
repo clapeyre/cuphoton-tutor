@@ -148,6 +148,13 @@ function changes(l: any): string {
     if (t.status !== s.status[p.id] && t.status === "settled") out.push(`Your turn "${p.id}" closed with a check mark: ${t.summary ?? ""}`);
     s.status[p.id] = t.status;
   }
+  // A turn that was waiting opens once the one above settles: show its prompt, as the page now does.
+  const next = openTurn(l);
+  if (next && !shown.has(`${l.id}/${next.id}`)) {
+    shown.add(`${l.id}/${next.id}`);
+    out.push(`The next Your turn opened (turn id "${next.id}"): ${next.title}\n${next.lead ? strip(next.lead) + " " : ""}${strip(next.prompt ?? "")}` +
+      (next.image ? `\n${figureLine({ src: next.image, title: "", caption: next.imageCaption }, false)}` : ""));
+  }
   for (const th of state.page.threads.filter((x: any) => x.from === l.id)) {
     const n = s.thread[th.id] ?? 0;
     for (const m of th.messages.slice(n)) if (m.who === "tutor") out.push(`In the margin, the tutor answers your side question: ${m.text}`);
@@ -156,6 +163,12 @@ function changes(l: any): string {
   if (st.revealed && !s.revealed && l.closure) { s.revealed = true; out.push(`The lesson's closing appeared.\nWe found: ${strip(l.closure.found)}${st.yourRun ? `\nIn your run: ${st.yourRun}` : ""}${l.closure.matters ? `\nWhy it matters: ${strip(l.closure.matters)}` : ""}\nWhich raises: ${strip(l.closure.raises)}`); }
   return out.join("\n\n");
 }
+const shown = new Set<string>(); // "lesson/turn" whose prompt the learner has seen
+/** The turn the learner can answer now: the first one in the lesson not yet settled. */
+function openTurn(l: any): any {
+  const st = state.page.lessons[l.id] ?? { turns: {} };
+  return l.parts.find((p: any) => p.kind === "turn" && st.turns[p.id]?.status !== "settled");
+}
 function markAllSeen(l: any) {
   const st = state.page.lessons[l.id] ?? { turns: {}, slots: {}, revealed: false };
   const s: Seen = { turnLog: {}, status: {}, slots: {}, revealed: !!st.revealed, thread: {} };
@@ -163,6 +176,7 @@ function markAllSeen(l: any) {
   for (const [id, f] of Object.entries<any>(st.slots)) s.slots[id] = f.src;
   for (const th of state.page.threads) s.thread[th.id] = th.messages.length;
   seen.set(l.id, s);
+  const open = openTurn(lessons.get(l.id)); if (open) shown.add(`${l.id}/${open.id}`); // the full page shows its prompt
 }
 
 // ---------- bug signals: things that look wrong whatever the tutoring quality ----------
