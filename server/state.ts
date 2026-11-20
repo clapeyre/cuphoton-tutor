@@ -80,7 +80,9 @@ export class Store {
     if (!l?.visited) return "empty";
     const settled = turnIds.filter((t) => l.turns[t]?.status === "settled").length;
     if (l.revealed || (turnIds.length > 0 && settled === turnIds.length) || turnIds.length === 0) return "full";
-    return "half";
+    // Half only once the learner has answered something: opening a lesson for a glance doesn't start it.
+    const answered = turnIds.some((t) => { const x = l.turns[t]; return !!x && (x.status === "settled" || (x.attempts ?? 0) > 0 || x.log?.some((e) => e.who === "learner")); });
+    return answered ? "half" : "empty";
   }
 
   save(lessonTurns?: Map<string, string[]>) {
