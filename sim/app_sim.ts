@@ -100,7 +100,10 @@ const images: string[] = []; // files to attach to the next learner message
 function figureLine(f: any, made: boolean) {
   const file = fileFor(f.src);
   if (file && fs.existsSync(file) && /\.(png|jpe?g|gif|webp)$/i.test(file)) images.push(file);
-  return `[Figure${made ? ", made by the tutor" : ""}: ${f.title ?? ""}${f.caption ? ` (caption: ${strip(f.caption)})` : ""}${file && images.at(-1) === file ? " (image attached)" : ""}]`;
+  // As on the page: the run line under the figure ("Made by xRep · CPU · 0.9 s"), and what the run record opens on.
+  const r = f.run;
+  const run = r ? ` (under it: "Made by ${r.by} · ${r.device} · ${r.seconds < 10 ? r.seconds.toFixed(1) : Math.round(r.seconds)} s"; its run record shows: ${String(r.commands?.[0] ?? "").replace(/\s+/g, " ").slice(0, 240)}${r.inputs?.length ? `, drawing on ${r.inputs.length} earlier run(s)` : ""})` : "";
+  return `[Figure${made ? ", made by the tutor" : ""}: ${f.title ?? ""}${f.caption ? ` (caption: ${strip(f.caption)})` : ""}${run}${file && images.at(-1) === file ? " (image attached)" : ""}]`;
 }
 
 function lessonPage(l: any): string {
