@@ -248,6 +248,8 @@ try {
   let view = lessonPage(lessons.get(current));
   log(`## [0] Learner opens lesson ${current}\n\n<details><summary>page as shown</summary>\n\n${view}\n\n</details>`);
   while (steps < maxSteps) {
+    // `touch runs/<id>/STOP` ends a run cleanly between steps: the results below are still written.
+    if (fs.existsSync(path.join(run, "STOP"))) { endReason = "stopped_by_operator"; log(`## [${steps}] Run stopped by the operator`); break; }
     steps++;
     clockS += waits.at(-1)! + 90;
     const l = lessons.get(current);
