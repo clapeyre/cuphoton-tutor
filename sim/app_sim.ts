@@ -18,6 +18,7 @@ const ROOT = path.resolve(import.meta.dirname, "..");
 const arg = (k: string, d?: string) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : d; };
 const personaFile = path.resolve(arg("persona")!);
 const tutorModel = arg("tutor", "aws/anthropic/bedrock-claude-sonnet-5-5")!;
+const tutorProvider = arg("provider", "nvidia")!; // a provider in tutor/pi-agent/models.json ("local": vLLM on this machine or a tunnel)
 const learnerModel = arg("learner", "aws/anthropic/bedrock-claude-haiku-5-5")!;
 const modules = arg("modules", "00,01")!.split(",");
 const port = Number(arg("port", "8811"));
@@ -41,7 +42,7 @@ const say = (s: string) => console.log(`[${runId}] ${s}`);
 // ---------- the server ----------
 const server = spawn(path.join(ROOT, "node_modules", ".bin", "tsx"), ["server/index.ts"], {
   cwd: ROOT, stdio: ["ignore", fs.openSync(path.join(run, "server.log"), "a"), fs.openSync(path.join(run, "server.log"), "a")],
-  env: { ...process.env, PORT: String(port), LEARNER_DIR: learnerDir, ACCESS: "open", PING_EVERY_MIN: "0", TUTOR_PROVIDER: "nvidia", TUTOR_MODEL: tutorModel },
+  env: { ...process.env, PORT: String(port), LEARNER_DIR: learnerDir, ACCESS: "open", PING_EVERY_MIN: "0", TUTOR_PROVIDER: tutorProvider, TUTOR_MODEL: tutorModel },
 });
 const stopServer = () => { try { server.kill("SIGTERM"); } catch {} };
 process.on("exit", stopServer);
@@ -344,7 +345,7 @@ const settled = turnsIn.filter((t) => page.lessons[t.id]?.turns[t.turn]?.status 
 const lost = Object.values<any>(page.lessons).flatMap((l: any) => Object.values<any>(l.turns)).flatMap((t: any) => t.log).filter((m: any) => /lost my train of thought/.test(m.text)).length;
 const sorted = waits.filter((w) => w > 0).sort((a, b) => a - b);
 const meta = {
-  run_id: runId, persona: path.basename(personaFile), tutor_model: tutorModel, tutor_thinking: process.env.TUTOR_THINKING ?? "off", learner_model: learnerModel, modules,
+  run_id: runId, persona: path.basename(personaFile), tutor_model: tutorModel, tutor_provider: tutorProvider, tutor_thinking: process.env.TUTOR_THINKING ?? "off", learner_model: learnerModel, modules,
   end_reason: endReason, steps, wall_s: Math.round((Date.now() - t0) / 1000), sim_minutes: Math.round(clockS / 60),
   lessons_visited: lessonIds.filter((id) => page.lessons[id]?.visited).length, lessons_total: lessonIds.length,
   turns_settled: settled, turns_total: turnsIn.length,
