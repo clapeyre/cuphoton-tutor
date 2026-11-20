@@ -60,6 +60,16 @@ function info(id: string, now: number): Info | null {
   };
 }
 
+/** Why a finished run didn't complete everything, from its results. */
+function why(r: Info): string {
+  const e = String(r.meta?.end_reason ?? "");
+  if (e === "stopped_by_operator") return "stopped by the operator";
+  if (e.startsWith("error")) return "sim error: " + e.replace(/^error:\s*/, "").split(/[:{(]/)[0].trim().slice(0, 40);
+  if (e === "max_steps") return "ran out of steps";
+  if (r.qDone === r.qTotal) return "every question answered, a closing never shown";
+  return e.replace(/_/g, " ");
+}
+
 const hhmm = (t: number) => new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
 /** The --tag of every app_sim process alive on this machine (a run id ends with "-<tag>"). */
@@ -108,6 +118,7 @@ function render(): string {
     const at = new Date(r.metaAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     lines.push(`  ${c.dim}${at}${c.off}  ${complete ? c.green + "✓" : c.yellow + "…"}${c.off} ${r.tutor.padEnd(34)} ${c.dim}${r.mods.join(",").padEnd(15)}${c.off}` +
       ` lessons ${r.done}/${r.lessons} · questions ${r.qDone}/${r.qTotal} · ${mmss(r.elapsed)}` +
+      (complete ? "" : ` · ${c.yellow}${why(r)}${c.off}`) +
       ` · ${rev.length ? `${c.green}reviewed: ${rev.join(" + ")}${c.off}` : `${c.yellow}not reviewed yet${c.off}`}`);
   }
   for (const r of stopped)
