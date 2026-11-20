@@ -1,5 +1,5 @@
-"""6.3: xImage on real frames: the Pan-STARRS1 nights of M101 from Module 04 (course/modules/04-your-own-data/
-data, or DATA=...). The frames are already on one pixel grid (4.5). The answer to the fakes is in this file:
+"""6.3: xImage on real frames: the Pan-STARRS1 nights of M101 from Module 04 (Module 04's data folder,
+or DATA=...). The frames are already on one pixel grid (4.5). The answer to the fakes is in this file:
 run it in place, don't copy it.
 
     python nights.py run OUT NAME [--nights refs|all] [--pedestal P] [--algo l2|rho] [--fakes F] [--device cpu|cuda]
@@ -12,8 +12,9 @@ run it in place, don't copy it.
         the median of the frames and each run's scene, around the supernova's position
 
 How the bundle is made (show it): each frame is scaled to one zero point (24.6, from FPA.ZP), its variance
-by the square; mask 0 = good (no data and flagged pixels become bad, with a huge variance); one Gaussian
-PSF per frame, 25 x 25, with the night's seeing (CHIP.SEEING, FWHM in pixels) as width; --pedestal adds P
+by the square; a pixel is bad if it has any of the survey's MASK.VALUE bits (8575, as in Module 04), no data
+or no variance (bad pixels get value 0 and a huge variance); one Gaussian PSF per frame, 25 x 25, from the
+night's seeing (CHIP.SEEING, a FWHM in detector pixels of 0.258", converted to the 0.25" warp grid); --pedestal adds P
 counts to every frame (and is subtracted from the scene afterwards). Nights: refs = 2011-04-22 (two) and
 2011-05-11, before the supernova; all = those and 2012-04-12, when it was bright.
 
@@ -31,6 +32,7 @@ import numpy as np
 DATA = Path(os.environ.get("DATA") or Path(__file__).resolve().parents[2] / "04-your-own-data/data")
 NIGHTS = {"refs": ("reference", "reference-b", "reference-c"), "all": ("reference", "reference-b", "reference-c", "target")}
 CY, CX, K, ZP = 400, 402, 25, 24.6
+DETECTOR_PIX = 0.258  # arcsec per GPC1 detector pixel (4.1)
 HALF = int(os.environ.get("HALF", 80))  # half the cut's side; HALF=300 for a 600 x 600 timing run
 H = 2 * HALF
 
@@ -63,8 +65,11 @@ def build(names, pedestal, flux):
         scale = 10 ** (0.4 * (ZP - h["FPA.ZP"]))
         im = fits.getdata(DATA / f"{n}.fits")[sl].astype(float) * scale
         va = fits.getdata(DATA / f"{n}.var.fits")[sl].astype(float) * scale**2
-        good = (fits.getdata(DATA / f"{n}.mask.fits")[sl] == 0) & np.isfinite(im) & np.isfinite(va) & (va > 0)
-        sigma = h["CHIP.SEEING"] / 2.3548
+        mh = fits.getheader(DATA / f"{n}.mask.fits")
+        bad = next(mh[k.replace("NAM", "VAL")] for k in mh if k.startswith("MSKNAM") and mh[k] == "MASK.VALUE")  # 8575
+        good = ((fits.getdata(DATA / f"{n}.mask.fits")[sl] & bad) == 0) & np.isfinite(im) & np.isfinite(va) & (va > 0)
+        # CHIP.SEEING is a FWHM in detector pixels (0.258"); the warp grid's pixels are CDELT1 (0.25").
+        sigma = h["CHIP.SEEING"] * DETECTOR_PIX / (abs(h["CDELT1"]) * 3600) / 2.3548
         psf = np.exp(-(xx**2 + yy**2) / (2 * sigma**2))
         psf /= psf.sum()
         if flux:
